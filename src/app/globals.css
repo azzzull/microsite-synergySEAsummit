@@ -1,8 +1,17 @@
+/* Remove underline from Navbar links in all browsers */
+.navbar-link {
+  text-decoration: none !important;
+}
 @import "tailwindcss";
+
 
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --color-navy: #070d2d;
+  --color-navy-dark: #04091c;
+  --color-gold: #e19f00;
+  --color-lightgrey: #ced1ce;
 }
 
 @theme inline {
@@ -14,8 +23,12 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #070d2d;
+    --foreground: #ced1ce;
+    --color-navy: #070d2d;
+    --color-navy-dark: #04091c;
+    --color-gold: #e19f00;
+    --color-lightgrey: #fff;
   }
 }
 
