@@ -22,6 +22,7 @@ export default function HomePage() {
       
       {/* ===== HANDARA GATES (FOR VERSION 1 ONLY) ===== */}
       {/* Fixed Handara Gates with Parallax Effect */}
+      
       <motion.img 
         src="/SVG/HandaraLeft.svg" 
         alt="Handara Gate Left"
@@ -48,7 +49,7 @@ export default function HomePage() {
       <section className="relative w-full h-[450px] md:h-[calc(100vh-5rem)] flex flex-col items-center justify-start overflow-visible mt-16 sm:mt-20 md:mt-20 pt-4 md:pt-8 z-10">
         <div className="relative w-[90%] md:w-[70%] max-w-2xl aspect-video overflow-hidden mt-2 rounded-lg mb-6 md:mb-8">
           <iframe 
-            className="absolute inset-0 w-full h-full opacity-60"
+            className="absolute inset-0 w-full h-full"
             style={{transform: 'scale(1)', transformOrigin: 'center'}}
             src="https://www.youtube.com/embed/BFS9n4B_2xA?autoplay=1&mute=1&loop=1&playlist=BFS9n4B_2xA&controls=1&modestbranding=1&rel=0&fs=1"
             title="Synergy SEA Summit 2025 Teaser"
@@ -141,7 +142,7 @@ export default function HomePage() {
         </section>
         {/* Agenda Highlight */}
         <section className="max-w-4xl mx-auto py-8 px-4">
-          <h2 className="text-xl font-bold mb-6 text-center" style={{color: "var(--color-lightgrey)"}}>Event Schedule</h2>
+          <h2 className="text-2xl font-bold mb-6 text-center" style={{color: "var(--color-lightgrey)"}}>Event Schedule</h2>
           <div className="overflow-x-auto">
             <table className="w-full border-collapse rounded-lg overflow-hidden shadow-lg">
               <thead>
@@ -187,12 +188,12 @@ export default function HomePage() {
         </section>
         {/* Speakers Section */}
         <section className="max-w-5xl mx-auto py-8 px-4">
-          <h2 className="text-xl font-bold mb-4" style={{color: "var(--color-lightgrey)"}}>Speakers</h2>
-           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+          <h2 className="text-2xl font-bold mb-6 text-center" style={{color: "var(--color-lightgrey)"}}>Speakers</h2>
+           <div className="flex flex-wrap justify-center gap-6">
              {[...Array(4)].map((_, idx) => (
-               <Card key={idx} className="flex flex-col items-center bg-[var(--color-lightgrey)] p-4 rounded-xl">
+               <Card key={idx} className="flex flex-col items-center bg-[var(--color-lightgrey)] p-4 rounded-xl w-[320px] sm:w-[280px] md:w-[240px]">
                  <img src="/siluete.png" alt="Special guest" className="w-55 h-auto rounded-lg object-cover mb-3" />
-                 <div className="font-bold text-base md:text-lg mb-1" style={{color: "var(--color-lightgrey)"}}>Special guest</div>
+                 <div className="font-bold text-base md:text-lg mb-1 text-center" style={{color: "var(--color-lightgrey)"}}>Special guest</div>
                  <div className="text-sm md:text-base" style={{color: "var(--color-gold)"}}>???</div>
                </Card>
              ))}

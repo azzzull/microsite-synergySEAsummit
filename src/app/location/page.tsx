@@ -1,38 +1,122 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { Card } from "@/components/Card";
 import { hotels, restaurants, places } from "@/data/eventData";
+import { MapPinIcon, ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/24/outline";
+
+// Component terpisah untuk setiap hotel card
+function HotelCard({ hotel, index }: { hotel: { name: string; description: string; photo: string; distance: string }, index: number }) {
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  const handleClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsExpanded(prev => !prev);
+  };
+
+  return (
+    <Card className="overflow-hidden flex-1 min-w-[300px] max-w-[calc(50%-0.5rem)] transition-all duration-300 ease-in-out">
+      <div 
+        className="p-4 cursor-pointer select-none transition-colors duration-200"
+        onClick={handleClick}
+        onMouseDown={(e) => e.preventDefault()}
+      >
+        <div className="flex justify-between items-center pointer-events-none">
+          <span className="font-semibold" style={{color: "var(--color-gold)"}}>{hotel.name}</span>
+          <div className="flex items-center gap-2">
+            <span className="text-sm" style={{color: "var(--color-lightgrey)"}}>{hotel.distance}</span>
+            <div className="transition-transform duration-300 ease-in-out" style={{transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)'}}>
+              <ChevronDownIcon className="w-5 h-5" style={{color: "var(--color-lightgrey)"}} />
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div 
+        className={`overflow-hidden transition-all duration-300 ease-in-out ${
+          isExpanded ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
+        }`}
+      >
+        <div className="px-4 pb-4 border-t border-gray-600">
+          <div className="flex flex-col md:flex-row gap-4 mt-4">
+            <img 
+              src={hotel.photo} 
+              alt={hotel.name} 
+              className="w-full md:w-32 h-24 object-cover rounded-lg transition-all duration-300"
+            />
+            <div className="flex-1">
+              <p className="text-sm leading-relaxed transition-all duration-300" style={{color: "var(--color-lightgrey)"}}>
+                {hotel.description}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </Card>
+  );
+}
 
 export default function LocationPage() {
   return (
   <div className="min-h-screen flex flex-col" style={{background: "linear-gradient(to bottom, var(--color-navy-dark) 0%, var(--color-navy) 40vh, var(--color-navy) 100%)", color: "var(--color-lightgrey)"}}>
       <Navbar />
-      <div className="container mx-auto px-4 flex-1">
-        <section className="max-w-5xl mx-auto py-12 px-4">
-      <h1 className="text-2xl font-bold mb-6 text-center" style={{color: "var(--color-gold)"}}>Location & Directions</h1>
+      <div className="container mx-auto px-4 flex-1 mt-16 sm:mt-20 md:mt-20">
+        <section className="max-w-5xl mx-auto py-8 px-4">
+      <h1 className="text-3xl font-bold mb-4 text-center" style={{color: "var(--color-lightgrey)"}}>Location & Directions</h1>
           {/* Map Embed */}
           <div className="mb-8 flex justify-center">
             <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3944.123456789!2d115.188919!3d-8.409518!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2dd240ecb0b0b0b0%3A0x0!2sBali!5e0!3m2!1sen!2sid!4v1690000000000!5m2!1sen!2sid"
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3943.791309749572!2d115.16520537472309!3d-8.71135769133782!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2dd246c1b2997c97%3A0x7e36cd3ef6793772!2sThe%20Stones%20Hotel%20Legian!5e0!3m2!1sid!2sid!4v1757000867033!5m2!1sid!2sid"
               width="100%"
-              height="300"
+              height="500"
               style={{ border: 0, borderRadius: "12px" }}
               allowFullScreen={true}
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
-              title="Event Location"
+              title="The Stones Hotel Legian - Event Location"
             ></iframe>
+          </div>
+
+          {/* Venue Details */}
+          <div className="mb-8">
+            <Card className="p-6">
+              <h3 className="text-2xl font-bold mb-4 text-center" style={{color: "var(--color-lightgrey)"}}>Event Venue Details</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <div className="flex items-center mb-3">
+                    <MapPinIcon className="w-6 h-6 mr-2" style={{color: "var(--color-gold)"}} />
+                    <h4 className="font-bold" style={{color: "var(--color-gold)"}}>Venue Information</h4>
+                  </div>
+                  <p className="mb-1" style={{color: "var(--color-lightgrey)"}}><strong>Name:</strong> The Stones Hotel Legian</p>
+                  <p className="mb-1" style={{color: "var(--color-lightgrey)"}}><strong>Address:</strong> Jl. Raya Pantai Batu Belig, Legian, Bali 80361</p>
+                  <p className="mb-1" style={{color: "var(--color-lightgrey)"}}><strong>Phone:</strong> +62 361 8478888</p>
+                  <p className="mb-1" style={{color: "var(--color-lightgrey)"}}><strong>Type:</strong> Luxury Beachfront Resort</p>
+                </div>
+                <div>
+                  <div className="flex items-center mb-3">
+                    <MapPinIcon className="w-6 h-6 mr-2" style={{color: "var(--color-gold)"}} />
+                    <h4 className="font-bold" style={{color: "var(--color-gold)"}}>Transportation</h4>
+                  </div>
+                  <p className="mb-1" style={{color: "var(--color-lightgrey)"}}><strong>From Airport:</strong> 15-20 minutes drive</p>
+                  <p className="mb-1" style={{color: "var(--color-lightgrey)"}}><strong>From Seminyak:</strong> 5-10 minutes drive</p>
+                  <p className="mb-1" style={{color: "var(--color-lightgrey)"}}><strong>From Canggu:</strong> 10-15 minutes drive</p>
+                  <p className="mb-1" style={{color: "var(--color-lightgrey)"}}><strong>Parking:</strong> Available on-site</p>
+                </div>
+              </div>
+              <div className="mt-4 pt-4 border-t border-gray-600">
+                <p className="text-center text-sm" style={{color: "var(--color-lightgrey)"}}>
+                  <strong>Event Date:</strong> November 8, 2025 | <strong>Time:</strong> 12:30 - 17:00 WITA
+                </p>
+              </div>
+            </Card>
           </div>
           {/* Hotels */}
     <h2 className="text-xl font-bold mb-4" style={{color: "var(--color-gold)"}}>Nearby Hotels</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-            {hotels.map((hotel: { name: string; link: string }, idx: number) => (
-              <Card key={idx} className="flex justify-between items-center">
-      <span className="font-semibold" style={{color: "var(--color-gold)"}}>{hotel.name}</span>
-                <a href={hotel.link} target="_blank" rel="noopener" className="underline cursor-pointer" style={{color: "var(--color-lightgrey)"}}>Book</a>
-              </Card>
+          <div className="flex flex-wrap gap-4 mb-8 items-start">
+            {hotels.map((hotel: { name: string; description: string; photo: string; distance: string }, idx: number) => (
+              <HotelCard key={hotel.name} hotel={hotel} index={idx} />
             ))}
           </div>
           {/* Restaurants */}

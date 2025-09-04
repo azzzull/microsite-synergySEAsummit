@@ -38,28 +38,78 @@ export const agenda = [
 
 export const hallOfFame = [
   {
-    name: "Rina Wijaya",
+    name: "Prof. Dr. H. Rina Wijaya S.Kom, M.M",
     category: "Best Innovator",
-    photo: "/public/hall/rina.jpg"
+    photo: "/siluete.png"
   },
   {
     name: "Kevin Tan",
     category: "Top Contributor",
-    photo: "/public/hall/kevin.jpg"
+    photo: "/siluete.png"
   }
 ];
 
 export const hotels = [
-  { name: "Bali Beach Resort", link: "https://hotel1.com" },
-  { name: "Ubud Luxury Stay", link: "https://hotel2.com" },
-  { name: "Kuta Central Hotel", link: "https://hotel3.com" },
-  { name: "Sanur Paradise", link: "https://hotel4.com" },
-  { name: "Nusa Dua Suites", link: "https://hotel5.com" },
-  { name: "Legian Comfort", link: "https://hotel6.com" },
-  { name: "Seminyak Villas", link: "https://hotel7.com" },
-  { name: "Jimbaran Bay Inn", link: "https://hotel8.com" },
-  { name: "Canggu Escape", link: "https://hotel9.com" },
-  { name: "Denpasar Grand", link: "https://hotel10.com" }
+  { 
+    name: "Bali Beach Resort", 
+    description: "Luxury beachfront resort with stunning ocean views, infinity pool, and world-class spa facilities. Perfect for relaxation after the summit.",
+    photo: "/siluete.png",
+    distance: "5 minutes from venue"
+  },
+  { 
+    name: "Ubud Luxury Stay", 
+    description: "Tranquil retreat surrounded by lush rice terraces and tropical gardens. Experience authentic Balinese culture and traditional hospitality.",
+    photo: "/siluete.png",
+    distance: "45 minutes from venue"
+  },
+  { 
+    name: "Kuta Central Hotel", 
+    description: "Modern hotel in the heart of Kuta with easy access to shopping, dining, and nightlife. Close to airport and major attractions.",
+    photo: "/siluete.png",
+    distance: "20 minutes from venue"
+  },
+  { 
+    name: "Sanur Paradise", 
+    description: "Peaceful beachside hotel with calm waters perfect for swimming. Enjoy sunrise views and traditional Balinese architecture.",
+    photo: "/siluete.png",
+    distance: "25 minutes from venue"
+  },
+  { 
+    name: "Nusa Dua Suites", 
+    description: "Elegant suites in Bali's premium resort area. Features championship golf course, pristine beaches, and upscale dining options.",
+    photo: "/siluete.png",
+    distance: "30 minutes from venue"
+  },
+  { 
+    name: "Legian Comfort Inn", 
+    description: "Comfortable mid-range hotel with modern amenities and friendly service. Walking distance to beautiful Legian Beach and surf spots.",
+    photo: "/siluete.png",
+    distance: "8 minutes from venue"
+  },
+  { 
+    name: "Seminyak Villas", 
+    description: "Stylish boutique villas with private pools and contemporary design. Located in trendy Seminyak with chic restaurants and beach clubs.",
+    photo: "/siluete.png",
+    distance: "15 minutes from venue"
+  },
+  { 
+    name: "Jimbaran Bay Resort", 
+    description: "Oceanfront resort famous for fresh seafood dining on the beach. Watch stunning sunsets while enjoying grilled fish and local cuisine.",
+    photo: "/siluete.png",
+    distance: "35 minutes from venue"
+  },
+  { 
+    name: "Canggu Surf Lodge", 
+    description: "Hip surfer-friendly accommodation with co-working spaces and healthy cafes. Perfect for digital nomads and surf enthusiasts.",
+    photo: "/siluete.png",
+    distance: "12 minutes from venue"
+  },
+  { 
+    name: "Denpasar Grand Hotel", 
+    description: "Business hotel in the city center with conference facilities and airport shuttle. Ideal for extended stays and corporate travelers.",
+    photo: "/siluete.png",
+    distance: "40 minutes from venue"
+  }
 ];
 
 export const restaurants = [
