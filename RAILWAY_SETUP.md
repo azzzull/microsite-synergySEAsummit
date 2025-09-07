@@ -16,6 +16,41 @@
 ✅ **payments** - 4 payment records  
 ✅ **tickets** - 3 generated tickets  
 
+## 🚨 Connection String Fix
+
+**Error**: `invalid_connection_string: This connection string is meant to be used with a direct connection`
+
+**Solution**: Vercel Postgres requires pooled connection strings for serverless functions.
+
+### Railway Connection String Format:
+```bash
+# Direct connection (causes error):
+postgresql://postgres:password@containers-us-west-xxx.railway.app:7891/railway
+
+# Pooled connection (required for Vercel):
+postgres://postgres:password@containers-us-west-xxx.railway.app:7891/railway?pgbouncer=true&connection_limit=1
+```
+
+### Fix Steps:
+1. **Railway Dashboard** → PostgreSQL service → **Variables**
+2. **Look for**: `POSTGRES_URL_POOLED` or modify `DATABASE_URL`
+3. **Add to Vercel Environment Variables**:
+   - Name: `POSTGRES_URL` 
+   - Value: Pooled connection string
+4. **Redeploy** Vercel application
+
+### Alternative Solution:
+```javascript
+// Use createPool instead of sql directly
+import { createPool } from '@vercel/postgres';
+
+const pool = createPool({
+  connectionString: process.env.POSTGRES_URL
+});
+```
+
+---
+
 ## API Endpoints Status
 All endpoints now use Railway PostgreSQL instead of JSON files:
 

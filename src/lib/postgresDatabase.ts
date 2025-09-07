@@ -1,30 +1,41 @@
 // Railway PostgreSQL Database Layer
-import { sql, createPool, db } from '@vercel/postgres';
-
-// Create connection pool for better performance
-const pool = createPool({
-  connectionString: process.env.POSTGRES_URL || process.env.DATABASE_URL,
-});
+import { createClient } from '@vercel/postgres';
 
 export class PostgresDatabase {
+  private async executeQuery(queryText: string, params: any[] = []) {
+    const client = createClient();
+    try {
+      await client.connect();
+      const result = await client.query(queryText, params);
+      return result;
+    } catch (error) {
+      console.error('Database query error:', error);
+      throw error;
+    } finally {
+      await client.end();
+    }
+  }
   
   async createRegistration(data: any) {
     try {
       console.log('🔧 Creating registration with PostgreSQL...');
       
-      const result = await sql`
+      const queryText = `
         INSERT INTO registrations (
           order_id, full_name, phone, email, date_of_birth, 
           address, country, amount, status
         )
-        VALUES (
-          ${data.orderId}, ${data.fullName}, ${data.phone}, 
-          ${data.email}, ${data.dob}, ${data.address}, 
-          ${data.country}, ${data.amount}, ${data.status || 'pending'}
-        )
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
         RETURNING *;
       `;
+      
+      const params = [
+        data.orderId, data.fullName, data.phone, 
+        data.email, data.dob, data.address, 
+        data.country, data.amount, data.status || 'pending'
+      ];
 
+      const result = await this.executeQuery(queryText, params);
       const registration = result.rows[0];
       console.log('📝 Registration created in Postgres:', registration.id);
       
@@ -92,11 +103,12 @@ export class PostgresDatabase {
       console.log('🔍 Getting registrations from PostgreSQL...');
       console.log('Database URL configured:', !!process.env.POSTGRES_URL || !!process.env.DATABASE_URL);
       
-      const result = await sql`
+      const queryText = `
         SELECT * FROM registrations 
         ORDER BY created_at DESC;
       `;
 
+      const result = await this.executeQuery(queryText);
       console.log('✅ PostgreSQL query successful, rows:', result.rows.length);
 
       const registrations = result.rows.map((row: any) => ({
