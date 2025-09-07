@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import crypto from 'crypto';
-import { db } from '@/lib/database';
+import { postgresDb } from '@/lib/postgresDatabase';
 import { emailService } from '@/lib/emailService';
 
 const CLIENT_SECRET = process.env.DOKU_CLIENT_SECRET || 'your_sandbox_client_secret';
@@ -52,11 +52,11 @@ export async function POST(request: NextRequest) {
       console.log('✅ Payment successful for order:', order?.invoice_number);
       
       // Update registration and payment status in database
-      const registration = await db.updateRegistration(order?.invoice_number, {
+      const registration = await postgresDb.updateRegistration(order?.invoice_number, {
         status: 'paid'
       });
 
-      const paymentRecord = await db.updatePayment(order?.invoice_number, {
+      const paymentRecord = await postgresDb.updatePayment(order?.invoice_number, {
         status: 'success',
         transactionId: payment?.transaction_id,
         paymentMethod: payment?.payment_method,
@@ -76,7 +76,7 @@ export async function POST(request: NextRequest) {
       const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${ticketId}`;
       
       // Create ticket record
-      const ticket = await db.createTicket({
+      const ticket = await postgresDb.createTicket({
         ticketId: ticketId,
         orderId: order?.invoice_number,
         participantName: registration.fullName,
@@ -108,7 +108,7 @@ export async function POST(request: NextRequest) {
 
       // Update ticket email status
       if (emailResult.success) {
-        await db.updateTicket(order?.invoice_number, {
+        await postgresDb.updateTicket(order?.invoice_number, {
           emailSent: true,
           emailSentAt: new Date().toISOString()
         });

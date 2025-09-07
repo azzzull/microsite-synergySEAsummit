@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { db } from '@/lib/database';
+import { postgresDb } from '@/lib/postgresDatabase';
 import { emailService } from '@/lib/emailService';
 
 // Simulate realistic DOKU payment callback dengan status sinkron
@@ -14,7 +14,7 @@ export async function POST(request: NextRequest) {
     }
 
     // 1. Cek apakah order exists
-    const registration = await db.getRegistrationByOrderId(orderId);
+    const registration = await postgresDb.getRegistrationByOrderId(orderId);
     if (!registration) {
       return NextResponse.json({ error: 'Order not found' }, { status: 404 });
     }
@@ -55,15 +55,15 @@ export async function POST(request: NextRequest) {
     console.log('📦 DOKU Callback Payload:', dokuyCallbackPayload);
 
     // 3. Update registration status
-    const updatedRegistration = await db.updateRegistration(orderId, {
+    const updatedRegistration = await postgresDb.updateRegistration(orderId, {
       status: 'paid'
     });
 
     // 4. Get current payment data first
-    const currentPayment = await db.getPaymentByOrderId(orderId);
+    const currentPayment = await postgresDb.getPaymentByOrderId(orderId);
     
     // Update payment with DOKU details
-    const updatedPayment = await db.updatePayment(orderId, {
+    const updatedPayment = await postgresDb.updatePayment(orderId, {
       status: 'success',
       transactionId: dokuyCallbackPayload.payment.transaction_id,
       paymentMethod: dokuyCallbackPayload.payment.payment_method,
@@ -81,7 +81,7 @@ export async function POST(request: NextRequest) {
     const ticketId = `TICKET-${orderId}-${Date.now()}`;
     const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${ticketId}`;
     
-    const ticket = await db.createTicket({
+    const ticket = await postgresDb.createTicket({
       ticketId: ticketId,
       orderId: orderId,
       participantName: registration.fullName,
@@ -115,7 +115,7 @@ export async function POST(request: NextRequest) {
 
     // 7. Update ticket email status
     if (emailResult.success) {
-      await db.updateTicket(orderId, {
+      await postgresDb.updateTicket(orderId, {
         emailSent: true,
         emailSentAt: new Date().toISOString()
       });

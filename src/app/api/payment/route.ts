@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import axios from 'axios';
 import crypto from 'crypto';
-import { db } from '@/lib/database';
+import { postgresDb } from '@/lib/postgresDatabase';
 import { emailService } from '@/lib/emailService';
 
 // Doku API Configuration
@@ -242,7 +242,7 @@ export async function POST(request: NextRequest) {
       console.log('✅ DOKU Checkout Success with OFFICIAL format!', response.data);
       
       // Store registration and payment in database
-      const registrationData = await db.createRegistration({
+      const registrationData = await postgresDb.createRegistration({
         orderId,
         fullName,
         phone,
@@ -254,7 +254,7 @@ export async function POST(request: NextRequest) {
         status: 'pending'
       });
 
-      const paymentData = await db.createPayment({
+      const paymentData = await postgresDb.createPayment({
         orderId,
         amount: 250000,
         status: 'pending',
@@ -312,7 +312,7 @@ export async function POST(request: NextRequest) {
     };
 
     // Store registration and payment in database even for simulation
-    const simulationRegistration = await db.createRegistration({
+    const simulationRegistration = await postgresDb.createRegistration({
       orderId,
       fullName,
       phone,
@@ -324,7 +324,7 @@ export async function POST(request: NextRequest) {
       status: 'pending'
     });
 
-    const simulationPayment = await db.createPayment({
+    const simulationPayment = await postgresDb.createPayment({
       orderId,
       amount: 250000,
       status: 'pending'

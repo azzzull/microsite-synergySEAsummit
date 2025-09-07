@@ -1,13 +1,22 @@
 import { NextResponse } from 'next/server';
-import { db } from '@/lib/database';
+import { postgresDb } from '@/lib/postgresDatabase';
 
 export async function GET() {
   try {
-    const registrations = await db.getAllRegistrations();
+    const result = await postgresDb.getRegistrations();
+    
+    if (!result.success) {
+      return NextResponse.json(
+        { error: 'Failed to fetch registrations from PostgreSQL', details: result.error },
+        { status: 500 }
+      );
+    }
+
     return NextResponse.json({ 
       success: true,
-      registrations,
-      count: registrations.length
+      registrations: result.registrations,
+      count: result.registrations.length,
+      source: 'Railway PostgreSQL'
     });
   } catch (error: any) {
     console.error('Error fetching registrations:', error);
