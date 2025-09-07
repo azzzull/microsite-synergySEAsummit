@@ -198,6 +198,40 @@ export class PostgresDatabase {
     }
   }
 
+  async getPaymentByOrderId(orderId: string) {
+    try {
+      const result = await sql`
+        SELECT * FROM payments 
+        WHERE order_id = ${orderId}
+        LIMIT 1;
+      `;
+
+      if (result.rowCount === 0) {
+        return { success: false, payment: null };
+      }
+
+      const row = result.rows[0];
+      const payment = {
+        ...row,
+        id: `PAY_${row.id}`,
+        orderId: row.order_id,
+        transactionId: row.transaction_id,
+        paymentMethod: row.payment_method,
+        paymentUrl: row.payment_url,
+        tokenId: row.token_id,
+        expiredDate: row.expired_date,
+        paymentData: row.payment_data,
+        createdAt: row.created_at,
+        updatedAt: row.updated_at
+      };
+
+      return { success: true, payment };
+    } catch (error) {
+      console.error('❌ Error getting payment by order ID:', error);
+      return { success: false, payment: null, error: error instanceof Error ? error.message : "Unknown error" };
+    }
+  }
+
   async createTicket(data: any) {
     try {
       const ticketCode = `TKT_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;

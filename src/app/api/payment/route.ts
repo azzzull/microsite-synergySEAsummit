@@ -255,10 +255,10 @@ export async function POST(request: NextRequest) {
       });
 
       const paymentData = await postgresDb.createPayment({
-        orderId,
+        order_id: orderId,
         amount: 250000,
         status: 'pending',
-        dokuyResponse: response.data
+        payment_data: response.data
       });
 
       console.log('💾 Registration and payment data stored in database');
@@ -325,7 +325,7 @@ export async function POST(request: NextRequest) {
     });
 
     const simulationPayment = await postgresDb.createPayment({
-      orderId,
+      order_id: orderId,
       amount: 250000,
       status: 'pending'
     });

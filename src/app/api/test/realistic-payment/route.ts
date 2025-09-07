@@ -14,10 +14,12 @@ export async function POST(request: NextRequest) {
     }
 
     // 1. Cek apakah order exists
-    const registration = await postgresDb.getRegistrationByOrderId(orderId);
-    if (!registration) {
+    const registrationResult = await postgresDb.getRegistrationByOrderId(orderId);
+    if (!registrationResult.success || !registrationResult.registration) {
       return NextResponse.json({ error: 'Order not found' }, { status: 404 });
     }
+
+    const registration = registrationResult.registration;
 
     console.log(`🔍 Found registration for order: ${orderId}`);
     console.log(`👤 Customer: ${registration.fullName} (${registration.email})`);
@@ -60,19 +62,14 @@ export async function POST(request: NextRequest) {
     });
 
     // 4. Get current payment data first
-    const currentPayment = await postgresDb.getPaymentByOrderId(orderId);
+    const currentPaymentResult = await postgresDb.getPaymentByOrderId(orderId);
+    const currentPayment = currentPaymentResult.success ? currentPaymentResult.payment : null;
     
     // Update payment with DOKU details
     const updatedPayment = await postgresDb.updatePayment(orderId, {
       status: 'success',
       transactionId: dokuyCallbackPayload.payment.transaction_id,
-      paymentMethod: dokuyCallbackPayload.payment.payment_method,
-      paidAt: dokuyCallbackPayload.payment.paid_at,
-      dokuyResponse: {
-        ...currentPayment?.dokuyResponse,
-        callback_data: dokuyCallbackPayload,
-        status_updated_at: new Date().toISOString()
-      }
+      paymentMethod: dokuyCallbackPayload.payment.payment_method
     });
 
     console.log('💾 Database updated with DOKU callback data');
