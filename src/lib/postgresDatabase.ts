@@ -1,10 +1,17 @@
 // Railway PostgreSQL Database Layer
-import { sql } from '@vercel/postgres';
+import { sql, createPool, db } from '@vercel/postgres';
+
+// Create connection pool for better performance
+const pool = createPool({
+  connectionString: process.env.POSTGRES_URL || process.env.DATABASE_URL,
+});
 
 export class PostgresDatabase {
   
   async createRegistration(data: any) {
     try {
+      console.log('🔧 Creating registration with PostgreSQL...');
+      
       const result = await sql`
         INSERT INTO registrations (
           order_id, full_name, phone, email, date_of_birth, 
@@ -82,12 +89,17 @@ export class PostgresDatabase {
 
   async getRegistrations() {
     try {
+      console.log('🔍 Getting registrations from PostgreSQL...');
+      console.log('Database URL configured:', !!process.env.POSTGRES_URL || !!process.env.DATABASE_URL);
+      
       const result = await sql`
         SELECT * FROM registrations 
         ORDER BY created_at DESC;
       `;
 
-      const registrations = result.rows.map(row => ({
+      console.log('✅ PostgreSQL query successful, rows:', result.rows.length);
+
+      const registrations = result.rows.map((row: any) => ({
         ...row,
         id: `REG_${row.id}`,
         orderId: row.order_id,
@@ -100,6 +112,11 @@ export class PostgresDatabase {
       return { success: true, registrations };
     } catch (error) {
       console.error('❌ Error getting registrations:', error);
+      console.error('Error details:', {
+        message: error instanceof Error ? error.message : 'Unknown error',
+        name: error instanceof Error ? error.name : 'Unknown',
+        stack: error instanceof Error ? error.stack : 'No stack trace'
+      });
       return { success: false, registrations: [], error: error instanceof Error ? error.message : "Unknown error" };
     }
   }
