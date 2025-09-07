@@ -58,21 +58,24 @@ export class PostgresDatabase {
 
   async createPayment(data: any) {
     try {
-      const result = await sql`
+      const queryText = `
         INSERT INTO payments (
           order_id, transaction_id, amount, payment_method, 
           payment_url, token_id, expired_date, status, payment_data
         )
-        VALUES (
-          ${data.order_id}, ${data.transaction_id || null}, 
-          ${data.amount}, ${data.payment_method || null},
-          ${data.payment_url || null}, ${data.token_id || null},
-          ${data.expired_date || null}, ${data.status || 'pending'},
-          ${JSON.stringify(data.payment_data || {})}
-        )
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
         RETURNING *;
       `;
+      
+      const params = [
+        data.order_id, data.transaction_id || null, 
+        data.amount, data.payment_method || null,
+        data.payment_url || null, data.token_id || null,
+        data.expired_date || null, data.status || 'pending',
+        JSON.stringify(data.payment_data || {})
+      ];
 
+      const result = await this.executeQuery(queryText, params);
       const payment = result.rows[0];
       console.log('💳 Payment created in Postgres:', payment.id);
       
@@ -135,12 +138,14 @@ export class PostgresDatabase {
 
   async getPayments() {
     try {
-      const result = await sql`
+      const queryText = `
         SELECT * FROM payments 
         ORDER BY created_at DESC;
       `;
 
-      const payments = result.rows.map(row => ({
+      const result = await this.executeQuery(queryText);
+
+      const payments = result.rows.map((row: any) => ({
         ...row,
         id: `PAY_${row.id}`,
         orderId: row.order_id,
@@ -163,14 +168,17 @@ export class PostgresDatabase {
 
   async updateRegistration(orderId: string, updates: any) {
     try {
-      const result = await sql`
+      const queryText = `
         UPDATE registrations 
         SET 
-          status = COALESCE(${updates.status}, status),
+          status = COALESCE($1, status),
           updated_at = CURRENT_TIMESTAMP
-        WHERE order_id = ${orderId}
+        WHERE order_id = $2
         RETURNING *;
       `;
+
+      const params = [updates.status, orderId];
+      const result = await this.executeQuery(queryText, params);
 
       if (result.rowCount === 0) {
         return { success: false, error: 'Registration not found' };
@@ -199,11 +207,13 @@ export class PostgresDatabase {
 
   async getRegistrationByOrderId(orderId: string) {
     try {
-      const result = await sql`
+      const queryText = `
         SELECT * FROM registrations 
-        WHERE order_id = ${orderId}
+        WHERE order_id = $1
         LIMIT 1;
       `;
+
+      const result = await this.executeQuery(queryText, [orderId]);
 
       if (result.rowCount === 0) {
         return { success: false, registration: null };
@@ -229,11 +239,13 @@ export class PostgresDatabase {
 
   async getPaymentByOrderId(orderId: string) {
     try {
-      const result = await sql`
+      const queryText = `
         SELECT * FROM payments 
-        WHERE order_id = ${orderId}
+        WHERE order_id = $1
         LIMIT 1;
       `;
+
+      const result = await this.executeQuery(queryText, [orderId]);
 
       if (result.rowCount === 0) {
         return { success: false, payment: null };
@@ -265,11 +277,14 @@ export class PostgresDatabase {
     try {
       const ticketCode = `TKT_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
       
-      const result = await sql`
+      const queryText = `
         INSERT INTO tickets (order_id, ticket_code, qr_code, status)
-        VALUES (${data.orderId}, ${ticketCode}, ${data.qrCode || null}, ${data.status || 'active'})
+        VALUES ($1, $2, $3, $4)
         RETURNING *;
       `;
+
+      const params = [data.orderId, ticketCode, data.qrCode || null, data.status || 'active'];
+      const result = await this.executeQuery(queryText, params);
 
       const ticket = result.rows[0];
       console.log('🎫 Ticket created in Postgres:', ticket.ticket_code);
@@ -293,14 +308,16 @@ export class PostgresDatabase {
 
   async getTickets() {
     try {
-      const result = await sql`
+      const queryText = `
         SELECT t.*, r.full_name, r.email 
         FROM tickets t
         LEFT JOIN registrations r ON t.order_id = r.order_id
         ORDER BY t.issued_at DESC;
       `;
 
-      const tickets = result.rows.map(row => ({
+      const result = await this.executeQuery(queryText);
+
+      const tickets = result.rows.map((row: any) => ({
         ...row,
         id: `TKT_${row.id}`,
         orderId: row.order_id,
@@ -320,16 +337,19 @@ export class PostgresDatabase {
 
   async updatePayment(orderId: string, updates: any) {
     try {
-      const result = await sql`
+      const queryText = `
         UPDATE payments 
         SET 
-          status = ${updates.status || null},
-          transaction_id = ${updates.transactionId || null},
-          payment_method = ${updates.paymentMethod || null},
+          status = COALESCE($1, status),
+          transaction_id = COALESCE($2, transaction_id),
+          payment_method = COALESCE($3, payment_method),
           updated_at = CURRENT_TIMESTAMP
-        WHERE order_id = ${orderId}
+        WHERE order_id = $4
         RETURNING *;
       `;
+
+      const params = [updates.status, updates.transactionId, updates.paymentMethod, orderId];
+      const result = await this.executeQuery(queryText, params);
 
       if (result.rowCount === 0) {
         return { success: false, error: 'Payment not found' };
@@ -362,14 +382,17 @@ export class PostgresDatabase {
 
   async updateTicket(orderId: string, updates: any) {
     try {
-      const result = await sql`
+      const queryText = `
         UPDATE tickets 
         SET 
-          status = COALESCE(${updates.status}, status),
+          status = COALESCE($1, status),
           updated_at = CURRENT_TIMESTAMP
-        WHERE order_id = ${orderId}
+        WHERE order_id = $2
         RETURNING *;
       `;
+
+      const params = [updates.status, orderId];
+      const result = await this.executeQuery(queryText, params);
 
       if (result.rowCount === 0) {
         return { success: false, error: 'Ticket not found' };
@@ -402,7 +425,7 @@ export class PostgresDatabase {
       console.log('🔧 Initializing Postgres database...');
       
       // Create registrations table
-      await sql`
+      await this.executeQuery(`
         CREATE TABLE IF NOT EXISTS registrations (
           id SERIAL PRIMARY KEY,
           order_id VARCHAR(255) UNIQUE NOT NULL,
@@ -417,10 +440,10 @@ export class PostgresDatabase {
           created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
           updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         );
-      `;
+      `);
 
       // Create payments table
-      await sql`
+      await this.executeQuery(`
         CREATE TABLE IF NOT EXISTS payments (
           id SERIAL PRIMARY KEY,
           order_id VARCHAR(255) NOT NULL,
@@ -435,10 +458,10 @@ export class PostgresDatabase {
           created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
           updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         );
-      `;
+      `);
 
       // Create tickets table
-      await sql`
+      await this.executeQuery(`
         CREATE TABLE IF NOT EXISTS tickets (
           id SERIAL PRIMARY KEY,
           order_id VARCHAR(255) NOT NULL,
@@ -448,14 +471,14 @@ export class PostgresDatabase {
           updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
           status VARCHAR(50) NOT NULL DEFAULT 'active'
         );
-      `;
+      `);
 
       // Create indexes
-      await sql`CREATE INDEX IF NOT EXISTS idx_registrations_order_id ON registrations(order_id);`;
-      await sql`CREATE INDEX IF NOT EXISTS idx_registrations_email ON registrations(email);`;
-      await sql`CREATE INDEX IF NOT EXISTS idx_payments_order_id ON payments(order_id);`;
-      await sql`CREATE INDEX IF NOT EXISTS idx_tickets_order_id ON tickets(order_id);`;
-      await sql`CREATE INDEX IF NOT EXISTS idx_tickets_code ON tickets(ticket_code);`;
+      await this.executeQuery(`CREATE INDEX IF NOT EXISTS idx_registrations_order_id ON registrations(order_id);`);
+      await this.executeQuery(`CREATE INDEX IF NOT EXISTS idx_registrations_email ON registrations(email);`);
+      await this.executeQuery(`CREATE INDEX IF NOT EXISTS idx_payments_order_id ON payments(order_id);`);
+      await this.executeQuery(`CREATE INDEX IF NOT EXISTS idx_tickets_order_id ON tickets(order_id);`);
+      await this.executeQuery(`CREATE INDEX IF NOT EXISTS idx_tickets_code ON tickets(ticket_code);`);
 
       console.log('✅ Database initialized successfully');
       return { success: true };
