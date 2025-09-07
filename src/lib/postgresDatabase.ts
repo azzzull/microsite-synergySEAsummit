@@ -34,7 +34,7 @@ export class PostgresDatabase {
       };
     } catch (error) {
       console.error('❌ Error creating registration:', error);
-      return { success: false, error: error instanceof Error ? error.message : 'Unknown error' };
+      return { success: false, error: error instanceof Error ? error instanceof Error ? error.message : "Unknown error" : 'Unknown error' };
     }
   }
 
@@ -76,7 +76,7 @@ export class PostgresDatabase {
       };
     } catch (error) {
       console.error('❌ Error creating payment:', error);
-      return { success: false, error: error.message };
+      return { success: false, error: error instanceof Error ? error instanceof Error ? error.message : "Unknown error" : 'Unknown error' };
     }
   }
 
@@ -100,7 +100,7 @@ export class PostgresDatabase {
       return { success: true, registrations };
     } catch (error) {
       console.error('❌ Error getting registrations:', error);
-      return { success: false, registrations: [], error: error.message };
+      return { success: false, registrations: [], error: error instanceof Error ? error.message : "Unknown error" };
     }
   }
 
@@ -128,7 +128,7 @@ export class PostgresDatabase {
       return { success: true, payments };
     } catch (error) {
       console.error('❌ Error getting payments:', error);
-      return { success: false, payments: [], error: error.message };
+      return { success: false, payments: [], error: error instanceof Error ? error.message : "Unknown error" };
     }
   }
 
@@ -163,7 +163,7 @@ export class PostgresDatabase {
       };
     } catch (error) {
       console.error('❌ Error updating registration:', error);
-      return { success: false, error: error.message };
+      return { success: false, error: error instanceof Error ? error.message : "Unknown error" };
     }
   }
 
@@ -193,7 +193,7 @@ export class PostgresDatabase {
       return { success: true, registration };
     } catch (error) {
       console.error('❌ Error getting registration by order ID:', error);
-      return { success: false, registration: null, error: error.message };
+      return { success: false, registration: null, error: error instanceof Error ? error.message : "Unknown error" };
     }
   }
 
@@ -223,7 +223,7 @@ export class PostgresDatabase {
       };
     } catch (error) {
       console.error('❌ Error creating ticket:', error);
-      return { success: false, error: error.message };
+      return { success: false, error: error instanceof Error ? error.message : "Unknown error" };
     }
   }
 
@@ -250,7 +250,7 @@ export class PostgresDatabase {
       return { success: true, tickets };
     } catch (error) {
       console.error('❌ Error getting tickets:', error);
-      return { success: false, tickets: [], error: error.message };
+      return { success: false, tickets: [], error: error instanceof Error ? error.message : "Unknown error" };
     }
   }
 
@@ -318,7 +318,7 @@ export class PostgresDatabase {
       return { success: true };
     } catch (error) {
       console.error('❌ Error initializing database:', error);
-      return { success: false, error: error.message };
+      return { success: false, error: error instanceof Error ? error.message : "Unknown error" };
     }
   }
 }
