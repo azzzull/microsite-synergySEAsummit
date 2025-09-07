@@ -1,11 +1,6 @@
 {
   "buildCommand": "npm run build",
   "devCommand": "npm run dev",
-  "functions": {
-    "src/app/api/**/*.ts": {
-      "maxDuration": 10
-    }
-  },
   "env": {
     "NEXT_PUBLIC_DOKU_BASE_URL": "https://api-sandbox.doku.com",
     "NEXT_PUBLIC_EVENT_PRICE": "250000",
