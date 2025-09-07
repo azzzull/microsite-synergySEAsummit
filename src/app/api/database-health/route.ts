@@ -1,60 +1,54 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { sql } from '@vercel/postgres';
+import { postgresDb } from '@/lib/postgresDatabase';
 
 export async function GET() {
   try {
-    // Check connection
-    const healthCheck = await sql`SELECT NOW() as current_time, version() as postgres_version;`;
+    console.log('🏥 Starting database health check...');
     
-    // Check tables exist
-    const tablesResult = await sql`
-      SELECT table_name, table_type 
-      FROM information_schema.tables 
-      WHERE table_schema = current_schema()
-      AND table_name IN ('registrations', 'payments', 'tickets')
-      ORDER BY table_name;
-    `;
+    // Test basic connection
+    const connectionTest = await postgresDb.testConnection();
     
-    // Count records in each table
-    const regCount = await sql`SELECT COUNT(*) as count FROM registrations;`;
-    const payCount = await sql`SELECT COUNT(*) as count FROM payments;`;
-    const ticketCount = await sql`SELECT COUNT(*) as count FROM tickets;`;
-    
-    // Get latest registration
-    const latestReg = await sql`
-      SELECT order_id, full_name, status, created_at 
-      FROM registrations 
-      ORDER BY created_at DESC 
-      LIMIT 1;
-    `;
+    if (!connectionTest.success) {
+      return NextResponse.json({
+        status: 'error',
+        connection: 'failed',
+        error: connectionTest.error,
+        details: connectionTest.details,
+        message: '❌ Database connection test failed'
+      }, { status: 500 });
+    }
+
+    // Get data counts
+    const registrationsResult = await postgresDb.getRegistrations();
+    const paymentsResult = await postgresDb.getPayments();
+    const ticketsResult = await postgresDb.getTickets();
 
     return NextResponse.json({
       status: 'healthy',
       connection: 'active',
-      timestamp: healthCheck.rows[0].current_time,
+      timestamp: new Date().toISOString(),
       database: {
-        version: healthCheck.rows[0].postgres_version,
-        provider: 'Railway PostgreSQL',
+        provider: 'Railway PostgreSQL via pg library',
+        library: 'node-postgres (pg)',
         schema: 'public'
       },
-      tables: {
-        found: tablesResult.rows,
-        count: tablesResult.rowCount
-      },
       data: {
-        registrations: parseInt(regCount.rows[0].count),
-        payments: parseInt(payCount.rows[0].count),
-        tickets: parseInt(ticketCount.rows[0].count)
+        registrations: registrationsResult.success ? registrationsResult.registrations.length : 0,
+        payments: paymentsResult.success ? paymentsResult.payments.length : 0,
+        tickets: ticketsResult.success ? ticketsResult.tickets.length : 0
       },
-      latest_activity: latestReg.rows[0] || null,
-      message: '✅ Railway PostgreSQL fully operational - ignore Railway UI display issue'
+      latest_activity: registrationsResult.success && registrationsResult.registrations.length > 0 
+        ? registrationsResult.registrations[0] 
+        : null,
+      message: '✅ Railway PostgreSQL connection successful via pg library'
     });
 
   } catch (error) {
+    console.error('❌ Database health check failed:', error);
     return NextResponse.json({
       status: 'error',
       error: error instanceof Error ? error.message : 'Unknown error',
-      message: '❌ Database connection failed'
+      message: '❌ Database health check failed'
     }, { status: 500 });
   }
 }

@@ -1,23 +1,46 @@
 // Railway PostgreSQL Database Layer using pg
 import { Pool } from 'pg';
 
-// Create a connection pool for Railway PostgreSQL
+// Create a connection pool for Railway PostgreSQL with robust configuration
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL || process.env.POSTGRES_URL,
   ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
+  max: 5, // Maximum number of clients in the pool
+  idleTimeoutMillis: 30000, // Close connections after 30 seconds of inactivity
+  connectionTimeoutMillis: 10000, // Return an error after 10 seconds if connection could not be established
+  allowExitOnIdle: true, // Allow the pool to exit when all connections are idle (good for serverless)
 });
 
 export class PostgresDatabase {
   private async executeQuery(text: string, params: any[] = []) {
-    const client = await pool.connect();
+    let client;
     try {
+      console.log('🔗 Attempting to connect to PostgreSQL...');
+      client = await pool.connect();
+      console.log('✅ Connected to PostgreSQL successfully');
+      
       const result = await client.query(text, params);
+      console.log('📊 Query executed successfully');
+      
       return result;
     } catch (error) {
-      console.error('Database query error:', error);
+      console.error('❌ Database query error:', error);
+      console.error('Error type:', error instanceof Error ? error.constructor.name : 'Unknown');
+      console.error('Error message:', error instanceof Error ? error.message : 'Unknown error');
+      
+      // Log connection string (without credentials) for debugging
+      const connectionInfo = process.env.DATABASE_URL || process.env.POSTGRES_URL;
+      if (connectionInfo) {
+        const urlObj = new URL(connectionInfo);
+        console.log('🔧 Attempting connection to:', `${urlObj.protocol}//${urlObj.hostname}:${urlObj.port}${urlObj.pathname}`);
+      }
+      
       throw error;
     } finally {
-      client.release();
+      if (client) {
+        console.log('🔄 Releasing database connection');
+        client.release();
+      }
     }
   }
 
@@ -113,6 +136,7 @@ export class PostgresDatabase {
       console.log('- DATABASE_URL:', !!process.env.DATABASE_URL);
       console.log('- POSTGRES_URL:', !!process.env.POSTGRES_URL);
       console.log('- POSTGRES_URL_NON_POOLING:', !!process.env.POSTGRES_URL_NON_POOLING);
+      console.log('- NODE_ENV:', process.env.NODE_ENV);
       
       const queryText = `
         SELECT * FROM registrations 
@@ -138,9 +162,42 @@ export class PostgresDatabase {
       console.error('Error details:', {
         message: error instanceof Error ? error.message : 'Unknown error',
         name: error instanceof Error ? error.name : 'Unknown',
+        code: (error as any)?.code || 'Unknown',
         stack: error instanceof Error ? error.stack : 'No stack trace'
       });
-      return { success: false, registrations: [], error: error instanceof Error ? error.message : "Unknown error" };
+      
+      // Check if it's a connection error and suggest solutions
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      if (errorMessage.includes('ECONNRESET') || errorMessage.includes('ENOTFOUND') || errorMessage.includes('ECONNREFUSED')) {
+        console.error('🚨 Connection error detected. Possible causes:');
+        console.error('1. Railway database might be sleeping or restarting');
+        console.error('2. Network connectivity issues');
+        console.error('3. Incorrect connection string');
+        console.error('4. SSL configuration mismatch');
+      }
+      
+      return { success: false, registrations: [], error: errorMessage };
+    }
+  }
+
+  // Add connection test method
+  async testConnection() {
+    try {
+      console.log('🔧 Testing PostgreSQL connection...');
+      const result = await this.executeQuery('SELECT 1 as test');
+      console.log('✅ Connection test successful');
+      return { success: true, message: 'Database connection working' };
+    } catch (error) {
+      console.error('❌ Connection test failed:', error);
+      return { 
+        success: false, 
+        error: error instanceof Error ? error.message : 'Unknown error',
+        details: {
+          hasDBUrl: !!process.env.DATABASE_URL,
+          hasPostgresUrl: !!process.env.POSTGRES_URL,
+          nodeEnv: process.env.NODE_ENV
+        }
+      };
     }
   }
 
