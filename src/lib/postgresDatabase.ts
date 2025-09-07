@@ -3,7 +3,17 @@ import { createClient } from '@vercel/postgres';
 
 export class PostgresDatabase {
   private async executeQuery(queryText: string, params: any[] = []) {
-    const client = createClient();
+    // Use DATABASE_URL (Railway) for connection string
+    const connectionString = process.env.DATABASE_URL || process.env.POSTGRES_URL || process.env.POSTGRES_URL_NON_POOLING;
+    
+    if (!connectionString) {
+      throw new Error('No database connection string found. Please set DATABASE_URL environment variable.');
+    }
+    
+    const client = createClient({
+      connectionString: connectionString
+    });
+    
     try {
       await client.connect();
       const result = await client.query(queryText, params);
@@ -104,7 +114,10 @@ export class PostgresDatabase {
   async getRegistrations() {
     try {
       console.log('🔍 Getting registrations from PostgreSQL...');
-      console.log('Database URL configured:', !!process.env.POSTGRES_URL || !!process.env.DATABASE_URL);
+      console.log('Environment variables check:');
+      console.log('- DATABASE_URL:', !!process.env.DATABASE_URL);
+      console.log('- POSTGRES_URL:', !!process.env.POSTGRES_URL);
+      console.log('- POSTGRES_URL_NON_POOLING:', !!process.env.POSTGRES_URL_NON_POOLING);
       
       const queryText = `
         SELECT * FROM registrations 
