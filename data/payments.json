@@ -429,5 +429,137 @@
     "id": "PAY_1757138707198_ph9w0nevz",
     "createdAt": "2025-09-06T06:05:07.198Z",
     "updatedAt": "2025-09-06T06:05:07.198Z"
+  },
+  {
+    "orderId": "SSS2025-1757237727250-t3xdga",
+    "amount": 250000,
+    "status": "pending",
+    "dokuyResponse": {
+      "message": [
+        "SUCCESS"
+      ],
+      "response": {
+        "order": {
+          "amount": "250000",
+          "invoice_number": "SSS2025-1757237727250-t3xdga",
+          "currency": "IDR",
+          "session_id": "c22c05efa214403381a1e385fbfa7307"
+        },
+        "payment": {
+          "payment_method_types": [
+            "EMONEY_OVO",
+            "OCTO_CLICKS",
+            "JENIUS_PAY",
+            "VIRTUAL_ACCOUNT_BCA",
+            "PEER_TO_PEER_KREDIVO",
+            "ONLINE_TO_OFFLINE_ALFA",
+            "CREDIT_CARD",
+            "EMONEY_DOKU",
+            "PEER_TO_PEER_AKULAKU",
+            "ONLINE_TO_OFFLINE_INDOMARET",
+            "EPAY_BRI",
+            "VIRTUAL_ACCOUNT_BANK_MANDIRI",
+            "EMONEY_LINKAJA",
+            "PEER_TO_PEER_INDODANA",
+            "VIRTUAL_ACCOUNT_BRI",
+            "EMONEY_SHOPEE_PAY",
+            "VIRTUAL_ACCOUNT_BNI",
+            "VIRTUAL_ACCOUNT_BANK_PERMATA",
+            "VIRTUAL_ACCOUNT_DOKU",
+            "VIRTUAL_ACCOUNT_BANK_CIMB",
+            "VIRTUAL_ACCOUNT_BANK_DANAMON",
+            "VIRTUAL_ACCOUNT_BANK_SYARIAH_MANDIRI",
+            "VIRTUAL_ACCOUNT_MAYBANK",
+            "DIRECT_DEBIT_BRI",
+            "EMONEY_DANA",
+            "VIRTUAL_ACCOUNT_BPD_BALI",
+            "EMONEY_ISAKU",
+            "DIRECT_DEBIT_CIMB",
+            "DIRECT_DEBIT_ALLO",
+            "PERMATA_NET",
+            "DIRECT_DEBIT_MANDIRI",
+            "VIRTUAL_ACCOUNT_BNC",
+            "VIRTUAL_ACCOUNT_BSS",
+            "VIRTUAL_ACCOUNT_BTN",
+            "VIRTUAL_ACCOUNT_SINARMAS",
+            "VIRTUAL_ACCOUNT_BANK_BJB",
+            "PEER_TO_PEER_BRI_CERIA"
+          ],
+          "payment_due_date": 60,
+          "token_id": "c22c05efa214403381a1e385fbfa730720253507163527829",
+          "url": "https://staging.doku.com/checkout-link-v2/c22c05efa214403381a1e385fbfa730720253507163527829",
+          "expired_date": "20250907173527",
+          "expired_datetime": "2025-09-07T10:35:27Z"
+        },
+        "customer": {
+          "email": "akunffa@gmail.com",
+          "phone": "085881350398",
+          "name": "Ali Zulkarnaen",
+          "address": "Rawa Simprug",
+          "country": "ID"
+        },
+        "additional_info": {
+          "customer_details": {
+            "country": "Indonesia",
+            "full_name": "Ali Zulkarnaen",
+            "address": "Rawa Simprug",
+            "phone": "085881350398",
+            "date_of_birth": "2000-09-12",
+            "id": "CUST-SSS2025-1757237727250-t3xdga",
+            "email": "akunffa@gmail.com"
+          },
+          "billing_details": {
+            "billing_country": "Indonesia",
+            "billing_phone": "085881350398",
+            "billing_address": "Rawa Simprug",
+            "billing_name": "Ali Zulkarnaen",
+            "billing_email": "akunffa@gmail.com"
+          },
+          "event_info": {
+            "participant_address": "Rawa Simprug",
+            "participant_country": "Indonesia",
+            "participant_dob": "2000-09-12",
+            "participant_name": "Ali Zulkarnaen",
+            "participant_email": "akunffa@gmail.com",
+            "participant_phone": "085881350398"
+          },
+          "origin": {
+            "product": "CHECKOUT",
+            "system": "mid-jokul-checkout-system",
+            "source": "direct",
+            "apiFormat": "JOKUL"
+          },
+          "integration": "Synergy SEA Summit 2025",
+          "shipping_details": {
+            "shipping_phone": "085881350398",
+            "shipping_address": "Rawa Simprug",
+            "shipping_name": "Ali Zulkarnaen",
+            "shipping_country": "Indonesia",
+            "shipping_email": "akunffa@gmail.com"
+          },
+          "participant_details": {
+            "country": "Indonesia",
+            "full_name": "Ali Zulkarnaen",
+            "address": "Rawa Simprug",
+            "phone": "085881350398",
+            "date_of_birth": "2000-09-12",
+            "event_date": "2025-11-08",
+            "location": "The Stones Hotel, Legian Bali",
+            "event": "Synergy SEA Summit 2025",
+            "email": "akunffa@gmail.com"
+          }
+        },
+        "uuid": 2.225250907163528e+39,
+        "headers": {
+          "request_id": "ee763d07-b01f-4e3a-b68c-2ceddde92c4b",
+          "signature": "HMACSHA256=hWGQTdUMk75xSyGFmhPyaxZn/f54sZEDW3gAkQHWP1Q=",
+          "date": "2025-09-07T09:35:27Z",
+          "client_id": "BRN-0210-1756278654327"
+        }
+      }
+    },
+    "id": "PAY_1757237727861_jgn5lgu79",
+    "createdAt": "2025-09-07T09:35:27.861Z",
+    "updatedAt": "2025-09-07T09:35:27.861Z"
   }
 ]
