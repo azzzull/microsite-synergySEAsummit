@@ -4,16 +4,22 @@ import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/Button";
 import { ChevronDownIcon } from "@heroicons/react/24/outline";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import axios from "axios";
 
 export default function RegisterPage() {
   const [form, setForm] = useState({
     fullName: "",
     phone: "",
     email: "",
-    dob: ""
+    dob: null as Date | null,
+    address: "",
+    country: "Indonesia"
   });
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -21,12 +27,80 @@ export default function RegisterPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Basic validation
+    if (!form.fullName || !form.phone || !form.email || !form.dob || !form.address) {
+      setError("Please fill in all required fields");
+      return;
+    }
+
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(form.email)) {
+      setError("Please enter a valid email address");
+      return;
+    }
+
+    // Phone validation (Indonesian format)
+    const phoneRegex = /^(\+62|62|0)[0-9]{9,13}$/;
+    if (!phoneRegex.test(form.phone)) {
+      setError("Please enter a valid Indonesian phone number");
+      return;
+    }
+    
     setLoading(true);
-    // TODO: Integrate Doku Payment API here
-    setTimeout(() => {
+    setError(null);
+    
+    try {
+      console.log('Submitting registration form...');
+      // Call payment API
+      const response = await axios.post('/api/payment', {
+        fullName: form.fullName,
+        phone: form.phone,
+        email: form.email,
+        dob: form.dob?.toISOString().split('T')[0], // Format date as YYYY-MM-DD
+        address: form.address,
+        country: form.country
+      });
+
+      console.log('Payment API response:', response.data);
+
+      if (response.data.success) {
+        // Redirect to payment page or show payment instructions
+        if (response.data.payment_url) {
+          console.log('Redirecting to:', response.data.payment_url);
+          // Check if it's an external URL or internal redirect
+          if (response.data.payment_url.startsWith('http')) {
+            window.location.href = response.data.payment_url;
+          } else {
+            window.location.href = response.data.payment_url;
+          }
+        } else {
+          // Show payment instructions (for VA/QRIS)
+          setSuccess(true);
+          console.log('Payment created:', response.data);
+        }
+      } else {
+        throw new Error(response.data.error || 'Payment creation failed');
+      }
+      
+    } catch (error: any) {
+      console.error('Registration error:', error);
+      console.error('Error response:', error.response?.data);
+      
+      let errorMessage = 'Registration failed. Please try again.';
+      
+      if (error.response?.data?.error) {
+        errorMessage = error.response.data.error;
+      } else if (error.response?.data?.details) {
+        errorMessage = error.response.data.details;
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+      
+      setError(errorMessage);
       setLoading(false);
-      setSuccess(true);
-    }, 1500);
+    }
   };
 
   return (
@@ -44,9 +118,9 @@ export default function RegisterPage() {
                 <p className="text-base leading-relaxed mb-4" style={{color: "var(--color-lightgrey)"}}>
                   The Premier Southeast Asia Business & Technology Summit: Connecting Innovation Across the Region!
                 </p>
-                <div className="bg-[var(--color-gold)] text-[var(--color-navy)] px-4 py-3 rounded-lg inline-block">
-                  <p className="text-xl font-bold">Early Bird Price: Rp 250.000</p>
-                  <p className="text-sm">*Limited time offer</p>
+                <div className="border px-4 py-3 rounded-lg inline-block" style={{borderColor: "var(--color-gold)"}}>
+                  <p className="text-xl font-bold" style={{color: "var(--color-gold)"}}>Early Bird Price: Rp 250.000</p>
+                  <p className="text-sm" style={{color: "var(--color-lightgrey)"}}>*Limited time offer</p>
                 </div>
               </div>
               <div className="flex flex-col items-center flex-shrink-0 order-1 md:order-2">
@@ -62,12 +136,18 @@ export default function RegisterPage() {
           </div>
 
           {success ? (
-            <div className="text-center font-bold text-xl p-8 rounded-lg" style={{color: "var(--color-gold)", backgroundColor: "rgba(255, 255, 255, 0.05)"}}>
+            <div className="text-center font-bold text-xl p-8 rounded-lg" style={{color: "var(--color-gold)", backgroundColor: "var(--color-white-transparent)"}}>
               Registration successful! Please check your email for payment instructions.
             </div>
           ) : (
             /* Form Container */
-            <div className="p-8 rounded-lg" style={{backgroundColor: "rgba(255, 255, 255, 0.05)"}}>
+            <div className="p-8 rounded-lg border" style={{backgroundColor: "var(--color-white-transparent)", borderColor: "var(--color-gold)"}}>
+              {error && (
+                <div className="mb-6 p-4 bg-red-500 bg-opacity-20 border border-red-500 rounded-lg">
+                  <p className="text-red-400 text-center">{error}</p>
+                </div>
+              )}
+              
               <form onSubmit={handleSubmit} className="space-y-6">
                 
                 {/* Full Name */}
@@ -81,11 +161,10 @@ export default function RegisterPage() {
                       required 
                       value={form.fullName} 
                       onChange={handleChange} 
-                      className="w-full px-4 py-3 rounded-lg border-2 transition-all duration-200 focus:outline-none focus:border-yellow-400" 
+                      className="w-full px-4 py-3 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-yellow-400" 
                       style={{
-                        backgroundColor: "var(--color-navy)", 
-                        borderColor: "rgba(212, 175, 55, 0.5)", 
-                        color: "var(--color-lightgrey)"
+                        backgroundColor: "var(--color-lightgrey)", 
+                        color: "var(--color-navy)"
                       }} 
                     />
                   </div>
@@ -106,11 +185,10 @@ export default function RegisterPage() {
                         const target = e.target as HTMLInputElement;
                         target.value = target.value.replace(/[^0-9]/g, '');
                       }}
-                      className="w-full px-4 py-3 rounded-lg border-2 transition-all duration-200 focus:outline-none focus:border-yellow-400" 
+                      className="w-full px-4 py-3 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-yellow-400" 
                       style={{
-                        backgroundColor: "var(--color-navy)", 
-                        borderColor: "rgba(212, 175, 55, 0.5)", 
-                        color: "var(--color-lightgrey)"
+                        backgroundColor: "var(--color-lightgrey)", 
+                        color: "var(--color-navy)"
                       }} 
                     />
                   </div>
@@ -127,13 +205,64 @@ export default function RegisterPage() {
                       required 
                       value={form.email} 
                       onChange={handleChange} 
-                      className="w-full px-4 py-3 rounded-lg border-2 transition-all duration-200 focus:outline-none focus:border-yellow-400" 
+                      className="w-full px-4 py-3 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-yellow-400" 
                       style={{
-                        backgroundColor: "var(--color-navy)", 
-                        borderColor: "rgba(212, 175, 55, 0.5)", 
-                        color: "var(--color-lightgrey)"
+                        backgroundColor: "var(--color-lightgrey)", 
+                        color: "var(--color-navy)"
                       }} 
                     />
+                  </div>
+                </div>
+
+                {/* Address */}
+                <div className="flex flex-col md:flex-row md:items-center gap-4">
+                  <label htmlFor="address" className="md:w-1/3 font-medium" style={{color: "var(--color-lightgrey)"}}>Address</label>
+                  <div className="md:w-2/3">
+                    <textarea 
+                      id="address"
+                      name="address" 
+                      required 
+                      value={form.address} 
+                      onChange={(e) => setForm({ ...form, address: e.target.value })}
+                      rows={3}
+                      placeholder="Enter your full address"
+                      className="w-full px-4 py-3 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-yellow-400" 
+                      style={{
+                        backgroundColor: "var(--color-lightgrey)", 
+                        color: "var(--color-navy)"
+                      }} 
+                    />
+                  </div>
+                </div>
+
+                {/* Country */}
+                <div className="flex flex-col md:flex-row md:items-center gap-4">
+                  <label htmlFor="country" className="md:w-1/3 font-medium" style={{color: "var(--color-lightgrey)"}}>Country</label>
+                  <div className="md:w-2/3">
+                    <select 
+                      id="country"
+                      name="country" 
+                      required 
+                      value={form.country} 
+                      onChange={handleChange} 
+                      className="w-full px-4 py-3 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-yellow-400" 
+                      style={{
+                        backgroundColor: "var(--color-lightgrey)", 
+                        color: "var(--color-navy)"
+                      }} 
+                    >
+                      <option value="Indonesia">Indonesia</option>
+                      <option value="Singapore">Singapore</option>
+                      <option value="Malaysia">Malaysia</option>
+                      <option value="Thailand">Thailand</option>
+                      <option value="Philippines">Philippines</option>
+                      <option value="Vietnam">Vietnam</option>
+                      <option value="Brunei">Brunei</option>
+                      <option value="Cambodia">Cambodia</option>
+                      <option value="Laos">Laos</option>
+                      <option value="Myanmar">Myanmar</option>
+                      <option value="Other">Other</option>
+                    </select>
                   </div>
                 </div>
 
@@ -141,28 +270,139 @@ export default function RegisterPage() {
                 <div className="flex flex-col md:flex-row md:items-center gap-4">
                   <label htmlFor="dob" className="md:w-1/3 font-medium" style={{color: "var(--color-lightgrey)"}}>Date of Birth</label>
                   <div className="md:w-2/3 relative">
-                    <input 
-                      type="date" 
-                      id="dob"
-                      name="dob" 
-                      required 
-                      value={form.dob} 
-                      onChange={handleChange} 
-                      className="w-full px-4 py-3 rounded-lg border-2 transition-all duration-200 focus:outline-none focus:border-yellow-400 date-input" 
-                      style={{
-                        backgroundColor: "var(--color-navy)", 
-                        borderColor: "rgba(212, 175, 55, 0.5)", 
-                        color: "var(--color-lightgrey)"
-                      }} 
+                    <DatePicker
+                      selected={form.dob}
+                      onChange={(date: Date | null) => setForm({ ...form, dob: date })}
+                      dateFormat="dd/MM/yyyy"
+                      placeholderText="Select your date of birth"
+                      showYearDropdown
+                      showMonthDropdown
+                      dropdownMode="select"
+                      maxDate={new Date()}
+                      yearDropdownItemNumber={100}
+                      scrollableYearDropdown
+                      className="w-full px-4 py-3 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-yellow-400 custom-datepicker-input"
+                      wrapperClassName="w-full"
+                      calendarClassName="custom-datepicker"
                     />
-                    <style jsx>{`
-                      .date-input::-webkit-calendar-picker-indicator {
-                        filter: brightness(0) saturate(100%) invert(84%) sepia(4%) saturate(0%) hue-rotate(313deg) brightness(96%) contrast(92%);
-                        cursor: pointer;
-                        opacity: 0.8;
+                    <style jsx global>{`
+                      .custom-datepicker-input {
+                        background-color: var(--color-lightgrey) !important;
+                        color: var(--color-navy) !important;
+                        border: none !important;
                       }
-                      .date-input::-webkit-calendar-picker-indicator:hover {
-                        opacity: 1;
+                      .custom-datepicker-input::placeholder {
+                        color: rgba(7, 13, 45, 0.6) !important;
+                      }
+                      .custom-datepicker .react-datepicker__header {
+                        background-color: var(--color-navy) !important;
+                        border-bottom: 1px solid var(--color-gold) !important;
+                      }
+                      .custom-datepicker .react-datepicker__current-month,
+                      .custom-datepicker .react-datepicker__day-name {
+                        color: var(--color-lightgrey) !important;
+                        font-weight: bold !important;
+                      }
+                      .custom-datepicker .react-datepicker__day {
+                        color: var(--color-navy) !important;
+                      }
+                      .custom-datepicker .react-datepicker__day:hover {
+                        background-color: var(--color-gold) !important;
+                        color: var(--color-navy) !important;
+                      }
+                      .custom-datepicker .react-datepicker__day--selected {
+                        background-color: var(--color-gold) !important;
+                        color: var(--color-navy) !important;
+                      }
+                      .custom-datepicker .react-datepicker__day--keyboard-selected {
+                        background-color: var(--color-gold) !important;
+                        color: var(--color-navy) !important;
+                      }
+                      
+                      /* Styling untuk dropdown bulan dan tahun */
+                      .custom-datepicker .react-datepicker__month-dropdown,
+                      .custom-datepicker .react-datepicker__year-dropdown {
+                        background-color: #ffffff !important;
+                        border: 2px solid #ffc107 !important;
+                        border-radius: 8px !important;
+                        color: #000000 !important;
+                        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
+                        max-height: 200px !important;
+                        overflow-y: auto !important;
+                        z-index: 9999 !important;
+                      }
+                      
+                      .custom-datepicker .react-datepicker__month-dropdown *,
+                      .custom-datepicker .react-datepicker__year-dropdown * {
+                        color: #000000 !important;
+                      }
+                      
+                      .custom-datepicker .react-datepicker__month-option,
+                      .custom-datepicker .react-datepicker__year-option {
+                        color: #000000 !important;
+                        background-color: #ffffff !important;
+                        padding: 8px 12px !important;
+                        cursor: pointer !important;
+                        border-bottom: 1px solid #ddd !important;
+                        font-weight: 600 !important;
+                        text-shadow: none !important;
+                      }
+                      
+                      .custom-datepicker .react-datepicker__month-option *,
+                      .custom-datepicker .react-datepicker__year-option * {
+                        color: #000000 !important;
+                        font-weight: 600 !important;
+                      }
+                      
+                      .custom-datepicker .react-datepicker__month-option:hover,
+                      .custom-datepicker .react-datepicker__year-option:hover {
+                        background-color: var(--color-gold) !important;
+                        color: var(--color-navy) !important;
+                      }
+                      
+                      .custom-datepicker .react-datepicker__month-option--selected,
+                      .custom-datepicker .react-datepicker__year-option--selected {
+                        background-color: var(--color-gold) !important;
+                        color: var(--color-navy) !important;
+                        font-weight: bold !important;
+                      }
+                      
+                      /* Styling untuk navigation buttons (next/prev month) */
+                      .custom-datepicker .react-datepicker__navigation {
+                        border: none !important;
+                        background: none !important;
+                        color: var(--color-gold) !important;
+                      }
+                      
+                      .custom-datepicker .react-datepicker__navigation:hover {
+                        color: var(--color-gold) !important;
+                      }
+                      
+                      /* Styling untuk dropdown arrows */
+                      .custom-datepicker .react-datepicker__month-dropdown-container,
+                      .custom-datepicker .react-datepicker__year-dropdown-container {
+                        color: var(--color-gold) !important;
+                      }
+                      
+                      .custom-datepicker .react-datepicker__month-read-view,
+                      .custom-datepicker .react-datepicker__year-read-view {
+                        color: var(--color-gold) !important;
+                        border: 1px solid var(--color-gold) !important;
+                        border-radius: 4px !important;
+                        padding: 4px 8px !important;
+                        background-color: rgba(255, 193, 7, 0.1) !important;
+                      }
+                      
+                      .custom-datepicker .react-datepicker__month-read-view:hover,
+                      .custom-datepicker .react-datepicker__year-read-view:hover {
+                        border-color: var(--color-gold) !important;
+                        color: var(--color-gold) !important;
+                        background-color: rgba(255, 193, 7, 0.2) !important;
+                      }
+                      
+                      .custom-datepicker .react-datepicker__month-read-view--down-arrow,
+                      .custom-datepicker .react-datepicker__year-read-view--down-arrow {
+                        border-top-color: var(--color-gold) !important;
                       }
                     `}</style>
                   </div>
@@ -172,7 +412,8 @@ export default function RegisterPage() {
                   <Button 
                     type="submit" 
                     disabled={loading}
-                    className="cursor-pointer text-md py-3 px-6 border-2 border-[var(--color-gold)] rounded-lg hover:bg-[var(--color-navy)]"
+                    className="cursor-pointer text-md py-3 px-6 bg-[var(--color-gold)] border border-[var(--color-gold)] rounded-lg hover:bg-[var(--color-gold)]"
+                    style={{color: "var(--color-navy)"}}
                   >
                     {loading ? "Processing..." : "Submit Registration"}
                   </Button>

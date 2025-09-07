@@ -12,6 +12,7 @@
   --color-navy-dark: #04091c;
   --color-gold: #e19f00;
   --color-lightgrey: #ced1ce;
+  --color-white-transparent: rgba(255, 255, 255, 0.05);
 }
 
 @theme inline {
@@ -28,6 +29,7 @@
     --color-navy-dark: #04091c;
     --color-gold: #e19f00;
     --color-lightgrey: #fff;
+    --color-white-transparent: rgba(255, 255, 255, 0.03);
   }
 }
 

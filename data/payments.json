@@ -1,0 +1,433 @@
+[
+  {
+    "orderId": "SSS2025-1757136910989-fqwtbv",
+    "amount": 250000,
+    "status": "success",
+    "dokuyResponse": {
+      "message": [
+        "SUCCESS"
+      ],
+      "response": {
+        "order": {
+          "amount": "250000",
+          "invoice_number": "SSS2025-1757136910989-fqwtbv",
+          "currency": "IDR",
+          "session_id": "29415f22cbba4232a3b5f07b7eecfe6d"
+        },
+        "payment": {
+          "payment_method_types": [
+            "EMONEY_OVO",
+            "OCTO_CLICKS",
+            "JENIUS_PAY",
+            "VIRTUAL_ACCOUNT_BCA",
+            "PEER_TO_PEER_KREDIVO",
+            "ONLINE_TO_OFFLINE_ALFA",
+            "CREDIT_CARD",
+            "EMONEY_DOKU",
+            "PEER_TO_PEER_AKULAKU",
+            "ONLINE_TO_OFFLINE_INDOMARET",
+            "EPAY_BRI",
+            "VIRTUAL_ACCOUNT_BANK_MANDIRI",
+            "EMONEY_LINKAJA",
+            "PEER_TO_PEER_INDODANA",
+            "VIRTUAL_ACCOUNT_BRI",
+            "EMONEY_SHOPEE_PAY",
+            "VIRTUAL_ACCOUNT_BNI",
+            "VIRTUAL_ACCOUNT_BANK_PERMATA",
+            "VIRTUAL_ACCOUNT_DOKU",
+            "VIRTUAL_ACCOUNT_BANK_CIMB",
+            "VIRTUAL_ACCOUNT_BANK_DANAMON",
+            "VIRTUAL_ACCOUNT_BANK_SYARIAH_MANDIRI",
+            "VIRTUAL_ACCOUNT_MAYBANK",
+            "DIRECT_DEBIT_BRI",
+            "EMONEY_DANA",
+            "VIRTUAL_ACCOUNT_BPD_BALI",
+            "EMONEY_ISAKU",
+            "DIRECT_DEBIT_CIMB",
+            "DIRECT_DEBIT_ALLO",
+            "PERMATA_NET",
+            "DIRECT_DEBIT_MANDIRI",
+            "VIRTUAL_ACCOUNT_BNC",
+            "VIRTUAL_ACCOUNT_BSS",
+            "VIRTUAL_ACCOUNT_BTN",
+            "VIRTUAL_ACCOUNT_SINARMAS",
+            "VIRTUAL_ACCOUNT_BANK_BJB",
+            "PEER_TO_PEER_BRI_CERIA"
+          ],
+          "payment_due_date": 60,
+          "token_id": "29415f22cbba4232a3b5f07b7eecfe6d20253506123511969",
+          "url": "https://staging.doku.com/checkout-link-v2/29415f22cbba4232a3b5f07b7eecfe6d20253506123511969",
+          "expired_date": "20250906133510",
+          "expired_datetime": "2025-09-06T06:35:10Z"
+        },
+        "customer": {
+          "email": "test@example.com",
+          "phone": "+62812345678",
+          "name": "Test User",
+          "address": "Test Address 123",
+          "country": "ID"
+        },
+        "additional_info": {
+          "customer_details": {
+            "country": "Indonesia",
+            "full_name": "Test User",
+            "address": "Test Address 123",
+            "phone": "+62812345678",
+            "date_of_birth": "1990-01-01",
+            "id": "CUST-SSS2025-1757136910989-fqwtbv",
+            "email": "test@example.com"
+          },
+          "billing_details": {
+            "billing_country": "Indonesia",
+            "billing_phone": "+62812345678",
+            "billing_address": "Test Address 123",
+            "billing_name": "Test User",
+            "billing_email": "test@example.com"
+          },
+          "event_info": {
+            "participant_address": "Test Address 123",
+            "participant_country": "Indonesia",
+            "participant_dob": "1990-01-01",
+            "participant_name": "Test User",
+            "participant_email": "test@example.com",
+            "participant_phone": "+62812345678"
+          },
+          "origin": {
+            "product": "CHECKOUT",
+            "system": "mid-jokul-checkout-system",
+            "source": "direct",
+            "apiFormat": "JOKUL"
+          },
+          "integration": "Synergy SEA Summit 2025",
+          "shipping_details": {
+            "shipping_phone": "+62812345678",
+            "shipping_address": "Test Address 123",
+            "shipping_name": "Test User",
+            "shipping_country": "Indonesia",
+            "shipping_email": "test@example.com"
+          },
+          "participant_details": {
+            "country": "Indonesia",
+            "full_name": "Test User",
+            "address": "Test Address 123",
+            "phone": "+62812345678",
+            "date_of_birth": "1990-01-01",
+            "event_date": "2025-11-08",
+            "location": "The Stones Hotel, Legian Bali",
+            "event": "Synergy SEA Summit 2025",
+            "email": "test@example.com"
+          }
+        },
+        "uuid": 2.225250906123512e+39,
+        "headers": {
+          "request_id": "932a3d71-2493-4218-a722-e227cae500d6",
+          "signature": "HMACSHA256=bWr6B5qY3iw2QUrJnRSPOZ36Z/2gLnoCyMhLHOtnN5U=",
+          "date": "2025-09-06T05:35:10Z",
+          "client_id": "BRN-0210-1756278654327"
+        }
+      }
+    },
+    "id": "PAY_1757136911602_u0j4lik29",
+    "createdAt": "2025-09-06T05:35:11.603Z",
+    "updatedAt": "2025-09-06T05:35:27.742Z",
+    "transactionId": "TEST_TXN_1757136927742",
+    "paymentMethod": "TEST_SIMULATION",
+    "paidAt": "2025-09-06T05:35:27.742Z"
+  },
+  {
+    "orderId": "SSS2025-1757137811064-sae6bb",
+    "amount": 250000,
+    "status": "success",
+    "dokuyResponse": {
+      "message": [
+        "SUCCESS"
+      ],
+      "response": {
+        "order": {
+          "amount": "250000",
+          "invoice_number": "SSS2025-1757137811064-sae6bb",
+          "currency": "IDR",
+          "session_id": "6a32e7b5ab494828bdf3b1877c07ec6d"
+        },
+        "payment": {
+          "payment_method_types": [
+            "EMONEY_OVO",
+            "OCTO_CLICKS",
+            "JENIUS_PAY",
+            "VIRTUAL_ACCOUNT_BCA",
+            "PEER_TO_PEER_KREDIVO",
+            "ONLINE_TO_OFFLINE_ALFA",
+            "CREDIT_CARD",
+            "EMONEY_DOKU",
+            "PEER_TO_PEER_AKULAKU",
+            "ONLINE_TO_OFFLINE_INDOMARET",
+            "EPAY_BRI",
+            "VIRTUAL_ACCOUNT_BANK_MANDIRI",
+            "EMONEY_LINKAJA",
+            "PEER_TO_PEER_INDODANA",
+            "VIRTUAL_ACCOUNT_BRI",
+            "EMONEY_SHOPEE_PAY",
+            "VIRTUAL_ACCOUNT_BNI",
+            "VIRTUAL_ACCOUNT_BANK_PERMATA",
+            "VIRTUAL_ACCOUNT_DOKU",
+            "VIRTUAL_ACCOUNT_BANK_CIMB",
+            "VIRTUAL_ACCOUNT_BANK_DANAMON",
+            "VIRTUAL_ACCOUNT_BANK_SYARIAH_MANDIRI",
+            "VIRTUAL_ACCOUNT_MAYBANK",
+            "DIRECT_DEBIT_BRI",
+            "EMONEY_DANA",
+            "VIRTUAL_ACCOUNT_BPD_BALI",
+            "EMONEY_ISAKU",
+            "DIRECT_DEBIT_CIMB",
+            "DIRECT_DEBIT_ALLO",
+            "PERMATA_NET",
+            "DIRECT_DEBIT_MANDIRI",
+            "VIRTUAL_ACCOUNT_BNC",
+            "VIRTUAL_ACCOUNT_BSS",
+            "VIRTUAL_ACCOUNT_BTN",
+            "VIRTUAL_ACCOUNT_SINARMAS",
+            "VIRTUAL_ACCOUNT_BANK_BJB",
+            "PEER_TO_PEER_BRI_CERIA"
+          ],
+          "payment_due_date": 60,
+          "token_id": "6a32e7b5ab494828bdf3b1877c07ec6d20255006125011932",
+          "url": "https://staging.doku.com/checkout-link-v2/6a32e7b5ab494828bdf3b1877c07ec6d20255006125011932",
+          "expired_date": "20250906135011",
+          "expired_datetime": "2025-09-06T06:50:11Z"
+        },
+        "customer": {
+          "email": "azulkarnaen7@gmail.com",
+          "phone": "085881350398",
+          "name": "Syifa Ali Zulkarnaen",
+          "address": "Jl. Raya Perum Korpri Blok i8 no.6",
+          "country": "ID"
+        },
+        "additional_info": {
+          "customer_details": {
+            "country": "Indonesia",
+            "full_name": "Syifa Ali Zulkarnaen",
+            "address": "Jl. Raya Perum Korpri Blok i8 no.6",
+            "phone": "085881350398",
+            "date_of_birth": "2000-05-01",
+            "id": "CUST-SSS2025-1757137811064-sae6bb",
+            "email": "azulkarnaen7@gmail.com"
+          },
+          "billing_details": {
+            "billing_country": "Indonesia",
+            "billing_phone": "085881350398",
+            "billing_address": "Jl. Raya Perum Korpri Blok i8 no.6",
+            "billing_name": "Syifa Ali Zulkarnaen",
+            "billing_email": "azulkarnaen7@gmail.com"
+          },
+          "event_info": {
+            "participant_address": "Jl. Raya Perum Korpri Blok i8 no.6",
+            "participant_country": "Indonesia",
+            "participant_dob": "2000-05-01",
+            "participant_name": "Syifa Ali Zulkarnaen",
+            "participant_email": "azulkarnaen7@gmail.com",
+            "participant_phone": "085881350398"
+          },
+          "origin": {
+            "product": "CHECKOUT",
+            "system": "mid-jokul-checkout-system",
+            "source": "direct",
+            "apiFormat": "JOKUL"
+          },
+          "integration": "Synergy SEA Summit 2025",
+          "shipping_details": {
+            "shipping_phone": "085881350398",
+            "shipping_address": "Jl. Raya Perum Korpri Blok i8 no.6",
+            "shipping_name": "Syifa Ali Zulkarnaen",
+            "shipping_country": "Indonesia",
+            "shipping_email": "azulkarnaen7@gmail.com"
+          },
+          "participant_details": {
+            "country": "Indonesia",
+            "full_name": "Syifa Ali Zulkarnaen",
+            "address": "Jl. Raya Perum Korpri Blok i8 no.6",
+            "phone": "085881350398",
+            "date_of_birth": "2000-05-01",
+            "event_date": "2025-11-08",
+            "location": "The Stones Hotel, Legian Bali",
+            "event": "Synergy SEA Summit 2025",
+            "email": "azulkarnaen7@gmail.com"
+          }
+        },
+        "uuid": 2.225250906125012e+39,
+        "headers": {
+          "request_id": "8086df58-9a46-4e7c-9468-51b63d8f2d59",
+          "signature": "HMACSHA256=2NOi+JsZ4kfLevtrNhY7vmVwthTOK1NuWYbOzC+NmW0=",
+          "date": "2025-09-06T05:50:11Z",
+          "client_id": "BRN-0210-1756278654327"
+        }
+      },
+      "callback_data": {
+        "order": {
+          "invoice_number": "SSS2025-1757137811064-sae6bb",
+          "amount": "250000",
+          "currency": "IDR",
+          "session_id": "session_1757138605260"
+        },
+        "payment": {
+          "status": "SUCCESS",
+          "transaction_id": "DOKU_TXN_1757138605260",
+          "payment_method": "VIRTUAL_ACCOUNT_BCA",
+          "payment_channel": "VIRTUAL_ACCOUNT_BCA",
+          "paid_at": "2025-09-06T06:03:25.260Z",
+          "settlement_date": "2025-09-06T06:03:25.260Z"
+        },
+        "customer": {
+          "name": "Syifa Ali Zulkarnaen",
+          "email": "azulkarnaen7@gmail.com",
+          "phone": "085881350398",
+          "address": "Jl. Raya Perum Korpri Blok i8 no.6",
+          "country": "ID"
+        },
+        "webhook_info": {
+          "webhook_id": "wh_1757138605260",
+          "webhook_timestamp": "2025-09-06T06:03:25.260Z",
+          "event_type": "payment.success"
+        }
+      },
+      "status_updated_at": "2025-09-06T06:03:25.263Z"
+    },
+    "id": "PAY_1757137811574_ftfryazzf",
+    "createdAt": "2025-09-06T05:50:11.574Z",
+    "updatedAt": "2025-09-06T06:03:25.264Z",
+    "transactionId": "DOKU_TXN_1757138605260",
+    "paymentMethod": "VIRTUAL_ACCOUNT_BCA",
+    "paidAt": "2025-09-06T06:03:25.260Z"
+  },
+  {
+    "orderId": "SSS2025-1757138706650-cm17dp",
+    "amount": 250000,
+    "status": "pending",
+    "dokuyResponse": {
+      "message": [
+        "SUCCESS"
+      ],
+      "response": {
+        "order": {
+          "amount": "250000",
+          "invoice_number": "SSS2025-1757138706650-cm17dp",
+          "currency": "IDR",
+          "session_id": "868ca22c9d9f45de88e1091ce04d9ad5"
+        },
+        "payment": {
+          "payment_method_types": [
+            "EMONEY_OVO",
+            "OCTO_CLICKS",
+            "JENIUS_PAY",
+            "VIRTUAL_ACCOUNT_BCA",
+            "PEER_TO_PEER_KREDIVO",
+            "ONLINE_TO_OFFLINE_ALFA",
+            "CREDIT_CARD",
+            "EMONEY_DOKU",
+            "PEER_TO_PEER_AKULAKU",
+            "ONLINE_TO_OFFLINE_INDOMARET",
+            "EPAY_BRI",
+            "VIRTUAL_ACCOUNT_BANK_MANDIRI",
+            "EMONEY_LINKAJA",
+            "PEER_TO_PEER_INDODANA",
+            "VIRTUAL_ACCOUNT_BRI",
+            "EMONEY_SHOPEE_PAY",
+            "VIRTUAL_ACCOUNT_BNI",
+            "VIRTUAL_ACCOUNT_BANK_PERMATA",
+            "VIRTUAL_ACCOUNT_DOKU",
+            "VIRTUAL_ACCOUNT_BANK_CIMB",
+            "VIRTUAL_ACCOUNT_BANK_DANAMON",
+            "VIRTUAL_ACCOUNT_BANK_SYARIAH_MANDIRI",
+            "VIRTUAL_ACCOUNT_MAYBANK",
+            "DIRECT_DEBIT_BRI",
+            "EMONEY_DANA",
+            "VIRTUAL_ACCOUNT_BPD_BALI",
+            "EMONEY_ISAKU",
+            "DIRECT_DEBIT_CIMB",
+            "DIRECT_DEBIT_ALLO",
+            "PERMATA_NET",
+            "DIRECT_DEBIT_MANDIRI",
+            "VIRTUAL_ACCOUNT_BNC",
+            "VIRTUAL_ACCOUNT_BSS",
+            "VIRTUAL_ACCOUNT_BTN",
+            "VIRTUAL_ACCOUNT_SINARMAS",
+            "VIRTUAL_ACCOUNT_BANK_BJB",
+            "PEER_TO_PEER_BRI_CERIA"
+          ],
+          "payment_due_date": 60,
+          "token_id": "868ca22c9d9f45de88e1091ce04d9ad520250506130507560",
+          "url": "https://staging.doku.com/checkout-link-v2/868ca22c9d9f45de88e1091ce04d9ad520250506130507560",
+          "expired_date": "20250906140506",
+          "expired_datetime": "2025-09-06T07:05:06Z"
+        },
+        "customer": {
+          "email": "zulkarnaens0205@gmail.com",
+          "phone": "08588822664455",
+          "name": "Amir Komarudin",
+          "address": "Jl. Bintaro jaya jaya jaya",
+          "country": "ID"
+        },
+        "additional_info": {
+          "customer_details": {
+            "country": "Indonesia",
+            "full_name": "Amir Komarudin",
+            "address": "Jl. Bintaro jaya jaya jaya",
+            "phone": "08588822664455",
+            "date_of_birth": "1998-03-24",
+            "id": "CUST-SSS2025-1757138706650-cm17dp",
+            "email": "zulkarnaens0205@gmail.com"
+          },
+          "billing_details": {
+            "billing_country": "Indonesia",
+            "billing_phone": "08588822664455",
+            "billing_address": "Jl. Bintaro jaya jaya jaya",
+            "billing_name": "Amir Komarudin",
+            "billing_email": "zulkarnaens0205@gmail.com"
+          },
+          "event_info": {
+            "participant_address": "Jl. Bintaro jaya jaya jaya",
+            "participant_country": "Indonesia",
+            "participant_dob": "1998-03-24",
+            "participant_name": "Amir Komarudin",
+            "participant_email": "zulkarnaens0205@gmail.com",
+            "participant_phone": "08588822664455"
+          },
+          "origin": {
+            "product": "CHECKOUT",
+            "system": "mid-jokul-checkout-system",
+            "source": "direct",
+            "apiFormat": "JOKUL"
+          },
+          "integration": "Synergy SEA Summit 2025",
+          "shipping_details": {
+            "shipping_phone": "08588822664455",
+            "shipping_address": "Jl. Bintaro jaya jaya jaya",
+            "shipping_name": "Amir Komarudin",
+            "shipping_country": "Indonesia",
+            "shipping_email": "zulkarnaens0205@gmail.com"
+          },
+          "participant_details": {
+            "country": "Indonesia",
+            "full_name": "Amir Komarudin",
+            "address": "Jl. Bintaro jaya jaya jaya",
+            "phone": "08588822664455",
+            "date_of_birth": "1998-03-24",
+            "event_date": "2025-11-08",
+            "location": "The Stones Hotel, Legian Bali",
+            "event": "Synergy SEA Summit 2025",
+            "email": "zulkarnaens0205@gmail.com"
+          }
+        },
+        "uuid": 2.2252509061305074e+39,
+        "headers": {
+          "request_id": "f7e74667-e7e5-40ae-9878-dbc16068ef74",
+          "signature": "HMACSHA256=DqEY6myQcZGLxNqi2QzDCJh8DlJhNL6YrAjJnrFQqLA=",
+          "date": "2025-09-06T06:05:06Z",
+          "client_id": "BRN-0210-1756278654327"
+        }
+      }
+    },
+    "id": "PAY_1757138707198_ph9w0nevz",
+    "createdAt": "2025-09-06T06:05:07.198Z",
+    "updatedAt": "2025-09-06T06:05:07.198Z"
+  }
+]

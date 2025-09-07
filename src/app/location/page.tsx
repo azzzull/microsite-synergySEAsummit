@@ -17,7 +17,7 @@ function HotelCard({ hotel, index }: { hotel: { name: string; description: strin
   };
 
   return (
-    <Card className="overflow-hidden flex-1 min-w-[300px] max-w-[calc(50%-0.5rem)] transition-all duration-300 ease-in-out">
+    <Card className="overflow-hidden w-full md:flex-1 md:min-w-[300px] md:max-w-[calc(50%-0.5rem)] transition-all duration-300 ease-in-out">
       <div 
         className="p-4 cursor-pointer select-none transition-colors duration-200"
         onClick={handleClick}
@@ -114,9 +114,9 @@ export default function LocationPage() {
           </div>
           {/* Hotels */}
     <h2 className="text-xl font-bold mb-4" style={{color: "var(--color-gold)"}}>Nearby Hotels</h2>
-          <div className="flex flex-wrap gap-4 mb-8 items-start">
+          <div className="flex flex-col md:flex-row md:flex-wrap gap-4 mb-8 md:items-start">
             {hotels.map((hotel: { name: string; description: string; photo: string; distance: string }, idx: number) => (
-              <HotelCard key={hotel.name} hotel={hotel} index={idx} />
+              <HotelCard key={`hotel-${idx}-${hotel.name}`} hotel={hotel} index={idx} />
             ))}
           </div>
           {/* Restaurants */}
