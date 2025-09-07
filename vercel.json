@@ -30,5 +30,13 @@
         }
       ]
     }
+  ],
+  "routes": [
+    {
+      "src": "/register/success(.*)",
+      "headers": {
+        "x-vercel-protection-bypass": "true"
+      }
+    }
   ]
 }
