@@ -71,7 +71,7 @@ export async function POST(request: NextRequest) {
         });
       }
 
-      const registration = registrationResult.registration;
+      const registration = registrationResult.registration as any;
 
       // Generate and send e-ticket
       const ticketId = `TICKET-${order?.invoice_number}-${Date.now()}`;
