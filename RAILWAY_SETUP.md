@@ -54,19 +54,25 @@ git push origin master
 2. **Visit**: `https://your-vercel-app.vercel.app/api/setup/database`
 3. **Verify** response: `{"success": true, "message": "Database initialized"}`
 
-### Step 7: Test Database Connection
+**🚨 IMPORTANT**: Railway PostgreSQL starts empty! This step creates:
+- ✅ `registrations` table (customer data)
+- ✅ `payments` table (DOKU transactions) 
+- ✅ `tickets` table (event tickets)
+- ✅ Indexes for performance
+
+### Step 7: Verify Tables Created
 ```bash
-# Test via debug endpoint
+# Check database structure
 curl "https://your-vercel-app.vercel.app/api/debug"
 ```
 
-**Expected response**:
+**Expected response should include**:
 ```json
 {
-  "environment": "production",
-  "dokuConfigured": true,
-  "databaseConfigured": true,
-  "postgresUrl": "postgresql://postgres:***@containers-us-west-xxx.railway.app:7891/railway"
+  "database": {
+    "provider": "Railway",
+    "configured": true
+  }
 }
 ```
 

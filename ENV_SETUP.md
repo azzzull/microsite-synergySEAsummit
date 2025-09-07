@@ -32,10 +32,15 @@ postgresql://postgres:xG7k9mP2nR8vQ5eL@containers-us-west-42.railway.app:7891/ra
 curl "https://your-app.vercel.app/api/test/railway-connection"
 ```
 
-### 2. Initialize Database:
+### 2. **IMPORTANT: Initialize Database Tables**
 ```bash
 curl "https://your-app.vercel.app/api/setup/database"
 ```
+**Note**: Railway PostgreSQL is empty by default. This endpoint creates all required tables:
+- `registrations` table (customer data)
+- `payments` table (DOKU payment records) 
+- `tickets` table (event tickets)
+- Indexes for performance
 
 ### 3. Check Environment:
 ```bash
