@@ -1,4 +1,4 @@
-// Vercel Postgres Database Layer
+// Railway PostgreSQL Database Layer
 import { sql } from '@vercel/postgres';
 
 export class PostgresDatabase {
@@ -34,7 +34,7 @@ export class PostgresDatabase {
       };
     } catch (error) {
       console.error('❌ Error creating registration:', error);
-      return { success: false, error: error instanceof Error ? error instanceof Error ? error.message : "Unknown error" : 'Unknown error' };
+      return { success: false, error: error instanceof Error ? error.message : 'Unknown error' };
     }
   }
 
@@ -76,7 +76,7 @@ export class PostgresDatabase {
       };
     } catch (error) {
       console.error('❌ Error creating payment:', error);
-      return { success: false, error: error instanceof Error ? error instanceof Error ? error.message : "Unknown error" : 'Unknown error' };
+      return { success: false, error: error instanceof Error ? error.message : 'Unknown error' };
     }
   }
 
