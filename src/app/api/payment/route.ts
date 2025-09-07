@@ -193,9 +193,9 @@ export async function POST(request: NextRequest) {
             secondary: '#f8f9fa'
           }
         },
-        success_redirect_url: `${publicUrl}/register/success?order_id=${orderId}`,
-        unfinish_redirect_url: `${publicUrl}/register?error=payment_cancelled&order_id=${orderId}`,
-        error_redirect_url: `${publicUrl}/register?error=payment_failed&order_id=${orderId}`
+        success_redirect_url: `${publicUrl}/register/success?order_id=${orderId}&x-vercel-protection-bypass=${process.env.VERCEL_PROTECTION_BYPASS || ''}`,
+        unfinish_redirect_url: `${publicUrl}/register?error=payment_cancelled&order_id=${orderId}&x-vercel-protection-bypass=${process.env.VERCEL_PROTECTION_BYPASS || ''}`,
+        error_redirect_url: `${publicUrl}/register?error=payment_failed&order_id=${orderId}&x-vercel-protection-bypass=${process.env.VERCEL_PROTECTION_BYPASS || ''}`
       }
     };
 
