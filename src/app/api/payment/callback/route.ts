@@ -52,7 +52,7 @@ export async function POST(request: NextRequest) {
       console.log('✅ Payment successful for order:', order?.invoice_number);
       
       // Update registration and payment status in database
-      const registration = await postgresDb.updateRegistration(order?.invoice_number, {
+      const registrationResult = await postgresDb.updateRegistration(order?.invoice_number, {
         status: 'paid'
       });
 
@@ -63,13 +63,15 @@ export async function POST(request: NextRequest) {
         paidAt: new Date().toISOString()
       });
 
-      if (!registration) {
+      if (!registrationResult.success || !registrationResult.registration) {
         console.log('⚠️ Registration not found for order:', order?.invoice_number);
         return NextResponse.json({ 
           message: 'Registration not found',
           status: 'ERROR'
         });
       }
+
+      const registration = registrationResult.registration;
 
       // Generate and send e-ticket
       const ticketId = `TICKET-${order?.invoice_number}-${Date.now()}`;

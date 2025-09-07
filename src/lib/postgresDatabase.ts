@@ -137,7 +137,7 @@ export class PostgresDatabase {
       const result = await sql`
         UPDATE registrations 
         SET 
-          status = ${updates.status || null},
+          status = COALESCE(${updates.status}, status),
           updated_at = CURRENT_TIMESTAMP
         WHERE order_id = ${orderId}
         RETURNING *;
@@ -157,6 +157,7 @@ export class PostgresDatabase {
           id: `REG_${registration.id}`,
           orderId: registration.order_id,
           fullName: registration.full_name,
+          dateOfBirth: registration.date_of_birth,
           createdAt: registration.created_at,
           updatedAt: registration.updated_at
         }
@@ -254,6 +255,84 @@ export class PostgresDatabase {
     }
   }
 
+  async updatePayment(orderId: string, updates: any) {
+    try {
+      const result = await sql`
+        UPDATE payments 
+        SET 
+          status = ${updates.status || null},
+          transaction_id = ${updates.transactionId || null},
+          payment_method = ${updates.paymentMethod || null},
+          updated_at = CURRENT_TIMESTAMP
+        WHERE order_id = ${orderId}
+        RETURNING *;
+      `;
+
+      if (result.rowCount === 0) {
+        return { success: false, error: 'Payment not found' };
+      }
+
+      const payment = result.rows[0];
+      console.log('💳 Payment updated in Postgres:', payment.order_id);
+
+      return { 
+        success: true, 
+        payment: {
+          ...payment,
+          id: `PAY_${payment.id}`,
+          orderId: payment.order_id,
+          transactionId: payment.transaction_id,
+          paymentMethod: payment.payment_method,
+          paymentUrl: payment.payment_url,
+          tokenId: payment.token_id,
+          expiredDate: payment.expired_date,
+          paymentData: payment.payment_data,
+          createdAt: payment.created_at,
+          updatedAt: payment.updated_at
+        }
+      };
+    } catch (error) {
+      console.error('❌ Error updating payment:', error);
+      return { success: false, error: error instanceof Error ? error.message : "Unknown error" };
+    }
+  }
+
+  async updateTicket(orderId: string, updates: any) {
+    try {
+      const result = await sql`
+        UPDATE tickets 
+        SET 
+          status = COALESCE(${updates.status}, status),
+          updated_at = CURRENT_TIMESTAMP
+        WHERE order_id = ${orderId}
+        RETURNING *;
+      `;
+
+      if (result.rowCount === 0) {
+        return { success: false, error: 'Ticket not found' };
+      }
+
+      const ticket = result.rows[0];
+      console.log('🎫 Ticket updated in Postgres:', ticket.ticket_code);
+
+      return { 
+        success: true, 
+        ticket: {
+          ...ticket,
+          id: `TKT_${ticket.id}`,
+          orderId: ticket.order_id,
+          ticketCode: ticket.ticket_code,
+          qrCode: ticket.qr_code,
+          issuedAt: ticket.issued_at,
+          updatedAt: ticket.updated_at
+        }
+      };
+    } catch (error) {
+      console.error('❌ Error updating ticket:', error);
+      return { success: false, error: error instanceof Error ? error.message : "Unknown error" };
+    }
+  }
+
   // Initialize database tables
   async initializeDatabase() {
     try {
@@ -303,6 +382,7 @@ export class PostgresDatabase {
           ticket_code VARCHAR(255) UNIQUE NOT NULL,
           qr_code TEXT,
           issued_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+          updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
           status VARCHAR(50) NOT NULL DEFAULT 'active'
         );
       `;
