@@ -19,7 +19,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Order not found' }, { status: 404 });
     }
 
-    const registration = registrationResult.registration;
+    const registration = registrationResult.registration as any;
 
     console.log(`🔍 Found registration for order: ${orderId}`);
     console.log(`👤 Customer: ${registration.fullName} (${registration.email})`);
