@@ -5,41 +5,104 @@ import { Pool } from 'pg';
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL || process.env.POSTGRES_URL,
   ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
-  max: 5, // Maximum number of clients in the pool
-  idleTimeoutMillis: 30000, // Close connections after 30 seconds of inactivity
-  connectionTimeoutMillis: 10000, // Return an error after 10 seconds if connection could not be established
+  max: 3, // Reduced max connections for Railway
+  idleTimeoutMillis: 20000, // Shorter idle timeout
+  connectionTimeoutMillis: 15000, // Longer connection timeout
   allowExitOnIdle: true, // Allow the pool to exit when all connections are idle (good for serverless)
+  query_timeout: 30000, // Query timeout
+  application_name: 'synergy-vercel', // Application name for connection tracking
+});
+
+// Handle pool errors
+pool.on('error', (err) => {
+  console.error('❌ PostgreSQL pool error:', err);
 });
 
 export class PostgresDatabase {
-  private async executeQuery(text: string, params: any[] = []) {
+  private async executeQuery(text: string, params: any[] = [], retries: number = 2): Promise<any> {
     let client;
+    let attempt = 0;
+    
+    while (attempt <= retries) {
+      try {
+        console.log(`🔗 Attempting to connect to PostgreSQL (attempt ${attempt + 1}/${retries + 1})...`);
+        client = await pool.connect();
+        console.log('✅ Connected to PostgreSQL successfully');
+        
+        const result = await client.query(text, params);
+        console.log('📊 Query executed successfully');
+        
+        return result;
+      } catch (error) {
+        console.error(`❌ Database query error (attempt ${attempt + 1}):`, error);
+        console.error('Error type:', error instanceof Error ? error.constructor.name : 'Unknown');
+        console.error('Error message:', error instanceof Error ? error.message : 'Unknown error');
+        
+        // Log connection string (without credentials) for debugging
+        const connectionInfo = process.env.DATABASE_URL || process.env.POSTGRES_URL;
+        if (connectionInfo) {
+          try {
+            const urlObj = new URL(connectionInfo);
+            console.log('🔧 Attempting connection to:', `${urlObj.protocol}//${urlObj.hostname}:${urlObj.port}${urlObj.pathname}`);
+          } catch (urlError) {
+            console.log('🔧 Connection string format issue');
+          }
+        }
+        
+        // Check if it's a connection error that might benefit from retry
+        const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+        const isRetryableError = errorMessage.includes('ECONNRESET') || 
+                                errorMessage.includes('ENOTFOUND') || 
+                                errorMessage.includes('ECONNREFUSED') ||
+                                errorMessage.includes('timeout');
+        
+        if (isRetryableError && attempt < retries) {
+          console.log(`🔄 Retrying connection in 1 second... (${attempt + 1}/${retries})`);
+          await new Promise(resolve => setTimeout(resolve, 1000 * (attempt + 1))); // Exponential backoff
+          attempt++;
+          continue;
+        }
+        
+        throw error;
+      } finally {
+        if (client) {
+          console.log('🔄 Releasing database connection');
+          client.release();
+        }
+      }
+    }
+  }
+
+  // Alternative method: Direct connection without pool for problematic queries
+  private async executeQueryDirect(text: string, params: any[] = []): Promise<any> {
+    const { Client } = require('pg');
+    
+    const client = new Client({
+      connectionString: process.env.DATABASE_URL || process.env.POSTGRES_URL,
+      ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
+      connectionTimeoutMillis: 15000,
+      query_timeout: 30000,
+      application_name: 'synergy-vercel-direct',
+    });
+
     try {
-      console.log('🔗 Attempting to connect to PostgreSQL...');
-      client = await pool.connect();
-      console.log('✅ Connected to PostgreSQL successfully');
+      console.log('🔗 Direct connection to PostgreSQL...');
+      await client.connect();
+      console.log('✅ Direct connection established');
       
       const result = await client.query(text, params);
-      console.log('📊 Query executed successfully');
+      console.log('📊 Direct query executed successfully');
       
       return result;
     } catch (error) {
-      console.error('❌ Database query error:', error);
-      console.error('Error type:', error instanceof Error ? error.constructor.name : 'Unknown');
-      console.error('Error message:', error instanceof Error ? error.message : 'Unknown error');
-      
-      // Log connection string (without credentials) for debugging
-      const connectionInfo = process.env.DATABASE_URL || process.env.POSTGRES_URL;
-      if (connectionInfo) {
-        const urlObj = new URL(connectionInfo);
-        console.log('🔧 Attempting connection to:', `${urlObj.protocol}//${urlObj.hostname}:${urlObj.port}${urlObj.pathname}`);
-      }
-      
+      console.error('❌ Direct connection error:', error);
       throw error;
     } finally {
-      if (client) {
-        console.log('🔄 Releasing database connection');
-        client.release();
+      try {
+        await client.end();
+        console.log('🔄 Direct connection closed');
+      } catch (closeError) {
+        console.error('❌ Error closing direct connection:', closeError);
       }
     }
   }
@@ -143,7 +206,18 @@ export class PostgresDatabase {
         ORDER BY created_at DESC;
       `;
 
-      const result = await this.executeQuery(queryText);
+      let result;
+      try {
+        // Try pool connection first
+        result = await this.executeQuery(queryText);
+      } catch (poolError) {
+        console.log('🔄 Pool connection failed, trying direct connection...');
+        console.error('Pool error:', poolError);
+        
+        // Fallback to direct connection
+        result = await this.executeQueryDirect(queryText);
+      }
+
       console.log('✅ PostgreSQL query successful, rows:', result.rows.length);
 
       const registrations = result.rows.map((row: any) => ({
