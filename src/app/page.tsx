@@ -28,7 +28,7 @@ export default function HomePage() {
         alt="Handara Gate Left"
         className="hidden md:block fixed -left-16 md:-left-20 bottom-0 w-auto z-0 pointer-events-none"
         style={{
-          height: 'min(100vh, 800px)',
+          height: 'calc(100vh - 5rem)',
           transform: `translateX(${-scrollY * 0.3}px)`,
           opacity: Math.max(0, 1 - scrollY / 500)
         }}
@@ -38,7 +38,7 @@ export default function HomePage() {
         alt="Handara Gate Right"
         className="hidden md:block fixed -right-16 md:-right-20 bottom-0 w-auto z-0 pointer-events-none"
         style={{
-          height: 'min(100vh, 800px)',
+          height: 'calc(100vh - 5rem)',
           transform: `translateX(${scrollY * 0.3}px)`,
           opacity: Math.max(0, 1 - scrollY / 500)
         }}
