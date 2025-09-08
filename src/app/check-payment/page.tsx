@@ -94,7 +94,7 @@ export default function CheckPaymentPage() {
             <button
               onClick={checkPayment}
               disabled={checking}
-              className="w-full py-3 px-4 rounded-lg font-medium transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full py-3 px-4 rounded-lg font-medium transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer hover:brightness-110 hover:scale-105 active:scale-95"
               style={{
                 backgroundColor: "var(--color-gold)",
                 color: "var(--color-navy)",
@@ -158,10 +158,10 @@ export default function CheckPaymentPage() {
                 Butuh bantuan? Hubungi customer service kami
               </p>
               <div className="space-y-2">
-                <Link href="/register" className="block text-sm font-medium transition-colors duration-200" style={{color: "var(--color-gold)"}}>
+                <Link href="/register" className="block text-sm font-medium transition-all duration-200 cursor-pointer hover:brightness-125 hover:scale-105 active:scale-95" style={{color: "var(--color-gold)"}}>
                   Kembali ke Registrasi
                 </Link>
-                <Link href="/" className="block text-sm font-medium transition-colors duration-200" style={{color: "var(--color-gold)"}}>
+                <Link href="/" className="block text-sm font-medium transition-all duration-200 cursor-pointer hover:brightness-125 hover:scale-105 active:scale-95" style={{color: "var(--color-gold)"}}>
                   Beranda
                 </Link>
               </div>

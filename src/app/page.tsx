@@ -47,7 +47,7 @@ export default function HomePage() {
       {/* ===== VERSION 1: HERO SECTION WITH GATES ===== */}
       
       <section className="relative w-full min-h-screen flex flex-col items-center justify-center overflow-visible z-10 pt-20 pb-8 md:pt-24 md:pb-12">
-        <div className="relative w-[90%] sm:w-[85%] md:w-[75%] lg:w-[70%] xl:w-[65%] 2xl:w-[60%] max-w-4xl aspect-video overflow-hidden rounded-lg mb-6 md:mb-8">
+        <div className="relative w-[90%] sm:w-[80%] md:w-[70%] lg:w-[60%] xl:w-[55%] 2xl:w-[50%] aspect-video overflow-hidden rounded-lg mb-6 md:mb-8">
           <iframe 
             className="absolute inset-0 w-full h-full"
             style={{transform: 'scale(1)', transformOrigin: 'center'}}

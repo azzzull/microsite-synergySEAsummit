@@ -1,6 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { Navbar } from "@/components/Navbar";
+import { Footer } from "@/components/Footer";
 
 interface Registration {
   orderId: string;
@@ -37,6 +39,7 @@ export default function AdminPage() {
   const [payments, setPayments] = useState<Payment[]>([]);
   const [tickets, setTickets] = useState<Ticket[]>([]);
   const [loading, setLoading] = useState(true);
+  const [resetting, setResetting] = useState(false);
 
   useEffect(() => {
     fetchData();
@@ -71,39 +74,79 @@ export default function AdminPage() {
     }
   };
 
+  const resetDatabase = async () => {
+    if (!confirm("⚠️ WARNING: This will permanently delete ALL data!\n\nAre you absolutely sure you want to reset the database?\n\nThis action cannot be undone!")) {
+      return;
+    }
+
+    try {
+      setResetting(true);
+      
+      const response = await fetch('/api/admin/reset-database', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ confirm: "RESET_ALL_DATA" })
+      });
+
+      const result = await response.json();
+      
+      if (result.success) {
+        alert(`✅ Database reset successful!\n\nDeleted:\n- ${result.rowsDeleted.registrations} registrations\n- ${result.rowsDeleted.payments} payments\n- ${result.rowsDeleted.tickets} tickets`);
+        
+        // Refresh data to show empty tables
+        await fetchData();
+      } else {
+        alert(`❌ Reset failed: ${result.error}`);
+      }
+    } catch (error) {
+      console.error('Reset error:', error);
+      alert('❌ Error resetting database');
+    } finally {
+      setResetting(false);
+    }
+  };
+
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-lg">Loading admin data...</div>
+      <div className="min-h-screen flex flex-col" style={{background: "linear-gradient(to bottom, var(--color-navy-dark) 0%, var(--color-navy), var(--color-navy) 100%)", color: "var(--color-lightgrey)"}}>
+        <Navbar />
+        <main className="flex-1 flex items-center justify-center mt-16 sm:mt-20 md:mt-20 pt-4 md:pt-8">
+          <div className="text-lg" style={{color: "var(--color-lightgrey)"}}>Loading admin data...</div>
+        </main>
+        <Footer />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
-      <div className="max-w-7xl mx-auto">
-        <h1 className="text-3xl font-bold text-gray-900 mb-8">Admin Dashboard</h1>
+    <div className="min-h-screen flex flex-col" style={{background: "linear-gradient(to bottom, var(--color-navy-dark) 0%, var(--color-navy), var(--color-navy) 100%)", color: "var(--color-lightgrey)"}}>
+      <Navbar />
+      <main className="flex-1 mt-16 sm:mt-20 md:mt-20 pt-4 md:pt-8 p-8">
+        <div className="max-w-7xl mx-auto">
+          <h1 className="text-3xl font-bold mb-8" style={{color: "var(--color-gold)"}}>Admin Dashboard</h1>
         
         {/* Registrations */}
         <div className="mb-8">
-          <h2 className="text-2xl font-semibold text-gray-800 mb-4">Registrations ({registrations.length})</h2>
+          <h2 className="text-2xl font-semibold mb-4" style={{color: "var(--color-lightgrey)"}}>Registrations ({registrations.length})</h2>
           <div className="bg-white rounded-lg shadow overflow-hidden">
             <div className="overflow-x-auto">
               <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
+                <thead style={{backgroundColor: "var(--color-gold)"}}>
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Order ID</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Phone</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Created</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{color: "var(--color-navy)"}}>Order ID</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{color: "var(--color-navy)"}}>Name</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{color: "var(--color-navy)"}}>Email</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{color: "var(--color-navy)"}}>Phone</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{color: "var(--color-navy)"}}>Amount</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{color: "var(--color-navy)"}}>Status</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{color: "var(--color-navy)"}}>Created</th>
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {registrations.map((reg) => (
-                    <tr key={reg.orderId}>
+                  {registrations.map((reg, index) => (
+                    <tr key={`registration-${reg.orderId}-${index}`}>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{reg.orderId}</td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{reg.fullName}</td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{reg.email}</td>
@@ -129,23 +172,23 @@ export default function AdminPage() {
 
         {/* Payments */}
         <div className="mb-8">
-          <h2 className="text-2xl font-semibold text-gray-800 mb-4">Payments ({payments.length})</h2>
+          <h2 className="text-2xl font-semibold mb-4" style={{color: "var(--color-lightgrey)"}}>Payments ({payments.length})</h2>
           <div className="bg-white rounded-lg shadow overflow-hidden">
             <div className="overflow-x-auto">
               <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
+                <thead style={{backgroundColor: "var(--color-gold)"}}>
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Order ID</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Transaction ID</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Method</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Paid At</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{color: "var(--color-navy)"}}>Order ID</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{color: "var(--color-navy)"}}>Amount</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{color: "var(--color-navy)"}}>Status</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{color: "var(--color-navy)"}}>Transaction ID</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{color: "var(--color-navy)"}}>Method</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{color: "var(--color-navy)"}}>Paid At</th>
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {payments.map((payment) => (
-                    <tr key={payment.orderId}>
+                  {payments.map((payment, index) => (
+                    <tr key={`payment-${payment.orderId}-${index}`}>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{payment.orderId}</td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Rp {payment.amount.toLocaleString()}</td>
                       <td className="px-6 py-4 whitespace-nowrap">
@@ -170,23 +213,23 @@ export default function AdminPage() {
 
         {/* Tickets */}
         <div className="mb-8">
-          <h2 className="text-2xl font-semibold text-gray-800 mb-4">E-Tickets ({tickets.length})</h2>
+          <h2 className="text-2xl font-semibold mb-4" style={{color: "var(--color-lightgrey)"}}>E-Tickets ({tickets.length})</h2>
           <div className="bg-white rounded-lg shadow overflow-hidden">
             <div className="overflow-x-auto">
               <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
+                <thead style={{backgroundColor: "var(--color-gold)"}}>
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ticket ID</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Order ID</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Participant</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email Sent</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Created</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{color: "var(--color-navy)"}}>Ticket ID</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{color: "var(--color-navy)"}}>Order ID</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{color: "var(--color-navy)"}}>Participant</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{color: "var(--color-navy)"}}>Email</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{color: "var(--color-navy)"}}>Email Sent</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{color: "var(--color-navy)"}}>Created</th>
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {tickets.map((ticket) => (
-                    <tr key={ticket.ticketId}>
+                  {tickets.map((ticket, index) => (
+                    <tr key={`ticket-${ticket.ticketId}-${index}`}>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{ticket.ticketId}</td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{ticket.orderId}</td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{ticket.participantName}</td>
@@ -209,16 +252,36 @@ export default function AdminPage() {
           </div>
         </div>
 
-        {/* Refresh Button */}
-        <div className="text-center">
+        {/* Action Buttons */}
+        <div className="flex gap-4 justify-center">
           <button
             onClick={fetchData}
-            className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+            className="py-3 px-6 rounded-lg font-medium transition-all duration-200 cursor-pointer hover:brightness-110 hover:scale-105 active:scale-95"
+            style={{
+              backgroundColor: "var(--color-gold)",
+              color: "var(--color-navy)",
+              border: `1px solid var(--color-gold)`
+            }}
           >
             Refresh Data
           </button>
+          
+          <button
+            onClick={resetDatabase}
+            disabled={resetting}
+            className="py-3 px-6 rounded-lg font-medium transition-all duration-200 cursor-pointer hover:brightness-110 hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+            style={{
+              backgroundColor: "transparent",
+              color: "#ef4444",
+              border: "1px solid #ef4444"
+            }}
+          >
+            {resetting ? "Resetting..." : "🗑️ Reset Database"}
+          </button>
         </div>
-      </div>
+        </div>
+      </main>
+      <Footer />
     </div>
   );
 }

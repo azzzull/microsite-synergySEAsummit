@@ -145,7 +145,7 @@ function PaymentSuccessPageContent() {
             </p>
             <Link href="/register">
               <button 
-                className="w-full py-3 px-4 rounded-lg font-medium transition-all duration-200"
+                className="w-full py-3 px-4 rounded-lg font-medium transition-all duration-200 cursor-pointer hover:brightness-110 hover:scale-105 active:scale-95"
                 style={{
                   backgroundColor: "var(--color-gold)",
                   color: "var(--color-navy)",
@@ -238,7 +238,7 @@ function PaymentSuccessPageContent() {
               <div className="space-y-3">
                 <Link href="/" className="block">
                   <button 
-                    className="w-full py-3 px-4 rounded-lg font-medium transition-all duration-200"
+                    className="w-full py-3 px-4 rounded-lg font-medium transition-all duration-200 cursor-pointer hover:brightness-110 hover:scale-105 active:scale-95"
                     style={{
                       backgroundColor: "var(--color-gold)",
                       color: "var(--color-navy)",
@@ -250,7 +250,7 @@ function PaymentSuccessPageContent() {
                 </Link>
                 <Link href="/hall-of-fame" className="block">
                   <button 
-                    className="w-full py-3 px-4 rounded-lg font-medium transition-all duration-200"
+                    className="w-full py-3 px-4 rounded-lg font-medium transition-all duration-200 cursor-pointer hover:brightness-110 hover:scale-105 active:scale-95"
                     style={{
                       backgroundColor: "transparent",
                       color: "var(--color-gold)",
@@ -319,7 +319,7 @@ function PaymentSuccessPageContent() {
                 <button 
                   onClick={handleManualSync}
                   disabled={syncing}
-                  className="w-full py-3 px-4 rounded-lg font-medium transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full py-3 px-4 rounded-lg font-medium transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer hover:brightness-110 hover:scale-105 active:scale-95"
                   style={{
                     backgroundColor: "var(--color-gold)",
                     color: "var(--color-navy)",
@@ -338,7 +338,7 @@ function PaymentSuccessPageContent() {
                 
                 <button 
                   onClick={checkPaymentStatus} 
-                  className="w-full py-3 px-4 rounded-lg font-medium transition-all duration-200"
+                  className="w-full py-3 px-4 rounded-lg font-medium transition-all duration-200 cursor-pointer hover:brightness-110 hover:scale-105 active:scale-95"
                   style={{
                     backgroundColor: "transparent",
                     color: "var(--color-gold)",
@@ -380,7 +380,7 @@ function PaymentSuccessPageContent() {
               <div className="space-y-3">
                 <Link href="/register" className="block">
                   <button 
-                    className="w-full py-3 px-4 rounded-lg font-medium transition-all duration-200"
+                    className="w-full py-3 px-4 rounded-lg font-medium transition-all duration-200 cursor-pointer hover:brightness-110 hover:scale-105 active:scale-95"
                     style={{
                       backgroundColor: "var(--color-gold)",
                       color: "var(--color-navy)",
@@ -392,7 +392,7 @@ function PaymentSuccessPageContent() {
                 </Link>
                 <button 
                   onClick={handleManualSync} 
-                  className="w-full py-3 px-4 rounded-lg font-medium transition-all duration-200"
+                  className="w-full py-3 px-4 rounded-lg font-medium transition-all duration-200 cursor-pointer hover:brightness-110 hover:scale-105 active:scale-95"
                   style={{
                     backgroundColor: "transparent",
                     color: "var(--color-gold)",

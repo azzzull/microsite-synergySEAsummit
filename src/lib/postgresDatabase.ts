@@ -626,6 +626,32 @@ export class PostgresDatabase {
       return { success: false, error: error instanceof Error ? error.message : "Unknown error" };
     }
   }
+
+  // Method to clear all data from database (for development/testing)
+  async clearAllData() {
+    try {
+      console.log("🗑️ Clearing all database data...");
+      
+      // Delete in order to respect foreign key constraints
+      const deleteTickets = await this.executeQuery("DELETE FROM tickets");
+      const deletePayments = await this.executeQuery("DELETE FROM payments");
+      const deleteRegistrations = await this.executeQuery("DELETE FROM registrations");
+      
+      console.log("✅ All data cleared successfully");
+      
+      return {
+        success: true,
+        results: {
+          tickets: deleteTickets.rowCount || 0,
+          payments: deletePayments.rowCount || 0,
+          registrations: deleteRegistrations.rowCount || 0
+        }
+      };
+    } catch (error) {
+      console.error("❌ Error clearing database:", error);
+      throw error;
+    }
+  }
 }
 
 // Export singleton instance
