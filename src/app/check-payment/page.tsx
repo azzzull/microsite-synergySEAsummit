@@ -60,18 +60,18 @@ export default function CheckPaymentPage() {
     <div className="min-h-screen flex flex-col" style={{background: "linear-gradient(to bottom, var(--color-navy-dark) 0%, var(--color-navy), var(--color-navy) 100%)", color: "var(--color-lightgrey)"}}>
       <Navbar />
       <main className="flex-1 flex items-center justify-center px-4 py-8 mt-16 sm:mt-20 md:mt-20 pt-4 md:pt-8">
-        <div className="max-w-lg w-full bg-white rounded-xl shadow-lg p-8">
+        <div className="max-w-lg w-full p-8 rounded-lg border" style={{backgroundColor: "var(--color-white-transparent)", borderColor: "var(--color-gold)"}}>
           
           <div className="text-center mb-8">
-            <h1 className="text-2xl font-bold text-[var(--color-navy)] mb-4">Cek Status Pembayaran</h1>
-            <p className="text-gray-600">
+            <h1 className="text-2xl font-bold mb-4" style={{color: "var(--color-lightgrey)"}}>Cek Status Pembayaran</h1>
+            <p style={{color: "var(--color-lightgrey)"}}>
               Masukkan Order ID Anda untuk mengecek status pembayaran
             </p>
           </div>
 
           <div className="space-y-6">
             <div>
-              <label htmlFor="orderId" className="block text-sm font-medium text-[var(--color-navy)] mb-2">
+              <label htmlFor="orderId" className="block text-sm font-medium mb-2" style={{color: "var(--color-lightgrey)"}}>
                 Order ID
               </label>
               <input
@@ -80,74 +80,89 @@ export default function CheckPaymentPage() {
                 value={orderId}
                 onChange={(e) => setOrderId(e.target.value)}
                 placeholder="SSS2025-xxxxxxxxx-xxxxxx"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--color-gold)] focus:border-[var(--color-gold)] text-[var(--color-navy)]"
+                className="w-full px-4 py-3 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-yellow-400"
+                style={{
+                  backgroundColor: "var(--color-lightgrey)", 
+                  color: "var(--color-navy)"
+                }}
               />
-              <p className="text-xs text-gray-500 mt-1">
+              <p className="text-xs mt-1" style={{color: "var(--color-lightgrey)"}}>
                 Order ID dapat ditemukan di email konfirmasi registrasi
               </p>
             </div>
 
-            <Button
+            <button
               onClick={checkPayment}
               disabled={checking}
-              className="w-full py-3"
+              className="w-full py-3 px-4 rounded-lg font-medium transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+              style={{
+                backgroundColor: "var(--color-gold)",
+                color: "var(--color-navy)",
+                border: `1px solid var(--color-gold)`
+              }}
             >
               {checking ? "Mengecek..." : "Cek Status Pembayaran"}
-            </Button>
+            </button>
 
             {result && (
-              <div className={`p-4 rounded-lg ${
+              <div className={`p-4 rounded-lg border ${
                 result.found && result.status === 'paid' 
-                  ? 'bg-green-50 border border-green-200' 
+                  ? 'border-green-400' 
                   : result.found && result.status === 'pending'
-                  ? 'bg-yellow-50 border border-yellow-200'
-                  : 'bg-red-50 border border-red-200'
-              }`}>
+                  ? 'border-yellow-400'
+                  : 'border-red-400'
+              }`} style={{
+                backgroundColor: result.found && result.status === 'paid' 
+                  ? 'rgba(34, 197, 94, 0.1)' 
+                  : result.found && result.status === 'pending'
+                  ? 'rgba(234, 179, 8, 0.1)'
+                  : 'rgba(239, 68, 68, 0.1)'
+              }}>
                 {result.found ? (
                   <>
                     <h3 className={`font-semibold mb-2 ${
-                      result.status === 'paid' ? 'text-green-800' : 
-                      result.status === 'pending' ? 'text-yellow-800' : 'text-red-800'
+                      result.status === 'paid' ? 'text-green-400' : 
+                      result.status === 'pending' ? 'text-yellow-400' : 'text-red-400'
                     }`}>
                       Status: {result.status === 'paid' ? 'BERHASIL DIBAYAR ✅' : 
                                result.status === 'pending' ? 'MENUNGGU PEMBAYARAN ⏳' : 'STATUS UNKNOWN'}
                     </h3>
-                    <div className="text-sm space-y-1 text-[var(--color-navy)]">
+                    <div className="text-sm space-y-1" style={{color: "var(--color-lightgrey)"}}>
                       <p><span className="font-medium">Nama:</span> {result.registration.fullName}</p>
                       <p><span className="font-medium">Email:</span> {result.registration.email}</p>
                       <p><span className="font-medium">Order ID:</span> {result.registration.orderId}</p>
                     </div>
                     
                     {result.status === 'paid' && (
-                      <p className="text-green-700 text-sm mt-3 font-medium">
-                        🎉 Pembayaran berhasil! Mengalihkan ke halaman sukses...
+                      <p className="text-green-400 text-sm mt-3 font-medium">
+                        Pembayaran berhasil! Mengalihkan ke halaman sukses...
                       </p>
                     )}
                     
                     {result.status === 'pending' && (
-                      <p className="text-yellow-700 text-sm mt-3">
+                      <p className="text-yellow-400 text-sm mt-3">
                         Pembayaran masih diproses. Silakan coba lagi dalam beberapa menit.
                       </p>
                     )}
                   </>
                 ) : (
-                  <p className="text-red-700">
+                  <p className="text-red-400">
                     {result.message}
                   </p>
                 )}
               </div>
             )}
 
-            <div className="text-center pt-4 border-t border-gray-200">
-              <p className="text-sm text-gray-600 mb-4">
+            <div className="text-center pt-4 border-t" style={{borderColor: "var(--color-gold)"}}>
+              <p className="text-sm mb-4" style={{color: "var(--color-lightgrey)"}}>
                 Butuh bantuan? Hubungi customer service kami
               </p>
               <div className="space-y-2">
-                <Link href="/register" className="block text-[var(--color-gold)] hover:text-[var(--color-navy)] text-sm font-medium">
-                  ← Kembali ke Registrasi
+                <Link href="/register" className="block text-sm font-medium transition-colors duration-200" style={{color: "var(--color-gold)"}}>
+                  Kembali ke Registrasi
                 </Link>
-                <Link href="/" className="block text-[var(--color-gold)] hover:text-[var(--color-navy)] text-sm font-medium">
-                  🏠 Beranda
+                <Link href="/" className="block text-sm font-medium transition-colors duration-200" style={{color: "var(--color-gold)"}}>
+                  Beranda
                 </Link>
               </div>
             </div>

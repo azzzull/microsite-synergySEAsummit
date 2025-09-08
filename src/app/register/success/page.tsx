@@ -133,18 +133,27 @@ function PaymentSuccessPageContent() {
       <div className="min-h-screen flex flex-col" style={{background: "linear-gradient(to bottom, var(--color-navy-dark) 0%, var(--color-navy), var(--color-navy) 100%)", color: "var(--color-lightgrey)"}}>
         <Navbar />
         <main className="flex-1 flex items-center justify-center px-4 mt-16 sm:mt-20 md:mt-20 pt-4 md:pt-8">
-          <div className="max-w-md w-full bg-white rounded-xl shadow-lg p-8 text-center">
+          <div className="max-w-md w-full p-8 rounded-lg border text-center" style={{backgroundColor: "var(--color-white-transparent)", borderColor: "var(--color-gold)"}}>
             <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
               <svg className="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
               </svg>
             </div>
-            <h1 className="text-2xl font-bold text-[var(--color-navy)] mb-4">Invalid Payment Link</h1>
-            <p className="text-gray-600 mb-6">
+            <h1 className="text-2xl font-bold mb-4" style={{color: "var(--color-lightgrey)"}}>Invalid Payment Link</h1>
+            <p className="mb-6" style={{color: "var(--color-lightgrey)"}}>
               Order ID tidak ditemukan. Silakan kembali ke halaman registrasi.
             </p>
             <Link href="/register">
-              <Button>Kembali ke Registrasi</Button>
+              <button 
+                className="w-full py-3 px-4 rounded-lg font-medium transition-all duration-200"
+                style={{
+                  backgroundColor: "var(--color-gold)",
+                  color: "var(--color-navy)",
+                  border: `1px solid var(--color-gold)`
+                }}
+              >
+                Kembali ke Registrasi
+              </button>
             </Link>
           </div>
         </main>
@@ -157,14 +166,14 @@ function PaymentSuccessPageContent() {
     <div className="min-h-screen flex flex-col" style={{background: "linear-gradient(to bottom, var(--color-navy-dark) 0%, var(--color-navy), var(--color-navy) 100%)", color: "var(--color-lightgrey)"}}>
       <Navbar />
       <main className="flex-1 flex items-center justify-center px-4 py-8 mt-16 sm:mt-20 md:mt-20 pt-4 md:pt-8">
-        <div className="max-w-2xl w-full bg-white rounded-xl shadow-lg p-8">
+        <div className="max-w-2xl w-full p-8 rounded-lg border" style={{backgroundColor: "var(--color-white-transparent)", borderColor: "var(--color-gold)"}}>
           
           {/* Loading State */}
           {loading && !paymentStatus && (
             <div className="text-center">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto mb-4"></div>
-              <h1 className="text-2xl font-bold text-[var(--color-navy)] mb-4">Memeriksa Status Pembayaran...</h1>
-              <p className="text-gray-600">Mohon tunggu sebentar</p>
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-yellow-400 mx-auto mb-4"></div>
+              <h1 className="text-2xl font-bold mb-4" style={{color: "var(--color-lightgrey)"}}>Memeriksa Status Pembayaran...</h1>
+              <p style={{color: "var(--color-lightgrey)"}}>Mohon tunggu sebentar</p>
             </div>
           )}
 
@@ -177,14 +186,14 @@ function PaymentSuccessPageContent() {
                 </svg>
               </div>
               
-              <h1 className="text-3xl font-bold text-[var(--color-navy)] mb-4">Pembayaran Berhasil! 🎉</h1>
-              <p className="text-gray-600 mb-6">
+              <h1 className="text-3xl font-bold mb-4" style={{color: "var(--color-lightgrey)"}}>Pembayaran Berhasil!</h1>
+              <p className="mb-6" style={{color: "var(--color-lightgrey)"}}>
                 Terima kasih! Pembayaran Anda telah berhasil diproses.
               </p>
               
-              <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
-                <h3 className="font-semibold text-green-800 mb-2">📧 E-Ticket Telah Dikirim!</h3>
-                <p className="text-green-700 text-sm">
+              <div className="p-4 rounded-lg border border-green-400 mb-6" style={{backgroundColor: "rgba(34, 197, 94, 0.1)"}}>
+                <h3 className="font-semibold text-green-400 mb-2">E-Ticket Telah Dikirim!</h3>
+                <p className="text-green-400 text-sm">
                   E-ticket untuk Synergy SEA Summit 2025 telah dikirim ke email Anda. 
                   Silakan cek inbox atau folder spam.
                 </p>
@@ -228,10 +237,28 @@ function PaymentSuccessPageContent() {
 
               <div className="space-y-3">
                 <Link href="/" className="block">
-                  <Button className="w-full">Kembali ke Beranda</Button>
+                  <button 
+                    className="w-full py-3 px-4 rounded-lg font-medium transition-all duration-200"
+                    style={{
+                      backgroundColor: "var(--color-gold)",
+                      color: "var(--color-navy)",
+                      border: `1px solid var(--color-gold)`
+                    }}
+                  >
+                    Kembali ke Beranda
+                  </button>
                 </Link>
                 <Link href="/hall-of-fame" className="block">
-                  <Button className="w-full bg-transparent border-2 border-[var(--color-gold)] text-[var(--color-gold)] hover:bg-[var(--color-gold)] hover:text-white">Lihat Peserta Lain</Button>
+                  <button 
+                    className="w-full py-3 px-4 rounded-lg font-medium transition-all duration-200"
+                    style={{
+                      backgroundColor: "transparent",
+                      color: "var(--color-gold)",
+                      border: `1px solid var(--color-gold)`
+                    }}
+                  >
+                    Lihat Peserta Lain
+                  </button>
                 </Link>
               </div>
             </div>
@@ -246,24 +273,24 @@ function PaymentSuccessPageContent() {
                 </svg>
               </div>
               
-              <h1 className="text-2xl font-bold text-[var(--color-navy)] mb-4">
+              <h1 className="text-2xl font-bold mb-4" style={{color: "var(--color-lightgrey)"}}>
                 {paymentStatus.status === 'checking' ? 'Memeriksa Pembayaran...' : 'Menunggu Pembayaran'}
               </h1>
-              <p className="text-gray-600 mb-6">
+              <p className="mb-6" style={{color: "var(--color-lightgrey)"}}>
                 {paymentStatus.status === 'checking' 
                   ? 'Sedang memverifikasi status pembayaran dengan DOKU...'
                   : 'Pembayaran Anda sedang diproses. Status akan diperbarui otomatis setiap 3 detik.'
                 }
               </p>
               
-              <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
+              <div className="p-4 rounded-lg border border-yellow-400 mb-6" style={{backgroundColor: "rgba(234, 179, 8, 0.1)"}}>
                 <div className="flex items-start">
-                  <svg className="w-5 h-5 text-yellow-600 mt-0.5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-5 h-5 text-yellow-400 mt-0.5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
                   <div>
-                    <h4 className="font-medium text-yellow-800 mb-1">Sudah Bayar di DOKU?</h4>
-                    <p className="text-sm text-yellow-700">
+                    <h4 className="font-medium text-yellow-400 mb-1">Sudah Bayar di DOKU?</h4>
+                    <p className="text-sm text-yellow-400">
                       Jika Anda sudah menyelesaikan pembayaran di halaman DOKU, status akan diperbarui otomatis. 
                       Jika tidak berubah setelah 2 menit, klik tombol "Periksa Status Pembayaran" di bawah.
                     </p>
@@ -271,9 +298,9 @@ function PaymentSuccessPageContent() {
                 </div>
               </div>
               
-              <div className="bg-gray-50 rounded-lg p-4 mb-6 text-left">
-                <h3 className="font-semibold text-[var(--color-navy)] mb-2">Detail Registrasi:</h3>
-                <div className="space-y-1 text-sm text-gray-600">
+              <div className="p-4 rounded-lg border mb-6" style={{backgroundColor: "var(--color-white-transparent)", borderColor: "var(--color-gold)"}}>
+                <h3 className="font-semibold mb-2" style={{color: "var(--color-lightgrey)"}}>Detail Registrasi:</h3>
+                <div className="space-y-1 text-sm" style={{color: "var(--color-lightgrey)"}}>
                   <p><span className="font-medium">Order ID:</span> {paymentStatus.orderId}</p>
                   <p><span className="font-medium">Nama:</span> {paymentStatus.registration?.fullName}</p>
                   <p><span className="font-medium">Email:</span> {paymentStatus.registration?.email}</p>
@@ -289,24 +316,37 @@ function PaymentSuccessPageContent() {
               </div>
 
               <div className="space-y-3">
-                <Button 
+                <button 
                   onClick={handleManualSync}
                   disabled={syncing}
-                  className="w-full"
+                  className="w-full py-3 px-4 rounded-lg font-medium transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                  style={{
+                    backgroundColor: "var(--color-gold)",
+                    color: "var(--color-navy)",
+                    border: `1px solid var(--color-gold)`
+                  }}
                 >
                   {syncing ? (
                     <>
-                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-current mr-2 inline-block"></div>
                       Sinkronisasi...
                     </>
                   ) : (
                     'Periksa Status Pembayaran'
                   )}
-                </Button>
+                </button>
                 
-                <Button onClick={checkPaymentStatus} className="w-full bg-transparent border-2 border-[var(--color-gold)] text-[var(--color-gold)] hover:bg-[var(--color-gold)] hover:text-white">
+                <button 
+                  onClick={checkPaymentStatus} 
+                  className="w-full py-3 px-4 rounded-lg font-medium transition-all duration-200"
+                  style={{
+                    backgroundColor: "transparent",
+                    color: "var(--color-gold)",
+                    border: `1px solid var(--color-gold)`
+                  }}
+                >
                   Refresh Status
-                </Button>
+                </button>
               </div>
             </div>
           )}
@@ -320,14 +360,14 @@ function PaymentSuccessPageContent() {
                 </svg>
               </div>
               
-              <h1 className="text-2xl font-bold text-[var(--color-navy)] mb-4">Pembayaran Gagal</h1>
-              <p className="text-gray-600 mb-6">
+              <h1 className="text-2xl font-bold mb-4" style={{color: "var(--color-lightgrey)"}}>Pembayaran Gagal</h1>
+              <p className="mb-6" style={{color: "var(--color-lightgrey)"}}>
                 Maaf, pembayaran Anda tidak dapat diproses. Silakan coba lagi atau hubungi customer service.
               </p>
               
-              <div className="bg-gray-50 rounded-lg p-4 mb-6 text-left">
-                <h3 className="font-semibold text-[var(--color-navy)] mb-2">Detail:</h3>
-                <div className="space-y-1 text-sm text-gray-600">
+              <div className="p-4 rounded-lg border mb-6" style={{backgroundColor: "var(--color-white-transparent)", borderColor: "var(--color-gold)"}}>
+                <h3 className="font-semibold mb-2" style={{color: "var(--color-lightgrey)"}}>Detail:</h3>
+                <div className="space-y-1 text-sm" style={{color: "var(--color-lightgrey)"}}>
                   <p><span className="font-medium">Order ID:</span> {paymentStatus.orderId}</p>
                   <p><span className="font-medium">Status:</span> 
                     <span className="inline-block ml-2 px-2 py-1 bg-red-100 text-red-800 rounded-full text-xs font-medium">
@@ -339,11 +379,28 @@ function PaymentSuccessPageContent() {
 
               <div className="space-y-3">
                 <Link href="/register" className="block">
-                  <Button className="w-full">Coba Registrasi Lagi</Button>
+                  <button 
+                    className="w-full py-3 px-4 rounded-lg font-medium transition-all duration-200"
+                    style={{
+                      backgroundColor: "var(--color-gold)",
+                      color: "var(--color-navy)",
+                      border: `1px solid var(--color-gold)`
+                    }}
+                  >
+                    Coba Registrasi Lagi
+                  </button>
                 </Link>
-                <Button onClick={handleManualSync} className="w-full bg-transparent border-2 border-[var(--color-gold)] text-[var(--color-gold)] hover:bg-[var(--color-gold)] hover:text-white">
+                <button 
+                  onClick={handleManualSync} 
+                  className="w-full py-3 px-4 rounded-lg font-medium transition-all duration-200"
+                  style={{
+                    backgroundColor: "transparent",
+                    color: "var(--color-gold)",
+                    border: `1px solid var(--color-gold)`
+                  }}
+                >
                   Periksa Ulang Status
-                </Button>
+                </button>
               </div>
             </div>
           )}
