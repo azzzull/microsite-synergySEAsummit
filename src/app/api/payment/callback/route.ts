@@ -2,10 +2,10 @@ import { NextRequest, NextResponse } from 'next/server';
 import { postgresDb } from '@/lib/postgresDatabase';
 import { emailService } from '@/lib/emailService';
 
-// Simplified DOKU callback handler for sandbox mode
+// DOKU callback handler - PRODUCTION VERSION
 export async function POST(request: NextRequest) {
   try {
-    console.log('🔔 DOKU Payment Callback received');
+    console.log('🔔 DOKU Payment Callback received - PRODUCTION VERSION');
     
     const body = await request.json();
     console.log('📥 Callback body:', JSON.stringify(body, null, 2));
@@ -133,9 +133,9 @@ export async function POST(request: NextRequest) {
 
 export async function GET() {
   return NextResponse.json({
-    message: 'DOKU Payment Callback Endpoint',
+    message: 'DOKU Payment Callback Endpoint - PRODUCTION VERSION',
     status: 'active',
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
+    version: 'v2.0'
   });
 }
-// Force deployment Mon, Sep  8, 2025  9:50:34 AM
