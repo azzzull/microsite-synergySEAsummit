@@ -414,15 +414,32 @@ export class PostgresDatabase {
 
   async createTicket(data: any) {
     try {
-      const ticketCode = `TKT_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      const ticketCode = data.ticketId || `TKT_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
       
       const queryText = `
-        INSERT INTO tickets (order_id, ticket_code, qr_code, status)
-        VALUES ($1, $2, $3, $4)
+        INSERT INTO tickets (
+          order_id, ticket_code, participant_name, participant_email, 
+          participant_phone, event_name, event_date, event_location, 
+          qr_code, email_sent, status
+        )
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
         RETURNING *;
       `;
 
-      const params = [data.orderId, ticketCode, data.qrCode || null, data.status || 'active'];
+      const params = [
+        data.orderId, 
+        ticketCode, 
+        data.participantName || null,
+        data.participantEmail || null,
+        data.participantPhone || null,
+        data.eventName || null,
+        data.eventDate || null,
+        data.eventLocation || null,
+        data.qrCode || null, 
+        data.emailSent || false,
+        data.status || 'active'
+      ];
+      
       const result = await this.executeQuery(queryText, params);
 
       const ticket = result.rows[0];
@@ -435,7 +452,14 @@ export class PostgresDatabase {
           id: `TKT_${ticket.id}`,
           orderId: ticket.order_id,
           ticketCode: ticket.ticket_code,
+          participantName: ticket.participant_name,
+          participantEmail: ticket.participant_email,
+          participantPhone: ticket.participant_phone,
+          eventName: ticket.event_name,
+          eventDate: ticket.event_date,
+          eventLocation: ticket.event_location,
           qrCode: ticket.qr_code,
+          emailSent: ticket.email_sent,
           issuedAt: ticket.issued_at
         }
       };
@@ -525,12 +549,19 @@ export class PostgresDatabase {
         UPDATE tickets 
         SET 
           status = COALESCE($1, status),
+          email_sent = COALESCE($2, email_sent),
+          email_sent_at = COALESCE($3, email_sent_at),
           updated_at = CURRENT_TIMESTAMP
-        WHERE order_id = $2
+        WHERE order_id = $4
         RETURNING *;
       `;
 
-      const params = [updates.status, orderId];
+      const params = [
+        updates.status, 
+        updates.emailSent, 
+        updates.emailSentAt, 
+        orderId
+      ];
       const result = await this.executeQuery(queryText, params);
 
       if (result.rowCount === 0) {
@@ -547,7 +578,15 @@ export class PostgresDatabase {
           id: `TKT_${ticket.id}`,
           orderId: ticket.order_id,
           ticketCode: ticket.ticket_code,
+          participantName: ticket.participant_name,
+          participantEmail: ticket.participant_email,
+          participantPhone: ticket.participant_phone,
+          eventName: ticket.event_name,
+          eventDate: ticket.event_date,
+          eventLocation: ticket.event_location,
           qrCode: ticket.qr_code,
+          emailSent: ticket.email_sent,
+          emailSentAt: ticket.email_sent_at,
           issuedAt: ticket.issued_at,
           updatedAt: ticket.updated_at
         }

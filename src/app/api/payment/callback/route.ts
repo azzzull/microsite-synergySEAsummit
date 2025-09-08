@@ -58,6 +58,7 @@ export async function POST(request: NextRequest) {
           });
 
           // Send e-ticket email
+          console.log("Sending e-ticket email to:", registration.email);
           const emailResult = await emailService.sendTicket({
             ticketId,
             orderId,
@@ -74,19 +75,38 @@ export async function POST(request: NextRequest) {
             paidAt: transaction?.date || new Date().toISOString()
           });
 
+          console.log("Email send result:", emailResult);
+
           // Update ticket email status
           if (emailResult.success) {
             await postgresDb.updateTicket(orderId, {
               emailSent: true,
               emailSentAt: new Date().toISOString()
             });
-            console.log("E-ticket sent successfully");
+            console.log("E-ticket sent successfully to:", registration.email);
+          } else {
+            console.error("Failed to send e-ticket email:", emailResult.error);
+            await postgresDb.updateTicket(orderId, {
+              emailSent: false,
+              emailSentAt: null
+            });
           }
 
           console.log("Payment processed successfully for:", orderId);
           
           // Auto redirect to success page after payment completion
-          const successUrl = `https://synergy-sea-summit2025.vercel.app/register/success?order_id=${orderId}`;
+          // Determine the correct base URL based on environment
+          let baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
+          
+          // Use production URL if we're in production or if explicitly set
+          if (process.env.NODE_ENV === 'production' || process.env.VERCEL_URL) {
+            baseUrl = process.env.NEXT_PUBLIC_PRODUCTION_URL || 'https://synergy-sea-summit2025.vercel.app';
+          }
+          
+          const successUrl = `${baseUrl}/register/success?order_id=${orderId}`;
+          
+          console.log("Environment:", process.env.NODE_ENV);
+          console.log("Base URL used:", baseUrl);
           console.log("Redirecting to:", successUrl);
           
           return NextResponse.redirect(successUrl, { status: 302 });
