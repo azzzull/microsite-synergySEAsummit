@@ -66,6 +66,7 @@ export const Navbar = () => {
           <Link href="/" className="navbar-link transition-colors duration-200 cursor-pointer text-[var(--color-lightgrey)] hover:text-[var(--color-gold)]">Home</Link>
           <Link href="/hall-of-fame" className="navbar-link transition-colors duration-200 cursor-pointer text-[var(--color-lightgrey)] hover:text-[var(--color-gold)]">Hall of Fame</Link>
           <Link href="/location" className="navbar-link transition-colors duration-200 cursor-pointer text-[var(--color-lightgrey)] hover:text-[var(--color-gold)]">Location</Link>
+          <Link href="/check-payment" className="navbar-link transition-colors duration-200 cursor-pointer text-[var(--color-lightgrey)] hover:text-[var(--color-gold)]">Cek Payment</Link>
           <Link href="/register" className="navbar-link transition-colors duration-200 cursor-pointer text-[var(--color-lightgrey)] hover:text-[var(--color-gold)]">Register</Link>
         </div>
         
@@ -104,6 +105,7 @@ export const Navbar = () => {
                 { href: "/", label: "Home" },
                 { href: "/hall-of-fame", label: "Hall of Fame" },
                 { href: "/location", label: "Location" },
+                { href: "/check-payment", label: "Cek Payment" },
                 { href: "/register", label: "Register" }
               ].map((item, index) => (
                 <motion.div

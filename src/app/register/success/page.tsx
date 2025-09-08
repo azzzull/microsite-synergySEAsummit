@@ -182,6 +182,14 @@ function PaymentSuccessPageContent() {
                 Terima kasih! Pembayaran Anda telah berhasil diproses.
               </p>
               
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+                <h3 className="font-semibold text-blue-900 mb-2">📧 E-Ticket Telah Dikirim!</h3>
+                <p className="text-blue-700 text-sm">
+                  E-ticket untuk Synergy SEA Summit 2025 telah dikirim ke email Anda. 
+                  Silakan cek inbox atau folder spam.
+                </p>
+              </div>
+              
               <div className="bg-gray-50 rounded-lg p-4 mb-6 text-left">
                 <h3 className="font-semibold text-gray-900 mb-2">Detail Pembayaran:</h3>
                 <div className="space-y-1 text-sm text-gray-600">
