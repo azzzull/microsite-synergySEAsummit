@@ -94,8 +94,8 @@ function PaymentSuccessPageContent() {
       
       console.log('🔄 Syncing payment status with DOKU...');
       
-      const response = await fetch('/api/test/realistic-payment', {
-        method: 'POST',
+      const response = await fetch('/api/payment', {
+        method: 'POST', 
         headers: {
           'Content-Type': 'application/json'
         },
@@ -130,9 +130,9 @@ function PaymentSuccessPageContent() {
 
   if (!orderId) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-100 flex flex-col">
+      <div className="min-h-screen flex flex-col" style={{background: "linear-gradient(to bottom, var(--color-navy-dark) 0%, var(--color-navy), var(--color-navy) 100%)", color: "var(--color-lightgrey)"}}>
         <Navbar />
-        <main className="flex-1 flex items-center justify-center px-4">
+        <main className="flex-1 flex items-center justify-center px-4 mt-16 sm:mt-20 md:mt-20 pt-4 md:pt-8">
           <div className="max-w-md w-full bg-white rounded-xl shadow-lg p-8 text-center">
             <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
               <svg className="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -154,9 +154,9 @@ function PaymentSuccessPageContent() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-100 flex flex-col">
+    <div className="min-h-screen flex flex-col" style={{background: "linear-gradient(to bottom, var(--color-navy-dark) 0%, var(--color-navy), var(--color-navy) 100%)", color: "var(--color-lightgrey)"}}>
       <Navbar />
-      <main className="flex-1 flex items-center justify-center px-4 py-8">
+      <main className="flex-1 flex items-center justify-center px-4 py-8 mt-16 sm:mt-20 md:mt-20 pt-4 md:pt-8">
         <div className="max-w-2xl w-full bg-white rounded-xl shadow-lg p-8">
           
           {/* Loading State */}
@@ -350,10 +350,10 @@ function PaymentSuccessPageContent() {
 export default function PaymentSuccessPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen flex flex-col items-center justify-center" style={{background: "linear-gradient(to bottom, var(--color-navy-dark) 0%, var(--color-navy), var(--color-navy) 100%)", color: "var(--color-lightgrey)"}}>
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading payment status...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-yellow-400 mx-auto"></div>
+          <p className="mt-4" style={{color: "var(--color-lightgrey)"}}>Loading payment status...</p>
         </div>
       </div>
     }>
