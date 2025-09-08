@@ -25,13 +25,25 @@ interface Payment {
 }
 
 interface Ticket {
+  id?: string;
   ticketId: string;
+  ticketCode?: string;
   orderId: string;
   participantName: string;
   participantEmail: string;
+  participantPhone?: string;
   eventName: string;
+  eventDate?: string;
+  eventLocation?: string;
   emailSent: boolean;
+  emailSentAt?: string;
   createdAt: string;
+  issuedAt?: string;
+  updatedAt?: string;
+  status?: string;
+  // Fallback fields from registration data
+  fullName?: string;
+  email?: string;
 }
 
 export default function AdminPage() {
@@ -272,11 +284,19 @@ export default function AdminPage() {
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
                   {tickets.map((ticket, index) => (
-                    <tr key={`ticket-${ticket.ticketId}-${index}`}>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{ticket.ticketId}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{ticket.orderId}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{ticket.participantName}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{ticket.participantEmail}</td>
+                    <tr key={`ticket-${ticket.ticketId || ticket.id || index}`}>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                        {ticket.ticketId || ticket.ticketCode || 'N/A'}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        {ticket.orderId || 'N/A'}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        {ticket.participantName || ticket.fullName || 'N/A'}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        {ticket.participantEmail || ticket.email || 'N/A'}
+                      </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
                           ticket.emailSent ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
@@ -285,7 +305,15 @@ export default function AdminPage() {
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {new Date(ticket.createdAt).toLocaleString()}
+                        {(() => {
+                          const dateStr = ticket.createdAt || ticket.issuedAt;
+                          if (!dateStr) return 'N/A';
+                          try {
+                            return new Date(dateStr).toLocaleString();
+                          } catch {
+                            return 'Invalid Date';
+                          }
+                        })()}
                       </td>
                     </tr>
                   ))}

@@ -472,7 +472,24 @@ export class PostgresDatabase {
   async getTickets() {
     try {
       const queryText = `
-        SELECT t.*, r.full_name, r.email 
+        SELECT 
+          t.id,
+          t.order_id,
+          t.ticket_code,
+          t.participant_name,
+          t.participant_email,
+          t.participant_phone,
+          t.event_name,
+          t.event_date,
+          t.event_location,
+          t.qr_code,
+          t.email_sent,
+          t.email_sent_at,
+          t.status,
+          t.issued_at,
+          t.updated_at,
+          r.full_name,
+          r.email as registration_email
         FROM tickets t
         LEFT JOIN registrations r ON t.order_id = r.order_id
         ORDER BY t.issued_at DESC;
@@ -481,15 +498,38 @@ export class PostgresDatabase {
       const result = await this.executeQuery(queryText);
 
       const tickets = result.rows.map((row: any) => ({
-        ...row,
         id: `TKT_${row.id}`,
+        ticketId: row.ticket_code || `TKT_${row.id}`,
         orderId: row.order_id,
         ticketCode: row.ticket_code,
+        participantName: row.participant_name || row.full_name,
+        participantEmail: row.participant_email || row.registration_email,
+        participantPhone: row.participant_phone,
+        eventName: row.event_name,
+        eventDate: row.event_date,
+        eventLocation: row.event_location,
         qrCode: row.qr_code,
+        emailSent: row.email_sent || false,
+        emailSentAt: row.email_sent_at,
+        status: row.status,
         issuedAt: row.issued_at,
+        createdAt: row.issued_at, // For admin panel compatibility
+        updatedAt: row.updated_at,
+        // Fallback to registration data if ticket data is missing
         fullName: row.full_name,
-        email: row.email
+        email: row.registration_email
       }));
+
+      console.log('🎫 Retrieved tickets:', tickets.length);
+      if (tickets.length > 0) {
+        console.log('Sample ticket data:', {
+          ticketId: tickets[0].ticketId,
+          participantName: tickets[0].participantName,
+          participantEmail: tickets[0].participantEmail,
+          emailSent: tickets[0].emailSent,
+          createdAt: tickets[0].createdAt
+        });
+      }
 
       return { success: true, tickets };
     } catch (error) {
