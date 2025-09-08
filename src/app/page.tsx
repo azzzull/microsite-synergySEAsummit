@@ -28,7 +28,7 @@ export default function HomePage() {
         alt="Handara Gate Left"
         className="hidden md:block fixed -left-16 md:-left-20 bottom-0 w-auto z-0 pointer-events-none"
         style={{
-          height: 'calc(100vh - 5rem)',
+          height: 'min(100vh, 800px)',
           transform: `translateX(${-scrollY * 0.3}px)`,
           opacity: Math.max(0, 1 - scrollY / 500)
         }}
@@ -38,7 +38,7 @@ export default function HomePage() {
         alt="Handara Gate Right"
         className="hidden md:block fixed -right-16 md:-right-20 bottom-0 w-auto z-0 pointer-events-none"
         style={{
-          height: 'calc(100vh - 5rem)',
+          height: 'min(100vh, 800px)',
           transform: `translateX(${scrollY * 0.3}px)`,
           opacity: Math.max(0, 1 - scrollY / 500)
         }}
@@ -46,8 +46,8 @@ export default function HomePage() {
       
       {/* ===== VERSION 1: HERO SECTION WITH GATES ===== */}
       
-      <section className="relative w-full h-[450px] md:h-[calc(100vh-5rem)] flex flex-col items-center justify-start overflow-visible mt-16 sm:mt-20 md:mt-20 pt-4 md:pt-8 z-10">
-        <div className="relative w-[90%] md:w-[70%] max-w-2xl aspect-video overflow-hidden mt-2 rounded-lg mb-6 md:mb-8">
+      <section className="relative w-full min-h-screen flex flex-col items-center justify-center overflow-visible z-10 pt-20 pb-8 md:pt-24 md:pb-12">
+        <div className="relative w-[90%] md:w-[70%] max-w-2xl aspect-video overflow-hidden rounded-lg mb-6 md:mb-8">
           <iframe 
             className="absolute inset-0 w-full h-full"
             style={{transform: 'scale(1)', transformOrigin: 'center'}}
@@ -59,7 +59,7 @@ export default function HomePage() {
           ></iframe>
         </div>
         
-        <div className="text-center px-4 max-w-4xl -mt-4 relative z-10">
+        <div className="text-center px-4 max-w-4xl relative z-10">
           <motion.h1 initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1 }} className="text-3xl md:text-5xl font-bold mb-4" style={{color: "var(--color-gold)"}}>
             Synergy SEA Summit 2025
           </motion.h1>
