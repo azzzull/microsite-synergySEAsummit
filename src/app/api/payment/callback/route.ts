@@ -4,36 +4,35 @@ import { emailService } from '@/lib/emailService';
 
 export async function POST(request: NextRequest) {
   try {
-    console.log('� DOKU Payment Callback received');
+    console.log("DOKU Payment Callback received");
     
     const body = await request.json();
-    console.log('� Callback body:', JSON.stringify(body, null, 2));
+    console.log("Callback body:", JSON.stringify(body, null, 2));
 
-    // Process payment notification - handle DOKU Jokul format
     const { order, transaction } = body;
     const orderId = order?.invoice_number;
     const paymentStatus = transaction?.status;
     
-    console.log('� Processing payment:', {
+    console.log("Processing payment:", {
       orderId,
       status: paymentStatus,
       amount: order?.amount
     });
     
-    if (paymentStatus === 'SUCCESS' && orderId) {
-      console.log('✅ PAYMENT SUCCESS - Processing order:', orderId);
+    if (paymentStatus === "SUCCESS" && orderId) {
+      console.log("Payment successful for order:", orderId);
       
       try {
         // Update registration status
         const registrationResult = await postgresDb.updateRegistration(orderId, {
-          status: 'paid'
+          status: "paid"
         });
 
         // Update payment record
         await postgresDb.updatePayment(orderId, {
-          status: 'success',
+          status: "success",
           transactionId: transaction?.original_request_id,
-          paymentMethod: 'VIRTUAL_ACCOUNT_BCA',
+          paymentMethod: "VIRTUAL_ACCOUNT_BCA",
           paidAt: transaction?.date || new Date().toISOString()
         });
 
@@ -51,9 +50,9 @@ export async function POST(request: NextRequest) {
             participantName: registration.fullName,
             participantEmail: registration.email,
             participantPhone: registration.phone,
-            eventName: 'Synergy SEA Summit 2025',
-            eventDate: 'November 8, 2025',
-            eventLocation: 'The Stones Hotel, Legian Bali',
+            eventName: "Synergy SEA Summit 2025",
+            eventDate: "November 8, 2025",
+            eventLocation: "The Stones Hotel, Legian Bali",
             qrCode: qrCodeUrl,
             emailSent: false
           });
@@ -65,11 +64,11 @@ export async function POST(request: NextRequest) {
             participantName: registration.fullName,
             participantEmail: registration.email,
             participantPhone: registration.phone,
-            eventName: 'Synergy SEA Summit 2025',
-            eventDate: 'November 8, 2025',
-            eventTime: '09:00 AM - 05:00 PM WITA',
-            eventLocation: 'The Stones Hotel, Legian Bali',
-            amount: parseInt(order?.amount || '250000'),
+            eventName: "Synergy SEA Summit 2025",
+            eventDate: "November 8, 2025",
+            eventTime: "09:00 AM - 05:00 PM WITA",
+            eventLocation: "The Stones Hotel, Legian Bali",
+            amount: parseInt(order?.amount || "250000"),
             qrCode: qrCodeUrl,
             transactionId: transaction?.original_request_id,
             paidAt: transaction?.date || new Date().toISOString()
@@ -81,50 +80,50 @@ export async function POST(request: NextRequest) {
               emailSent: true,
               emailSentAt: new Date().toISOString()
             });
-            console.log('📧 E-ticket email sent successfully');
+            console.log("E-ticket sent successfully");
           }
 
-          console.log('💾 Payment processed successfully for:', orderId);
+          console.log("Payment processed successfully for:", orderId);
           
           return NextResponse.json({ 
-            message: 'Payment notification processed successfully',
-            status: 'SUCCESS',
+            message: "Payment notification processed successfully",
+            status: "SUCCESS",
             orderId
           });
         } else {
-          console.log('❌ Registration not found for order:', orderId);
+          console.log("Registration not found for order:", orderId);
           return NextResponse.json({ 
-            message: 'Registration not found',
-            status: 'ERROR',
+            message: "Registration not found",
+            status: "ERROR",
             orderId
           });
         }
       } catch (dbError: any) {
-        console.error('❌ Database error:', dbError);
+        console.error("Database error:", dbError);
         return NextResponse.json({ 
-          message: 'Database error during payment processing',
-          status: 'ERROR',
+          message: "Database error during payment processing",
+          status: "ERROR",
           orderId,
           error: dbError.message
         });
       }
     } else {
-      console.log('⚠️ Payment not successful or missing order ID:', { 
+      console.log("Payment not successful or missing order ID:", { 
         paymentStatus, 
         orderId 
       });
       return NextResponse.json({ 
-        message: 'Payment notification received but not processed',
-        status: paymentStatus || 'UNKNOWN',
-        orderId: orderId || 'MISSING'
+        message: "Payment notification received but not processed",
+        status: paymentStatus || "UNKNOWN",
+        orderId: orderId || "MISSING"
       });
     }
 
   } catch (error: any) {
-    console.error('❌ Callback processing error:', error);
+    console.error("Callback processing error:", error);
     return NextResponse.json(
       { 
-        error: 'Callback processing failed', 
+        error: "Callback processing failed", 
         details: error.message,
         timestamp: new Date().toISOString()
       },
@@ -135,8 +134,8 @@ export async function POST(request: NextRequest) {
 
 export async function GET() {
   return NextResponse.json({
-    message: 'DOKU Payment Callback Endpoint',
-    status: 'active',
+    message: "DOKU Payment Callback Endpoint",
+    status: "active",
     timestamp: new Date().toISOString()
   });
 }
