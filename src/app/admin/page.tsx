@@ -40,6 +40,7 @@ export default function AdminPage() {
   const [tickets, setTickets] = useState<Ticket[]>([]);
   const [loading, setLoading] = useState(true);
   const [resetting, setResetting] = useState(false);
+  const [emailTest, setEmailTest] = useState({ email: '', loading: false, result: '' });
 
   useEffect(() => {
     fetchData();
@@ -105,6 +106,48 @@ export default function AdminPage() {
       alert('❌ Error resetting database');
     } finally {
       setResetting(false);
+    }
+  };
+
+  const testEmailService = async (type: 'connection' | 'ticket' | 'confirmation') => {
+    try {
+      setEmailTest(prev => ({ ...prev, loading: true, result: '' }));
+
+      if (type === 'connection') {
+        const response = await fetch('/api/admin/test-email');
+        const result = await response.json();
+        setEmailTest(prev => ({ 
+          ...prev, 
+          result: result.connected ? '✅ Email service connected' : '❌ Email service not configured'
+        }));
+      } else {
+        if (!emailTest.email) {
+          setEmailTest(prev => ({ ...prev, result: '❌ Please enter an email address' }));
+          return;
+        }
+
+        const response = await fetch('/api/admin/test-email', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ 
+            email: emailTest.email, 
+            type: type === 'ticket' ? 'ticket' : 'confirmation'
+          })
+        });
+
+        const result = await response.json();
+        setEmailTest(prev => ({ 
+          ...prev, 
+          result: result.success 
+            ? `✅ ${type} email sent successfully!` 
+            : `❌ Failed: ${result.error}`
+        }));
+      }
+    } catch (error) {
+      console.error('Email test error:', error);
+      setEmailTest(prev => ({ ...prev, result: '❌ Error testing email service' }));
+    } finally {
+      setEmailTest(prev => ({ ...prev, loading: false }));
     }
   };
 
@@ -249,6 +292,83 @@ export default function AdminPage() {
                 </tbody>
               </table>
             </div>
+          </div>
+        </div>
+
+        {/* Email Service Testing */}
+        <div className="max-w-4xl mx-auto">
+          <div className="bg-black/20 border border-yellow-400/30 rounded-xl p-6">
+            <h2 className="text-2xl font-bold mb-6 text-center" style={{color: "var(--color-gold)"}}>
+              📧 Email Service Testing
+            </h2>
+            
+            <div className="grid md:grid-cols-2 gap-6">
+              {/* Connection Test */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold" style={{color: "var(--color-gold)"}}>
+                  Connection Test
+                </h3>
+                <button
+                  onClick={() => testEmailService('connection')}
+                  disabled={emailTest.loading}
+                  className="w-full py-3 px-4 rounded-lg font-medium transition-all duration-200 cursor-pointer hover:brightness-110 hover:scale-105 active:scale-95 disabled:opacity-50"
+                  style={{
+                    backgroundColor: "var(--color-gold)",
+                    color: "var(--color-navy)",
+                    border: `1px solid var(--color-gold)`
+                  }}
+                >
+                  {emailTest.loading ? "Testing..." : "🔌 Test Connection"}
+                </button>
+              </div>
+
+              {/* Email Sending Test */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold" style={{color: "var(--color-gold)"}}>
+                  Send Test Email
+                </h3>
+                <input
+                  type="email"
+                  placeholder="Enter test email address"
+                  value={emailTest.email}
+                  onChange={(e) => setEmailTest(prev => ({ ...prev, email: e.target.value }))}
+                  className="w-full px-4 py-3 rounded-lg border border-yellow-400/30 bg-black/20 text-white placeholder-gray-400 focus:outline-none focus:border-yellow-400"
+                />
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => testEmailService('confirmation')}
+                    disabled={emailTest.loading || !emailTest.email}
+                    className="flex-1 py-2 px-3 rounded-lg font-medium transition-all duration-200 cursor-pointer hover:brightness-110 hover:scale-105 active:scale-95 disabled:opacity-50 text-sm"
+                    style={{
+                      backgroundColor: "transparent",
+                      color: "var(--color-gold)",
+                      border: `1px solid var(--color-gold)`
+                    }}
+                  >
+                    💳 Confirmation
+                  </button>
+                  <button
+                    onClick={() => testEmailService('ticket')}
+                    disabled={emailTest.loading || !emailTest.email}
+                    className="flex-1 py-2 px-3 rounded-lg font-medium transition-all duration-200 cursor-pointer hover:brightness-110 hover:scale-105 active:scale-95 disabled:opacity-50 text-sm"
+                    style={{
+                      backgroundColor: "transparent",
+                      color: "var(--color-gold)",
+                      border: `1px solid var(--color-gold)`
+                    }}
+                  >
+                    🎫 Ticket
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* Test Result */}
+            {emailTest.result && (
+              <div className="mt-6 p-4 rounded-lg bg-black/40 border border-yellow-400/20">
+                <p className="text-center font-medium">{emailTest.result}</p>
+              </div>
+            )}
           </div>
         </div>
 

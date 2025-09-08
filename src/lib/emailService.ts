@@ -1,4 +1,4 @@
-// Email service with multiple providers simulation
+// Email service with multiple providers and backup options
 import nodemailer from 'nodemailer';
 
 export interface EmailTicketData {
@@ -25,39 +25,130 @@ export interface EmailConfirmationData {
   amount: number;
 }
 
+interface EmailProvider {
+  name: string;
+  transporter: any;
+  isConfigured: boolean;
+}
+
 class EmailService {
-  private transporter: any;
-  private isConfigured: boolean = false;
+  private providers: EmailProvider[] = [];
+  private currentProviderIndex: number = 0;
 
   constructor() {
-    this.initializeTransporter();
+    this.initializeProviders();
   }
 
-  private initializeTransporter() {
-    try {
-      // Check if we have email configuration
-      const emailConfig = {
-        host: process.env.SMTP_HOST || 'smtp.gmail.com',
-        port: parseInt(process.env.SMTP_PORT || '587'),
-        secure: process.env.SMTP_SECURE === 'true',
-        auth: {
-          user: process.env.SMTP_USER,
-          pass: process.env.SMTP_PASS
-        }
-      };
+  private initializeProviders() {
+    // Provider 1: Primary SMTP (Gmail, Outlook, etc.)
+    this.addProvider('Primary SMTP', {
+      host: process.env.SMTP_HOST || 'smtp.gmail.com',
+      port: parseInt(process.env.SMTP_PORT || '587'),
+      secure: process.env.SMTP_SECURE === 'true',
+      auth: {
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS
+      },
+      tls: {
+        rejectUnauthorized: false
+      }
+    });
 
-      if (emailConfig.auth.user && emailConfig.auth.pass) {
-        this.transporter = nodemailer.createTransport(emailConfig);
-        this.isConfigured = true;
-        console.log('✅ Email service configured with SMTP');
+    // Provider 2: SendGrid (if configured)
+    if (process.env.SENDGRID_API_KEY) {
+      this.addProvider('SendGrid', {
+        host: 'smtp.sendgrid.net',
+        port: 587,
+        secure: false,
+        auth: {
+          user: 'apikey',
+          pass: process.env.SENDGRID_API_KEY
+        }
+      });
+    }
+
+    // Provider 3: Mailtrap (for testing)
+    if (process.env.MAILTRAP_USER && process.env.MAILTRAP_PASS) {
+      this.addProvider('Mailtrap', {
+        host: 'smtp.mailtrap.io',
+        port: 587,
+        secure: false,
+        auth: {
+          user: process.env.MAILTRAP_USER,
+          pass: process.env.MAILTRAP_PASS
+        }
+      });
+    }
+
+    console.log(`✅ Email service initialized with ${this.providers.length} provider(s)`);
+    this.providers.forEach((provider, index) => {
+      console.log(`   ${index + 1}. ${provider.name}: ${provider.isConfigured ? '✅ Configured' : '❌ Not configured'}`);
+    });
+  }
+
+  private addProvider(name: string, config: any) {
+    try {
+      if (config.auth.user && config.auth.pass) {
+        const transporter = nodemailer.createTransport(config);
+        this.providers.push({
+          name,
+          transporter,
+          isConfigured: true
+        });
       } else {
-        console.log('⚠️ Email service not configured - using simulation mode');
-        this.isConfigured = false;
+        console.log(`⚠️ ${name} not configured - missing credentials`);
       }
     } catch (error) {
-      console.error('❌ Email service initialization failed:', error);
-      this.isConfigured = false;
+      console.error(`❌ ${name} initialization failed:`, error);
     }
+  }
+
+  private async sendEmailWithFallback(emailContent: any): Promise<{ success: boolean; messageId?: string; error?: string; provider?: string }> {
+    // If no providers configured, use simulation mode
+    if (this.providers.length === 0) {
+      console.log('📧 EMAIL SIMULATION - No providers configured');
+      console.log('📧 To:', emailContent.to);
+      console.log('📧 Subject:', emailContent.subject);
+      console.log('✅ Email simulation completed');
+      return { success: true, messageId: `sim_${Date.now()}`, provider: 'Simulation' };
+    }
+
+    // Try each provider in order
+    for (let attempt = 0; attempt < this.providers.length; attempt++) {
+      const providerIndex = (this.currentProviderIndex + attempt) % this.providers.length;
+      const provider = this.providers[providerIndex];
+
+      try {
+        console.log(`📧 Attempting to send email via ${provider.name}...`);
+        const result = await provider.transporter.sendMail(emailContent);
+        console.log(`✅ Email sent successfully via ${provider.name}:`, result.messageId);
+        
+        // Update current provider to successful one
+        this.currentProviderIndex = providerIndex;
+        return { 
+          success: true, 
+          messageId: result.messageId, 
+          provider: provider.name 
+        };
+      } catch (error: any) {
+        console.error(`❌ ${provider.name} failed:`, error.message);
+        
+        // If this was the last provider, return error
+        if (attempt === this.providers.length - 1) {
+          return { 
+            success: false, 
+            error: `All email providers failed. Last error: ${error.message}`,
+            provider: 'None'
+          };
+        }
+      }
+    }
+
+    return { 
+      success: false, 
+      error: 'No email providers available',
+      provider: 'None'
+    };
   }
 
   private generateTicketHTML(data: EmailTicketData): string {
@@ -235,25 +326,18 @@ class EmailService {
         ]
       };
 
-      if (this.isConfigured) {
-        console.log('📧 Sending actual email to:', data.participantEmail);
-        const result = await this.transporter.sendMail(emailContent);
-        console.log('✅ Email sent successfully:', result.messageId);
-        return { success: true, messageId: result.messageId };
+      console.log('📧 Sending ticket email to:', data.participantEmail);
+      const result = await this.sendEmailWithFallback(emailContent);
+      
+      if (result.success) {
+        console.log(`✅ Ticket email sent via ${result.provider}:`, result.messageId);
       } else {
-        // Simulation mode
-        console.log('📧 EMAIL SIMULATION - Ticket email would be sent to:', data.participantEmail);
-        console.log('🎫 Subject:', emailContent.subject);
-        console.log('📝 Ticket ID:', data.ticketId);
-        console.log('💰 Amount:', `Rp ${data.amount.toLocaleString('id-ID')}`);
-        console.log('📅 Event Date:', data.eventDate);
-        console.log('📍 Location:', data.eventLocation);
-        console.log('✅ Email simulation completed');
-        
-        return { success: true, messageId: `sim_${Date.now()}` };
+        console.error('❌ Ticket email failed:', result.error);
       }
+      
+      return result;
     } catch (error: any) {
-      console.error('❌ Email sending failed:', error);
+      console.error('❌ Ticket email error:', error);
       return { success: false, error: error.message };
     }
   }
@@ -267,39 +351,35 @@ class EmailService {
         html: this.generateConfirmationHTML(data)
       };
 
-      if (this.isConfigured) {
-        console.log('📧 Sending payment confirmation to:', data.participantEmail);
-        const result = await this.transporter.sendMail(emailContent);
-        console.log('✅ Confirmation email sent:', result.messageId);
-        return { success: true, messageId: result.messageId };
+      console.log('📧 Sending payment confirmation to:', data.participantEmail);
+      const result = await this.sendEmailWithFallback(emailContent);
+      
+      if (result.success) {
+        console.log(`✅ Confirmation email sent via ${result.provider}:`, result.messageId);
       } else {
-        // Simulation mode
-        console.log('📧 EMAIL SIMULATION - Payment confirmation would be sent to:', data.participantEmail);
-        console.log('💳 Status:', data.paymentStatus);
-        console.log('🆔 Order ID:', data.orderId);
-        console.log('💰 Amount:', `Rp ${data.amount.toLocaleString('id-ID')}`);
-        console.log('✅ Confirmation simulation completed');
-        
-        return { success: true, messageId: `sim_conf_${Date.now()}` };
+        console.error('❌ Confirmation email failed:', result.error);
       }
+      
+      return result;
     } catch (error: any) {
-      console.error('❌ Confirmation email failed:', error);
+      console.error('❌ Confirmation email error:', error);
       return { success: false, error: error.message };
     }
   }
 
   async testConnection(): Promise<boolean> {
-    if (!this.isConfigured) {
-      console.log('⚠️ Email service in simulation mode');
+    if (this.providers.length === 0) {
+      console.log('⚠️ Email service in simulation mode - no providers configured');
       return true;
     }
 
     try {
-      await this.transporter.verify();
-      console.log('✅ Email service connection verified');
+      const provider = this.providers[this.currentProviderIndex];
+      await provider.transporter.verify();
+      console.log(`✅ Email connection verified via ${provider.name}`);
       return true;
     } catch (error) {
-      console.error('❌ Email service connection failed:', error);
+      console.error(`❌ Email connection failed via ${this.providers[this.currentProviderIndex]?.name}:`, error);
       return false;
     }
   }
