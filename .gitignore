@@ -33,6 +33,12 @@ yarn-error.log*
 # env files (can opt-in for committing if needed)
 .env*
 
+# email credential files
+*EMAIL_SETUP*
+*GMAIL_SMTP*
+*VERCEL_EMAIL*
+*SMTP_CREDENTIALS*
+
 # vercel
 .vercel
 
