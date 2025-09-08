@@ -77,18 +77,17 @@ export async function POST(request: NextRequest) {
 
           console.log("Email send result:", emailResult);
 
-          // Update ticket email status
+          // Note: Email status tracking disabled due to database schema limitations
+          // Update ticket status based on email success
           if (emailResult.success) {
             await postgresDb.updateTicket(orderId, {
-              emailSent: true,
-              emailSentAt: new Date().toISOString()
+              status: 'email_sent'
             });
             console.log("E-ticket sent successfully to:", registration.email);
           } else {
             console.error("Failed to send e-ticket email:", emailResult.error);
             await postgresDb.updateTicket(orderId, {
-              emailSent: false,
-              emailSentAt: null
+              status: 'email_failed'
             });
           }
 

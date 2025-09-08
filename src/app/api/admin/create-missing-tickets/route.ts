@@ -74,6 +74,17 @@ export async function POST(request: NextRequest) {
           });
 
           console.log(`Email result for ${registration.email}:`, emailResult.success ? 'SUCCESS' : 'FAILED');
+          
+          // Update ticket status based on email result
+          if (emailResult.success) {
+            await postgresDb.updateTicket(registration.orderId, {
+              status: 'email_sent'
+            });
+          } else {
+            await postgresDb.updateTicket(registration.orderId, {
+              status: 'email_failed'
+            });
+          }
         }
       } catch (error) {
         console.error(`Error creating ticket for ${registration.orderId}:`, error);

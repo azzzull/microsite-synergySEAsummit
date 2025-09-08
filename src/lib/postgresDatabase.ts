@@ -490,8 +490,8 @@ export class PostgresDatabase {
         eventDate: '2025-11-08',
         eventLocation: 'The Stones Hotel, Legian Bali',
         qrCode: row.qr_code,
-        emailSent: false, // Default until we add column
-        emailSentAt: null,
+        emailSent: row.status === 'email_sent', // Use status to determine email sent
+        emailSentAt: row.status === 'email_sent' ? row.updated_at : null,
         status: row.status,
         issuedAt: row.issued_at,
         createdAt: row.issued_at,
@@ -573,17 +573,13 @@ export class PostgresDatabase {
         UPDATE tickets 
         SET 
           status = COALESCE($1, status),
-          email_sent = COALESCE($2, email_sent),
-          email_sent_at = COALESCE($3, email_sent_at),
           updated_at = CURRENT_TIMESTAMP
-        WHERE order_id = $4
+        WHERE order_id = $2
         RETURNING *;
       `;
 
       const params = [
         updates.status, 
-        updates.emailSent, 
-        updates.emailSentAt, 
         orderId
       ];
       const result = await this.executeQuery(queryText, params);
