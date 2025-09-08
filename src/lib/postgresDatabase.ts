@@ -476,22 +476,19 @@ export class PostgresDatabase {
           t.id,
           t.order_id,
           t.ticket_code,
-          t.participant_name,
-          t.participant_email,
-          t.participant_phone,
-          t.event_name,
-          t.event_date,
-          t.event_location,
           t.qr_code,
-          t.email_sent,
-          t.email_sent_at,
           t.status,
           t.issued_at,
           t.updated_at,
           r.full_name,
-          r.email as registration_email
+          r.email,
+          r.phone,
+          r.status as registration_status,
+          p.amount,
+          p.status as payment_status
         FROM tickets t
         LEFT JOIN registrations r ON t.order_id = r.order_id
+        LEFT JOIN payments p ON t.order_id = p.order_id
         ORDER BY t.issued_at DESC;
       `;
 
@@ -502,22 +499,25 @@ export class PostgresDatabase {
         ticketId: row.ticket_code || `TKT_${row.id}`,
         orderId: row.order_id,
         ticketCode: row.ticket_code,
-        participantName: row.participant_name || row.full_name,
-        participantEmail: row.participant_email || row.registration_email,
-        participantPhone: row.participant_phone,
-        eventName: row.event_name,
-        eventDate: row.event_date,
-        eventLocation: row.event_location,
+        participantName: row.full_name,
+        participantEmail: row.email,
+        participantPhone: row.phone,
+        eventName: 'Synergy SEA Summit 2025',
+        eventDate: '2025-11-08',
+        eventLocation: 'The Stones Hotel, Legian Bali',
         qrCode: row.qr_code,
-        emailSent: row.email_sent || false,
-        emailSentAt: row.email_sent_at,
+        emailSent: false, // Default until we add column
+        emailSentAt: null,
         status: row.status,
         issuedAt: row.issued_at,
-        createdAt: row.issued_at, // For admin panel compatibility
+        createdAt: row.issued_at,
         updatedAt: row.updated_at,
-        // Fallback to registration data if ticket data is missing
+        // Additional info
         fullName: row.full_name,
-        email: row.registration_email
+        email: row.email,
+        amount: row.amount,
+        registrationStatus: row.registration_status,
+        paymentStatus: row.payment_status
       }));
 
       console.log('🎫 Retrieved tickets:', tickets.length);

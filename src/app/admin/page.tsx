@@ -78,7 +78,10 @@ export default function AdminPage() {
 
       if (ticketRes.ok) {
         const ticketData = await ticketRes.json();
+        console.log('🎫 Fetched tickets data:', ticketData);
         setTickets(ticketData.tickets || []);
+      } else {
+        console.error('❌ Failed to fetch tickets:', ticketRes.status, ticketRes.statusText);
       }
     } catch (error) {
       console.error('Error fetching data:', error);
