@@ -88,7 +88,8 @@ export async function POST(request: NextRequest) {
           return NextResponse.json({ 
             message: "Payment notification processed successfully",
             status: "SUCCESS",
-            orderId
+            orderId,
+            redirect_url: `https://synergy-sea-summit2025.vercel.app/register/success?order_id=${orderId}`
           });
         } else {
           console.log("Registration not found for order:", orderId);
