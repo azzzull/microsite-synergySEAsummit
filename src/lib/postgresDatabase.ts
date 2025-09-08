@@ -418,25 +418,16 @@ export class PostgresDatabase {
       
       const queryText = `
         INSERT INTO tickets (
-          order_id, ticket_code, participant_name, participant_email, 
-          participant_phone, event_name, event_date, event_location, 
-          qr_code, email_sent, status
+          order_id, ticket_code, qr_code, status
         )
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+        VALUES ($1, $2, $3, $4)
         RETURNING *;
       `;
 
       const params = [
         data.orderId, 
         ticketCode, 
-        data.participantName || null,
-        data.participantEmail || null,
-        data.participantPhone || null,
-        data.eventName || null,
-        data.eventDate || null,
-        data.eventLocation || null,
         data.qrCode || null, 
-        data.emailSent || false,
         data.status || 'active'
       ];
       
@@ -452,14 +443,7 @@ export class PostgresDatabase {
           id: `TKT_${ticket.id}`,
           orderId: ticket.order_id,
           ticketCode: ticket.ticket_code,
-          participantName: ticket.participant_name,
-          participantEmail: ticket.participant_email,
-          participantPhone: ticket.participant_phone,
-          eventName: ticket.event_name,
-          eventDate: ticket.event_date,
-          eventLocation: ticket.event_location,
           qrCode: ticket.qr_code,
-          emailSent: ticket.email_sent,
           issuedAt: ticket.issued_at
         }
       };

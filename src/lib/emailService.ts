@@ -161,7 +161,7 @@ class EmailService {
         <style>
             body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
             .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-            .header { background: linear-gradient(135deg, #070d2d, #ffc107); color: white; padding: 30px 20px; text-align: center; }
+            .header { background: linear-gradient(135deg, #04091c, #070d2d); color: white; padding: 30px 20px; text-align: center; }
             .ticket { border: 2px dashed #ffc107; margin: 20px 0; padding: 20px; background: #f8f9fa; }
             .qr-section { text-align: center; margin: 20px 0; padding: 20px; background: white; }
             .footer { text-align: center; font-size: 12px; color: #666; margin-top: 30px; }
@@ -182,7 +182,7 @@ class EmailService {
                 <p>Thank you for registering for Synergy SEA Summit 2025! Your payment has been confirmed and your ticket is ready.</p>
                 
                 <div class="ticket">
-                    <h3 style="color: #070d2d; margin-top: 0;">🎟️ TICKET DETAILS</h3>
+                    <h3 style="color: #070d2d; margin-top: 0;">TICKET DETAILS</h3>
                     <div class="info-row">
                         <span class="label">Ticket ID:</span>
                         <span class="value">${data.ticketId}</span>
@@ -206,7 +206,7 @@ class EmailService {
                 </div>
 
                 <div class="ticket">
-                    <h3 style="color: #070d2d; margin-top: 0;">📅 EVENT DETAILS</h3>
+                    <h3 style="color: #070d2d; margin-top: 0;">EVENT DETAILS</h3>
                     <div class="info-row">
                         <span class="label">Event:</span>
                         <span class="value">${data.eventName}</span>
@@ -230,13 +230,13 @@ class EmailService {
                 </div>
 
                 <div class="qr-section">
-                    <h3 style="color: #070d2d;">📱 QR CODE FOR ENTRANCE</h3>
+                    <h3 style="color: #070d2d;">QR CODE FOR ENTRANCE</h3>
                     <img src="${data.qrCode}" alt="QR Code" style="max-width: 200px;">
                     <p><strong>Important:</strong> Please show this QR code at the event entrance for check-in.</p>
                 </div>
 
                 <div style="background: #e3f2fd; padding: 15px; border-radius: 5px; margin: 20px 0;">
-                    <h4 style="margin-top: 0; color: #1976d2;">📋 Important Instructions:</h4>
+                    <h4 style="margin-top: 0; color: #1976d2;">Important Instructions:</h4>
                     <ul>
                         <li>Arrive 30 minutes before the event starts</li>
                         <li>Bring a valid ID that matches your registration</li>
