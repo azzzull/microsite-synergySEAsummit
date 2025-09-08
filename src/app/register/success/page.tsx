@@ -18,10 +18,20 @@ interface PaymentStatus {
 function PaymentSuccessPageContent() {
   const searchParams = useSearchParams();
   const orderId = searchParams.get('order_id');
+  const paymentStatusParam = searchParams.get('payment_status');
   const [paymentStatus, setPaymentStatus] = useState<PaymentStatus | null>(null);
   const [loading, setLoading] = useState(true);
   const [syncing, setSyncing] = useState(false);
   const [autoSyncAttempted, setAutoSyncAttempted] = useState(false);
+
+  // Log initial parameters for debugging
+  useEffect(() => {
+    console.log('Success page loaded with params:', {
+      orderId,
+      paymentStatusParam,
+      allParams: Object.fromEntries(searchParams.entries())
+    });
+  }, [orderId, paymentStatusParam, searchParams]);
 
   // Auto-check payment status when page loads
   useEffect(() => {

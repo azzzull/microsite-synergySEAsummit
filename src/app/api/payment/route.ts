@@ -118,11 +118,14 @@ export async function POST(request: NextRequest) {
       order: {
         amount: 250000,
         invoice_number: orderId,
-        currency: 'IDR'
+        currency: 'IDR',
+        callback_url: `${publicUrl}/register/success?order_id=${orderId}`,
+        callback_url_cancel: `${publicUrl}/register?error=payment_cancelled&order_id=${orderId}`
       },
       payment: {
         payment_due_date: 60,
-        notification_url: `${publicUrl}/api/payment/callback`
+        notification_url: `${publicUrl}/api/payment/callback`,
+        return_url: `${publicUrl}/api/payment/return?order_id=${orderId}`
       },
       customer: {
         name: fullName,
@@ -141,8 +144,9 @@ export async function POST(request: NextRequest) {
                 country === 'Myanmar' ? 'MM' : 'ID'
       },
       additional_info: {
-        integration: 'Synergy SEA Summit 2025',
-        customer_details: {
+          integration: 'Synergy SEA Summit 2025',
+          close_redirect: `${publicUrl}/register/success?order_id=${orderId}`,
+          customer_details: {
           id: `CUST-${orderId}`,
           full_name: fullName,
           email: email,
@@ -193,9 +197,12 @@ export async function POST(request: NextRequest) {
             secondary: '#f8f9fa'
           }
         },
-        success_redirect_url: `${publicUrl}/register/success?order_id=${orderId}`,
-        unfinish_redirect_url: `${publicUrl}/register?error=payment_cancelled&order_id=${orderId}`,
-        error_redirect_url: `${publicUrl}/register?error=payment_failed&order_id=${orderId}`
+        success_redirect_url: `${publicUrl}/api/payment/return?order_id=${orderId}&status=success`,
+        unfinish_redirect_url: `${publicUrl}/api/payment/return?order_id=${orderId}&status=cancelled`,
+        error_redirect_url: `${publicUrl}/api/payment/return?order_id=${orderId}&status=failed`,
+        // Additional redirect configurations
+        finish_redirect_url: `${publicUrl}/api/payment/return?order_id=${orderId}&status=success`,
+        return_url: `${publicUrl}/api/payment/return?order_id=${orderId}`
       }
     };
 
