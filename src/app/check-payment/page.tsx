@@ -63,7 +63,7 @@ export default function CheckPaymentPage() {
         <div className="max-w-lg w-full bg-white rounded-xl shadow-lg p-8">
           
           <div className="text-center mb-8">
-            <h1 className="text-2xl font-bold text-gray-900 mb-4">Cek Status Pembayaran</h1>
+            <h1 className="text-2xl font-bold text-[var(--color-navy)] mb-4">Cek Status Pembayaran</h1>
             <p className="text-gray-600">
               Masukkan Order ID Anda untuk mengecek status pembayaran
             </p>
@@ -71,7 +71,7 @@ export default function CheckPaymentPage() {
 
           <div className="space-y-6">
             <div>
-              <label htmlFor="orderId" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="orderId" className="block text-sm font-medium text-[var(--color-navy)] mb-2">
                 Order ID
               </label>
               <input
@@ -80,7 +80,7 @@ export default function CheckPaymentPage() {
                 value={orderId}
                 onChange={(e) => setOrderId(e.target.value)}
                 placeholder="SSS2025-xxxxxxxxx-xxxxxx"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--color-gold)] focus:border-[var(--color-gold)] text-[var(--color-navy)]"
               />
               <p className="text-xs text-gray-500 mt-1">
                 Order ID dapat ditemukan di email konfirmasi registrasi
@@ -106,13 +106,13 @@ export default function CheckPaymentPage() {
                 {result.found ? (
                   <>
                     <h3 className={`font-semibold mb-2 ${
-                      result.status === 'paid' ? 'text-green-900' : 
-                      result.status === 'pending' ? 'text-yellow-900' : 'text-red-900'
+                      result.status === 'paid' ? 'text-green-800' : 
+                      result.status === 'pending' ? 'text-yellow-800' : 'text-red-800'
                     }`}>
                       Status: {result.status === 'paid' ? 'BERHASIL DIBAYAR ✅' : 
                                result.status === 'pending' ? 'MENUNGGU PEMBAYARAN ⏳' : 'STATUS UNKNOWN'}
                     </h3>
-                    <div className="text-sm space-y-1">
+                    <div className="text-sm space-y-1 text-[var(--color-navy)]">
                       <p><span className="font-medium">Nama:</span> {result.registration.fullName}</p>
                       <p><span className="font-medium">Email:</span> {result.registration.email}</p>
                       <p><span className="font-medium">Order ID:</span> {result.registration.orderId}</p>
@@ -143,10 +143,10 @@ export default function CheckPaymentPage() {
                 Butuh bantuan? Hubungi customer service kami
               </p>
               <div className="space-y-2">
-                <Link href="/register" className="block text-purple-600 hover:text-purple-700 text-sm">
+                <Link href="/register" className="block text-[var(--color-gold)] hover:text-[var(--color-navy)] text-sm font-medium">
                   ← Kembali ke Registrasi
                 </Link>
-                <Link href="/" className="block text-purple-600 hover:text-purple-700 text-sm">
+                <Link href="/" className="block text-[var(--color-gold)] hover:text-[var(--color-navy)] text-sm font-medium">
                   🏠 Beranda
                 </Link>
               </div>
