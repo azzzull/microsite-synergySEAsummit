@@ -65,10 +65,12 @@ Saat deploy ke Vercel, tambahkan environment variables berikut:
 - `SMTP_HOST=smtp.gmail.com`
 - `SMTP_PORT=587`
 - `SMTP_SECURE=false`
-- `SMTP_USER=azulkarnaen7@gmail.com`
-- `SMTP_PASS=oejiviaotwgfviwv`
-- `SMTP_FROM=azulkarnaen7@gmail.com`
+- `SMTP_USER=[YOUR_GMAIL_EMAIL]`
+- `SMTP_PASS=[YOUR_GMAIL_APP_PASSWORD]`
+- `SMTP_FROM=[YOUR_GMAIL_EMAIL]`
 - Database URLs (Railway PostgreSQL)
+
+**Note**: Ganti `[YOUR_GMAIL_EMAIL]` dan `[YOUR_GMAIL_APP_PASSWORD]` dengan nilai aktual saat deploy ke Vercel.
 
 ## Debug Checklist:
 
