@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
+import { convertToJakartaTime } from "@/lib/timezone";
 
 interface Registration {
   orderId: string;
@@ -183,7 +184,8 @@ export default function AdminPage() {
       <Navbar />
       <main className="flex-1 mt-16 sm:mt-20 md:mt-20 pt-4 md:pt-8 p-8">
         <div className="max-w-7xl mx-auto">
-          <h1 className="text-3xl font-bold mb-8" style={{color: "var(--color-gold)"}}>Admin Dashboard</h1>
+          <h1 className="text-3xl font-bold mb-2" style={{color: "var(--color-gold)"}}>Admin Dashboard</h1>
+          <p className="text-gray-500 mb-8">All timestamps displayed in Jakarta Time (WIB)</p>
         
         {/* Registrations */}
         <div className="mb-8">
@@ -218,7 +220,7 @@ export default function AdminPage() {
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {new Date(reg.createdAt).toLocaleString()}
+                        {convertToJakartaTime(reg.createdAt)}
                       </td>
                     </tr>
                   ))}
@@ -259,7 +261,7 @@ export default function AdminPage() {
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{payment.transactionId || '-'}</td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{payment.paymentMethod || '-'}</td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {payment.paidAt ? new Date(payment.paidAt).toLocaleString() : '-'}
+                        {payment.paidAt ? convertToJakartaTime(payment.paidAt) : '-'}
                       </td>
                     </tr>
                   ))}
@@ -311,11 +313,7 @@ export default function AdminPage() {
                         {(() => {
                           const dateStr = ticket.createdAt || ticket.issuedAt;
                           if (!dateStr) return 'N/A';
-                          try {
-                            return new Date(dateStr).toLocaleString();
-                          } catch {
-                            return 'Invalid Date';
-                          }
+                          return convertToJakartaTime(dateStr);
                         })()}
                       </td>
                     </tr>

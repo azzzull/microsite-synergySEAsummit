@@ -4,6 +4,7 @@ import { useSearchParams } from "next/navigation";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/Button";
+import { convertToJakartaTime } from "@/lib/timezone";
 import Link from "next/link";
 
 interface PaymentStatus {
@@ -320,7 +321,7 @@ function PaymentSuccessPageContent() {
                     </span>
                   </p>
                   {paymentStatus.lastChecked && (
-                    <p><span className="font-medium">Last Checked:</span> {new Date(paymentStatus.lastChecked).toLocaleString('id-ID')}</p>
+                    <p><span className="font-medium">Last Checked:</span> {convertToJakartaTime(paymentStatus.lastChecked)}</p>
                   )}
                 </div>
               </div>
