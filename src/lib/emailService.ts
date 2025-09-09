@@ -182,7 +182,7 @@ class EmailService {
                 <p>Thank you for registering for Synergy SEA Summit 2025! Your payment has been confirmed and your ticket is ready.</p>
                 
                 <div class="ticket">
-                    <h3 style="color: #ffc107; margin-top: 0;">TICKET DETAILS</h3>
+                    <h3 style="color: #070d2d; margin-top: 0;">TICKET DETAILS</h3>
                     <div class="info-row">
                         <span class="label">Ticket ID:</span>
                         <span class="value">${data.ticketId}</span>
@@ -206,7 +206,7 @@ class EmailService {
                 </div>
 
                 <div class="ticket">
-                    <h3 style="color: #ffc107; margin-top: 0;">EVENT DETAILS</h3>
+                    <h3 style="color: #070d2d; margin-top: 0;">EVENT DETAILS</h3>
                     <div class="info-row">
                         <span class="label">Event:</span>
                         <span class="value">${data.eventName}</span>
