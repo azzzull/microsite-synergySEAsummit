@@ -214,7 +214,17 @@ export class PostgresDatabase {
       console.log('- NODE_ENV:', process.env.NODE_ENV);
       
       const queryText = `
-        SELECT * FROM registrations 
+        SELECT 
+          *,
+          CASE 
+            WHEN created_at::text LIKE '%+07%' THEN created_at
+            ELSE created_at AT TIME ZONE 'UTC' AT TIME ZONE 'Asia/Jakarta'
+          END as jakarta_created_at,
+          CASE 
+            WHEN updated_at::text LIKE '%+07%' THEN updated_at
+            ELSE updated_at AT TIME ZONE 'UTC' AT TIME ZONE 'Asia/Jakarta'
+          END as jakarta_updated_at
+        FROM registrations 
         ORDER BY created_at DESC;
       `;
 
@@ -238,8 +248,8 @@ export class PostgresDatabase {
         orderId: row.order_id,
         fullName: row.full_name,
         dateOfBirth: row.date_of_birth,
-        createdAt: row.created_at,
-        updatedAt: row.updated_at
+        createdAt: row.jakarta_created_at || row.created_at,
+        updatedAt: row.jakarta_updated_at || row.updated_at
       }));
 
       return { success: true, registrations };
