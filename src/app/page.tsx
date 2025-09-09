@@ -26,7 +26,7 @@ export default function HomePage() {
       <motion.img 
         src="/SVG/HandaraLeft.svg" 
         alt="Handara Gate Left"
-        className="hidden md:block fixed -left-16 md:-left-20 bottom-0 w-auto z-0 pointer-events-none"
+        className="handara-gates fixed -left-16 xl:-left-20 bottom-0 w-auto z-0 pointer-events-none"
         style={{
           height: 'calc(100vh - 5rem)',
           transform: `translateX(${-scrollY * 0.3}px)`,
@@ -36,7 +36,7 @@ export default function HomePage() {
       <motion.img 
         src="/SVG/HandaraRight.svg" 
         alt="Handara Gate Right"
-        className="hidden md:block fixed -right-16 md:-right-20 bottom-0 w-auto z-0 pointer-events-none"
+        className="handara-gates fixed -right-16 xl:-right-20 bottom-0 w-auto z-0 pointer-events-none"
         style={{
           height: 'calc(100vh - 5rem)',
           transform: `translateX(${scrollY * 0.3}px)`,
@@ -46,7 +46,7 @@ export default function HomePage() {
       
       {/* ===== VERSION 1: HERO SECTION WITH GATES ===== */}
       
-      <section className="relative w-full min-h-screen flex flex-col items-center justify-center overflow-visible z-10 pt-20 pb-8 md:pt-24 md:pb-12">
+      <section className="relative w-full min-h-[60vh] md:min-h-screen flex flex-col items-center justify-center overflow-visible z-10 pt-20 pb-8 md:pt-24 md:pb-12">
         <div className="relative w-[90%] sm:w-[80%] md:w-[70%] lg:w-[60%] xl:w-[55%] 2xl:w-[50%] aspect-video overflow-hidden rounded-lg mb-6 md:mb-8">
           <iframe 
             className="absolute inset-0 w-full h-full"

@@ -35,7 +35,7 @@ export const Navbar = () => {
         </Link>
         {/* Hamburger Icon */}
         <motion.button
-          className="sm:hidden flex items-center px-3 py-2 border rounded text-[var(--color-lightgrey)] border-[var(--color-lightgrey)] hover:border-[var(--color-gold)] transition-colors duration-200"
+          className="mobile-menu items-center px-3 py-2 border rounded text-[var(--color-lightgrey)] border-[var(--color-lightgrey)] hover:border-[var(--color-gold)] transition-colors duration-200"
           onClick={() => setMenuOpen(!menuOpen)}
           aria-label="Toggle menu"
           whileHover={{ scale: 1.05 }}
@@ -62,11 +62,10 @@ export const Navbar = () => {
         </motion.button>
         
         {/* Menu Links */}
-        <div className="hidden sm:flex flex-row gap-10 items-center justify-end">
+        <div className="desktop-menu flex-row gap-10 items-center justify-end">
           <Link href="/" className="navbar-link transition-colors duration-200 cursor-pointer text-[var(--color-lightgrey)] hover:text-[var(--color-gold)]">Home</Link>
           <Link href="/hall-of-fame" className="navbar-link transition-colors duration-200 cursor-pointer text-[var(--color-lightgrey)] hover:text-[var(--color-gold)]">Hall of Fame</Link>
           <Link href="/location" className="navbar-link transition-colors duration-200 cursor-pointer text-[var(--color-lightgrey)] hover:text-[var(--color-gold)]">Location</Link>
-          <Link href="/check-payment" className="navbar-link transition-colors duration-200 cursor-pointer text-[var(--color-lightgrey)] hover:text-[var(--color-gold)]">Cek Payment</Link>
           <Link href="/register" className="navbar-link transition-colors duration-200 cursor-pointer text-[var(--color-lightgrey)] hover:text-[var(--color-gold)]">Register</Link>
         </div>
         
@@ -74,7 +73,7 @@ export const Navbar = () => {
         <AnimatePresence mode="wait">
           {menuOpen && (
             <motion.div 
-              className="flex flex-col gap-2 absolute top-full left-0 w-full bg-[var(--color-navy)] backdrop-blur-md shadow-xl sm:hidden items-center justify-center py-6 rounded-b-lg"
+              className="mobile-menu-dropdown flex flex-col gap-2 absolute top-full left-0 w-full bg-[var(--color-navy)] backdrop-blur-md shadow-xl items-center justify-center py-6 rounded-b-lg"
               initial={{ 
                 opacity: 0, 
                 y: -30, 
@@ -105,7 +104,6 @@ export const Navbar = () => {
                 { href: "/", label: "Home" },
                 { href: "/hall-of-fame", label: "Hall of Fame" },
                 { href: "/location", label: "Location" },
-                { href: "/check-payment", label: "Cek Payment" },
                 { href: "/register", label: "Register" }
               ].map((item, index) => (
                 <motion.div
