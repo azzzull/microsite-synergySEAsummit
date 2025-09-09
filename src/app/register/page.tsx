@@ -160,7 +160,8 @@ export default function RegisterPage() {
                       name="fullName" 
                       required 
                       value={form.fullName} 
-                      onChange={handleChange} 
+                      onChange={handleChange}
+                      placeholder="Enter your full name"
                       className="w-full px-4 py-3 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-yellow-400" 
                       style={{
                         backgroundColor: "var(--color-lightgrey)", 
@@ -180,7 +181,8 @@ export default function RegisterPage() {
                       name="phone" 
                       required 
                       value={form.phone} 
-                      onChange={handleChange} 
+                      onChange={handleChange}
+                      placeholder="e.g., 081234567890 or +6281234567890"
                       onInput={(e) => {
                         const target = e.target as HTMLInputElement;
                         target.value = target.value.replace(/[^0-9]/g, '');
@@ -204,13 +206,17 @@ export default function RegisterPage() {
                       name="email" 
                       required 
                       value={form.email} 
-                      onChange={handleChange} 
+                      onChange={handleChange}
+                      placeholder="Enter your email address"
                       className="w-full px-4 py-3 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-yellow-400" 
                       style={{
                         backgroundColor: "var(--color-lightgrey)", 
                         color: "var(--color-navy)"
                       }} 
                     />
+                    <p className="text-xs mt-2" style={{color: "var(--color-gold)"}}>
+                      *Please ensure your email is correct as the e-ticket will be sent to this email address
+                    </p>
                   </div>
                 </div>
 
@@ -225,7 +231,7 @@ export default function RegisterPage() {
                       value={form.address} 
                       onChange={(e) => setForm({ ...form, address: e.target.value })}
                       rows={3}
-                      placeholder="Enter your full address"
+                      placeholder="Enter your complete address (street, city, postal code)"
                       className="w-full px-4 py-3 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-yellow-400" 
                       style={{
                         backgroundColor: "var(--color-lightgrey)", 
@@ -300,7 +306,7 @@ export default function RegisterPage() {
                       }
                       .custom-datepicker .react-datepicker__current-month,
                       .custom-datepicker .react-datepicker__day-name {
-                        color: var(--color-lightgrey) !important;
+                        color: var(--color-gold) !important;
                         font-weight: bold !important;
                       }
                       .custom-datepicker .react-datepicker__day {

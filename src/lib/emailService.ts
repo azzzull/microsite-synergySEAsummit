@@ -162,7 +162,7 @@ class EmailService {
             body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
             .container { max-width: 600px; margin: 0 auto; padding: 20px; }
             .header { background: linear-gradient(135deg, #04091c, #070d2d); color: white; padding: 30px 20px; text-align: center; }
-            .ticket { border: 2px dashed #ffc107; margin: 20px 0; padding: 20px; background: #f8f9fa; }
+            .ticket { border: 2px dashed #070d2d; margin: 20px 0; padding: 20px; background: #eef4ff; }
             .qr-section { text-align: center; margin: 20px 0; padding: 20px; background: white; }
             .footer { text-align: center; font-size: 12px; color: #666; margin-top: 30px; }
             .info-row { display: flex; justify-content: space-between; margin: 10px 0; }
@@ -182,7 +182,7 @@ class EmailService {
                 <p>Thank you for registering for Synergy SEA Summit 2025! Your payment has been confirmed and your ticket is ready.</p>
                 
                 <div class="ticket">
-                    <h3 style="color: #070d2d; margin-top: 0;">TICKET DETAILS</h3>
+                    <h3 style="color: #ffc107; margin-top: 0;">TICKET DETAILS</h3>
                     <div class="info-row">
                         <span class="label">Ticket ID:</span>
                         <span class="value">${data.ticketId}</span>
@@ -206,7 +206,7 @@ class EmailService {
                 </div>
 
                 <div class="ticket">
-                    <h3 style="color: #070d2d; margin-top: 0;">EVENT DETAILS</h3>
+                    <h3 style="color: #ffc107; margin-top: 0;">EVENT DETAILS</h3>
                     <div class="info-row">
                         <span class="label">Event:</span>
                         <span class="value">${data.eventName}</span>
