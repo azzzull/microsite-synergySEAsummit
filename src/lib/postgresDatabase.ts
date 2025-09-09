@@ -112,24 +112,29 @@ export class PostgresDatabase {
     try {
       console.log('🔧 Creating registration with PostgreSQL...');
       
+      // Create Jakarta timestamp explicitly
+      const jakartaTime = new Date().toLocaleString('sv-SE', { timeZone: 'Asia/Jakarta' });
+      const jakartaTimestamp = jakartaTime.replace(' ', 'T') + '+07:00';
+      
       const queryText = `
         INSERT INTO registrations (
           order_id, full_name, phone, email, date_of_birth, 
-          address, country, amount, status
+          address, country, amount, status, created_at, updated_at
         )
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
         RETURNING *;
       `;
       
       const params = [
         data.orderId, data.fullName, data.phone, 
         data.email, data.dob, data.address, 
-        data.country, data.amount, data.status || 'pending'
+        data.country, data.amount, data.status || 'pending',
+        jakartaTimestamp, jakartaTimestamp
       ];
 
       const result = await this.executeQuery(queryText, params);
       const registration = result.rows[0];
-      console.log('📝 Registration created in Postgres:', registration.id);
+      console.log('📝 Registration created in Postgres with Jakarta time:', registration.id, jakartaTimestamp);
       
       return { 
         success: true, 
@@ -150,12 +155,17 @@ export class PostgresDatabase {
 
   async createPayment(data: any) {
     try {
+      // Create Jakarta timestamp explicitly
+      const jakartaTime = new Date().toLocaleString('sv-SE', { timeZone: 'Asia/Jakarta' });
+      const jakartaTimestamp = jakartaTime.replace(' ', 'T') + '+07:00';
+      
       const queryText = `
         INSERT INTO payments (
           order_id, transaction_id, amount, payment_method, 
-          payment_url, token_id, expired_date, status, payment_data
+          payment_url, token_id, expired_date, status, payment_data,
+          created_at, updated_at
         )
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
         RETURNING *;
       `;
       
@@ -164,12 +174,13 @@ export class PostgresDatabase {
         data.amount, data.payment_method || null,
         data.payment_url || null, data.token_id || null,
         data.expired_date || null, data.status || 'pending',
-        JSON.stringify(data.payment_data || {})
+        JSON.stringify(data.payment_data || {}),
+        jakartaTimestamp, jakartaTimestamp
       ];
 
       const result = await this.executeQuery(queryText, params);
       const payment = result.rows[0];
-      console.log('💳 Payment created in Postgres:', payment.id);
+      console.log('💳 Payment created in Postgres with Jakarta time:', payment.id, jakartaTimestamp);
       
       return { 
         success: true, 
