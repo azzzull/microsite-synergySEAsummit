@@ -15,7 +15,9 @@ export default function RegisterPage() {
     email: "",
     dob: null as Date | null,
     address: "",
-    country: "Indonesia"
+    country: "Indonesia",
+    memberId: "",
+    ticketQuantity: 1
   });
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -29,8 +31,21 @@ export default function RegisterPage() {
     e.preventDefault();
     
     // Basic validation
-    if (!form.fullName || !form.phone || !form.email || !form.dob || !form.address) {
+    if (!form.fullName || !form.phone || !form.email || !form.dob || !form.address || !form.memberId) {
       setError("Please fill in all required fields");
+      return;
+    }
+
+    // Member ID validation (minimal 6 digits)
+    const memberIdRegex = /^\d{6,}$/;
+    if (!memberIdRegex.test(form.memberId)) {
+      setError("Member ID must contain at least 6 digits");
+      return;
+    }
+
+    // Ticket quantity validation
+    if (form.ticketQuantity < 1 || form.ticketQuantity > 10) {
+      setError("Ticket quantity must be between 1 and 10");
       return;
     }
 
@@ -60,7 +75,9 @@ export default function RegisterPage() {
         email: form.email,
         dob: form.dob?.toISOString().split('T')[0], // Format date as YYYY-MM-DD
         address: form.address,
-        country: form.country
+        country: form.country,
+        memberId: form.memberId,
+        ticketQuantity: form.ticketQuantity
       });
 
       console.log('Payment API response:', response.data);
@@ -269,6 +286,65 @@ export default function RegisterPage() {
                       <option value="Myanmar">Myanmar</option>
                       <option value="Other">Other</option>
                     </select>
+                  </div>
+                </div>
+
+                {/* Member ID */}
+                <div className="flex flex-col md:flex-row md:items-center gap-4">
+                  <label htmlFor="memberId" className="md:w-1/3 font-medium" style={{color: "var(--color-lightgrey)"}}>Member ID</label>
+                  <div className="md:w-2/3">
+                    <input 
+                      type="text" 
+                      id="memberId"
+                      name="memberId" 
+                      required 
+                      value={form.memberId} 
+                      onChange={handleChange}
+                      placeholder="Enter your member ID (minimum 6 digits)"
+                      className="w-full px-4 py-3 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-yellow-400" 
+                      style={{
+                        backgroundColor: "var(--color-lightgrey)", 
+                        color: "var(--color-navy)"
+                      }}
+                      pattern="[0-9]{6,}"
+                      title="Member ID must contain at least 6 digits"
+                    />
+                    <p className="text-xs mt-2" style={{color: "var(--color-gold)"}}>
+                      *Member ID must contain at least 6 digits
+                    </p>
+                  </div>
+                </div>
+
+                {/* Ticket Quantity */}
+                <div className="flex flex-col md:flex-row md:items-center gap-4">
+                  <label htmlFor="ticketQuantity" className="md:w-1/3 font-medium" style={{color: "var(--color-lightgrey)"}}>Number of Tickets</label>
+                  <div className="md:w-2/3">
+                    <select 
+                      id="ticketQuantity"
+                      name="ticketQuantity" 
+                      required 
+                      value={form.ticketQuantity} 
+                      onChange={(e) => setForm({ ...form, ticketQuantity: parseInt(e.target.value) })}
+                      className="w-full px-4 py-3 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-yellow-400" 
+                      style={{
+                        backgroundColor: "var(--color-lightgrey)", 
+                        color: "var(--color-navy)"
+                      }} 
+                    >
+                      <option value={1}>1 Ticket</option>
+                      <option value={2}>2 Tickets</option>
+                      <option value={3}>3 Tickets</option>
+                      <option value={4}>4 Tickets</option>
+                      <option value={5}>5 Tickets</option>
+                      <option value={6}>6 Tickets</option>
+                      <option value={7}>7 Tickets</option>
+                      <option value={8}>8 Tickets</option>
+                      <option value={9}>9 Tickets</option>
+                      <option value={10}>10 Tickets</option>
+                    </select>
+                    <p className="text-xs mt-2" style={{color: "var(--color-gold)"}}>
+                      *Maximum 10 tickets per registration
+                    </p>
                   </div>
                 </div>
 

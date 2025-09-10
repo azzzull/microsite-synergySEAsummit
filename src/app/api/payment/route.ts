@@ -43,9 +43,9 @@ export async function POST(request: NextRequest) {
   try {
     console.log('=== DOKU Checkout API Called ===');
     const body = await request.json();
-    const { fullName, phone, email, dob, address, country } = body;
-    
-    console.log('Request body:', { fullName, phone, email, dob, address, country });
+    const { fullName, phone, email, dob, address, country, memberId, ticketQuantity } = body;
+
+    console.log('Request body:', { fullName, phone, email, dob, address, country, memberId, ticketQuantity });
     console.log('Environment variables check:', {
       DOKU_BASE_URL,
       CLIENT_ID: CLIENT_ID?.substring(0, 15) + '...',
@@ -53,13 +53,35 @@ export async function POST(request: NextRequest) {
       MERCHANT_CODE: MERCHANT_CODE ? 'Set (length: ' + MERCHANT_CODE.length + ')' : 'Not set'
     });
 
-    // Validate required fields
-    if (!fullName || !phone || !email || !dob || !address) {
+    // Basic validation
+    if (!fullName || !phone || !email || !dob || !address || !memberId) {
       return NextResponse.json(
-        { error: 'All fields are required' },
+        { success: false, error: "Missing required fields" },
         { status: 400 }
       );
     }
+
+    // Member ID validation
+    const memberIdRegex = /^\d{6,}$/;
+    if (!memberIdRegex.test(memberId)) {
+      return NextResponse.json(
+        { success: false, error: "Member ID must contain at least 6 digits" },
+        { status: 400 }
+      );
+    }
+
+    // Ticket quantity validation
+    const quantity = ticketQuantity || 1;
+    if (quantity < 1 || quantity > 10) {
+      return NextResponse.json(
+        { success: false, error: "Ticket quantity must be between 1 and 10" },
+        { status: 400 }
+      );
+    }
+
+    // Calculate total amount based on quantity
+    const basePrice = 250000; // IDR 250,000 per ticket
+    const totalAmount = basePrice * quantity;
 
     // Check if environment variables are properly set
     if (!CLIENT_ID || !CLIENT_SECRET || CLIENT_ID === 'your_sandbox_client_id') {
@@ -72,13 +94,13 @@ export async function POST(request: NextRequest) {
         expired_date: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString().replace(/[:.]/g, '').slice(0, 14),
         session_id: crypto.randomUUID().replace(/-/g, ''),
         virtual_accounts: [
-          { bank: 'BCA', va_number: '01234830768', amount: 250000 },
-          { bank: 'BNI', va_number: '98765694385', amount: 250000 },
-          { bank: 'MANDIRI', va_number: '56789813796', amount: 250000 }
+          { bank: 'BCA', va_number: '01234830768', amount: totalAmount },
+          { bank: 'BNI', va_number: '98765694385', amount: totalAmount },
+          { bank: 'MANDIRI', va_number: '56789813796', amount: totalAmount }
         ],
         qr_code: {
-          qr_string: `doku.payment.${orderId}.250000`,
-          qr_image_url: `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=doku.payment.${orderId}.250000`
+          qr_string: `doku.payment.${orderId}.${totalAmount}`,
+          qr_image_url: `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=doku.payment.${orderId}.${totalAmount}`
         },
         payment_method_types: ['VIRTUAL_ACCOUNT_BCA', 'VIRTUAL_ACCOUNT_BNI', 'VIRTUAL_ACCOUNT_BANK_MANDIRI', 'QRIS', 'CREDIT_CARD']
       };
@@ -86,13 +108,13 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ 
         success: true, 
         order_id: orderId,
-        amount: 250000,
+        amount: totalAmount,
         payment_url: simulationData.payment_url,
         token_id: simulationData.token_id,
         expired_date: simulationData.expired_date,
         payment_type: 'doku_checkout_simulation',
         simulation_data: simulationData,
-        customer_info: { fullName, phone, email, dob, address, country },
+        customer_info: { fullName, phone, email, dob, address, country, memberId, ticketQuantity: quantity },
         error: 'Environment not configured - using simulation'
       });
     }
@@ -116,7 +138,7 @@ export async function POST(request: NextRequest) {
     // Gunakan request body dengan informasi customer sesuai dokumentasi DOKU
     const requestBodyWithCustomer = {
       order: {
-        amount: 250000,
+        amount: totalAmount,
         invoice_number: orderId,
         currency: 'IDR',
         callback_url: `${publicUrl}/register/success?order_id=${orderId}`,
@@ -257,13 +279,15 @@ export async function POST(request: NextRequest) {
         dob,
         address,
         country,
-        amount: 250000,
+        memberId,
+        ticketQuantity: quantity,
+        amount: totalAmount,
         status: 'pending'
       });
 
       const paymentData = await postgresDb.createPayment({
         order_id: orderId,
-        amount: 250000,
+        amount: totalAmount,
         status: 'pending',
         payment_data: response.data
       });
@@ -276,7 +300,7 @@ export async function POST(request: NextRequest) {
         participantName: fullName,
         participantEmail: email,
         paymentStatus: 'pending',
-        amount: 250000
+        amount: totalAmount
       });
 
       console.log('📧 Payment confirmation email sent');
@@ -285,7 +309,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ 
         success: true, 
         order_id: orderId,
-        amount: 250000,
+        amount: totalAmount,
         payment_url: response.data.response.payment.url,
         token_id: response.data.response.payment.token_id,
         expired_date: response.data.response.payment.expired_date,
@@ -307,13 +331,13 @@ export async function POST(request: NextRequest) {
       expired_date: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString().replace(/[:.]/g, '').slice(0, 14),
       session_id: crypto.randomUUID().replace(/-/g, ''),
       virtual_accounts: [
-        { bank: 'BCA', va_number: '01234830768', amount: 250000 },
-        { bank: 'BNI', va_number: '98765694385', amount: 250000 },
-        { bank: 'MANDIRI', va_number: '56789813796', amount: 250000 }
+        { bank: 'BCA', va_number: '01234830768', amount: totalAmount },
+        { bank: 'BNI', va_number: '98765694385', amount: totalAmount },
+        { bank: 'MANDIRI', va_number: '56789813796', amount: totalAmount }
       ],
       qr_code: {
-        qr_string: `doku.payment.${orderId}.250000`,
-        qr_image_url: `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=doku.payment.${orderId}.250000`
+        qr_string: `doku.payment.${orderId}.${totalAmount}`,
+        qr_image_url: `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=doku.payment.${orderId}.${totalAmount}`
       },
       payment_method_types: ['VIRTUAL_ACCOUNT_BCA', 'VIRTUAL_ACCOUNT_BNI', 'VIRTUAL_ACCOUNT_BANK_MANDIRI', 'QRIS', 'CREDIT_CARD']
     };
@@ -327,13 +351,15 @@ export async function POST(request: NextRequest) {
       dob,
       address,
       country,
-      amount: 250000,
+      memberId,
+      ticketQuantity: quantity,
+      amount: totalAmount,
       status: 'pending'
     });
 
     const simulationPayment = await postgresDb.createPayment({
       order_id: orderId,
-      amount: 250000,
+      amount: totalAmount,
       status: 'pending'
     });
 
@@ -342,7 +368,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ 
       success: true, 
       order_id: orderId,
-      amount: 250000,
+      amount: totalAmount,
       payment_url: simulationData.payment_url,
       token_id: simulationData.token_id,
       expired_date: simulationData.expired_date,
