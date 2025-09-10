@@ -22,10 +22,11 @@ NEXT_PUBLIC_BASE_URL=https://synergy-sea-summit2025.vercel.app
 NEXT_PUBLIC_BASE_URL=https://your-custom-domain.com
 ```
 
-### 3. 🗄️ Database
+### 3. 🗄️ Database (Keep Existing)
 ```bash
-# Production PostgreSQL
-DATABASE_URL=your_production_postgresql_url
+# KEEP current database - just clean data
+# No need to change DATABASE_URL
+# Just clear test records before go-live
 ```
 
 ---
@@ -43,9 +44,10 @@ DATABASE_URL=your_production_postgresql_url
 
 1. **Setup DOKU Production** → Get credentials
 2. **Setup Custom Domain** → Configure DNS  
-3. **Update Environment Variables** → Vercel dashboard
+3. **Update Environment Variables** → Vercel dashboard (domain + DOKU only)
 4. **Update DOKU Callbacks** → DOKU dashboard
-5. **Deploy & Test** → `vercel --prod`
+5. **Clear Test Data** → Clean database records
+6. **Deploy & Test** → `vercel --prod`
 
 **Time needed**: 2-4 hours (excluding DOKU approval time)
 
@@ -55,7 +57,7 @@ DATABASE_URL=your_production_postgresql_url
 
 1. **DOKU Production Setup** 🔥 (Most Critical)
 2. **Domain Configuration** 🌐 
-3. **Database Migration** 🗄️
+3. **Clear Test Data** 🧹 (Clean existing database)
 4. **Testing** 🧪
 
 ---

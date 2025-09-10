@@ -8,7 +8,14 @@ Checklist lengkap untuk migrasi dari sandbox/development ke production environme
 ## 🌐 1. Domain & Hosting Configuration
 
 ### ✅ Domain Setup
-- [ ] **Custom Domain**: Ubah dari `synergy-sea-summit2025.vercel.app` ke domain custom (misal: `synergyseakummit.com`)
+- [ ] **Custom Domain**: Ubah dari `synergy-sea-summit2025.v### ✅ Quick Migration Steps
+
+1. **Setup DOKU Production Account** & get production credentials
+2. **Configure Custom Domain** di Vercel
+3. **Update Environment Variables** di Vercel dashboard (domain + DOKU only)
+4. **Update DOKU callback URLs** di DOKU production dashboard
+5. **Clean test data** from existing database
+6. **Deploy & Test** payment flow end-to-endp` ke domain custom (misal: `synergyseakummit.com`)
 - [ ] **DNS Configuration**: Setup A record atau CNAME ke Vercel
 - [ ] **SSL Certificate**: Pastikan HTTPS aktif untuk domain custom
 - [ ] **Domain Verification**: Verifikasi ownership domain di Vercel
@@ -85,28 +92,35 @@ ETHEREAL_PASS=your_ethereal_pass
 
 ---
 
-## 🗄️ 4. Database Configuration
+## 🗄️ 4. Database Strategy (Keep Existing - Just Clean Data)
 
-### ✅ PostgreSQL Production
-Jika menggunakan Railway PostgreSQL:
+### ✅ Smart Approach: Keep Current Database
+**Why keep existing database?**
+- ✅ **Schema** already perfect & tested
+- ✅ **Performance** already optimized
+- ✅ **Environment variables** already set
+- ✅ **Connection** already stable
+- ✅ **Indexes & constraints** already tuned
 
-```bash
-# Production Database
-DATABASE_URL=your_production_postgresql_url
-POSTGRES_PRISMA_URL=your_production_postgresql_url
-POSTGRES_URL_NON_POOLING=your_production_postgresql_url
+### ✅ Pre-Launch Database Cleanup
+```sql
+-- Clear all test data before go-live
+TRUNCATE TABLE tickets RESTART IDENTITY CASCADE;
+TRUNCATE TABLE payments RESTART IDENTITY CASCADE; 
+TRUNCATE TABLE registrations RESTART IDENTITY CASCADE;
+
+-- Reset auto-increment to start fresh
+ALTER SEQUENCE registrations_id_seq RESTART WITH 1;
+ALTER SEQUENCE payments_id_seq RESTART WITH 1;
+ALTER SEQUENCE tickets_id_seq RESTART WITH 1;
 ```
 
-### ✅ Database Migration Steps
-1. **Backup Development Data** (jika ada data penting)
-2. **Setup Production Database** di Railway/Neon/Supabase
-3. **Run Migration Scripts**:
-   ```bash
-   # Apply database schema
-   cat database-schema-update.sql | psql $DATABASE_URL
-   cat railway-setup.sql | psql $DATABASE_URL
-   ```
-4. **Test Database Connection**
+### ✅ Cleanup Options
+1. **SQL Script**: Run cleanup queries directly
+2. **Admin Panel**: Use `/admin` reset database feature
+3. **Selective Cleanup**: Remove only test emails/data
+
+**📖 Details**: See `DATABASE_CLEANUP_GUIDE.md`
 
 ---
 
