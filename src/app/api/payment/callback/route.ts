@@ -5,19 +5,73 @@ import { emailService } from '@/lib/emailService';
 // Helper function to map payment channel to readable payment method
 function getPaymentMethodFromChannel(channel: string): string {
   const channelMappings: { [key: string]: string } = {
+    // Virtual Account - Major Banks
     'virtual_account_bca': 'VIRTUAL_ACCOUNT_BCA',
     'virtual_account_mandiri': 'VIRTUAL_ACCOUNT_MANDIRI', 
     'virtual_account_bni': 'VIRTUAL_ACCOUNT_BNI',
     'virtual_account_bri': 'VIRTUAL_ACCOUNT_BRI',
+    'virtual_account_bsi': 'VIRTUAL_ACCOUNT_BSI',
+    'virtual_account_syariah': 'VIRTUAL_ACCOUNT_BSI',
+    
+    // Virtual Account - Other Banks
     'virtual_account_permata': 'VIRTUAL_ACCOUNT_PERMATA',
     'virtual_account_cimb': 'VIRTUAL_ACCOUNT_CIMB',
+    'virtual_account_danamon': 'VIRTUAL_ACCOUNT_DANAMON',
+    'virtual_account_maybank': 'VIRTUAL_ACCOUNT_MAYBANK',
+    'virtual_account_btn': 'VIRTUAL_ACCOUNT_BTN',
+    'virtual_account_btpn': 'VIRTUAL_ACCOUNT_BTPN',
+    'virtual_account_mega': 'VIRTUAL_ACCOUNT_MEGA',
+    'virtual_account_panin': 'VIRTUAL_ACCOUNT_PANIN',
+    'virtual_account_ocbc': 'VIRTUAL_ACCOUNT_OCBC',
+    'virtual_account_uob': 'VIRTUAL_ACCOUNT_UOB',
+    'virtual_account_hsbc': 'VIRTUAL_ACCOUNT_HSBC',
+    'virtual_account_sinarmas': 'VIRTUAL_ACCOUNT_SINARMAS',
+    'virtual_account_bjb': 'VIRTUAL_ACCOUNT_BJB',
+    'virtual_account_dki': 'VIRTUAL_ACCOUNT_DKI',
+    'virtual_account_jateng': 'VIRTUAL_ACCOUNT_JATENG',
+    'virtual_account_jatim': 'VIRTUAL_ACCOUNT_JATIM',
+    'virtual_account_jabar': 'VIRTUAL_ACCOUNT_JABAR',
+    'virtual_account_sumut': 'VIRTUAL_ACCOUNT_SUMUT',
+    'virtual_account_sumsel': 'VIRTUAL_ACCOUNT_SUMSEL',
+    'virtual_account_riau': 'VIRTUAL_ACCOUNT_RIAU',
+    'virtual_account_kalbar': 'VIRTUAL_ACCOUNT_KALBAR',
+    'virtual_account_kaltim': 'VIRTUAL_ACCOUNT_KALTIM',
+    'virtual_account_sulsel': 'VIRTUAL_ACCOUNT_SULSEL',
+    'virtual_account_bali': 'VIRTUAL_ACCOUNT_BALI',
+    'virtual_account_ntt': 'VIRTUAL_ACCOUNT_NTT',
+    'virtual_account_ntb': 'VIRTUAL_ACCOUNT_NTB',
+    'virtual_account_maluku': 'VIRTUAL_ACCOUNT_MALUKU',
+    'virtual_account_papua': 'VIRTUAL_ACCOUNT_PAPUA',
+    
+    // QRIS
     'qris': 'QRIS',
+    
+    // Credit Card
     'credit_card': 'CREDIT_CARD',
+    'visa': 'CREDIT_CARD_VISA',
+    'mastercard': 'CREDIT_CARD_MASTERCARD',
+    'jcb': 'CREDIT_CARD_JCB',
+    'amex': 'CREDIT_CARD_AMEX',
+    
+    // E-Wallets
     'ovo': 'OVO',
     'dana': 'DANA',
     'linkaja': 'LINKAJA',
     'shopeepay': 'SHOPEEPAY',
-    'gopay': 'GOPAY'
+    'gopay': 'GOPAY',
+    'jenius': 'JENIUS',
+    'sakuku': 'SAKUKU',
+    'tcash': 'TCASH',
+    'isaku': 'ISAKU',
+    
+    // Convenience Store
+    'alfamart': 'ALFAMART',
+    'indomaret': 'INDOMARET',
+    
+    // ATM Bersama
+    'atm_bersama': 'ATM_BERSAMA',
+    'alto': 'ALTO',
+    'prima': 'PRIMA'
   };
 
   // Try to find exact match first
@@ -31,9 +85,48 @@ function getPaymentMethodFromChannel(channel: string): string {
   if (lowerChannel.includes('bca')) return 'VIRTUAL_ACCOUNT_BCA';
   if (lowerChannel.includes('bni')) return 'VIRTUAL_ACCOUNT_BNI';
   if (lowerChannel.includes('bri')) return 'VIRTUAL_ACCOUNT_BRI';
+  if (lowerChannel.includes('bsi') || lowerChannel.includes('syariah')) return 'VIRTUAL_ACCOUNT_BSI';
   if (lowerChannel.includes('permata')) return 'VIRTUAL_ACCOUNT_PERMATA';
   if (lowerChannel.includes('cimb')) return 'VIRTUAL_ACCOUNT_CIMB';
+  if (lowerChannel.includes('danamon')) return 'VIRTUAL_ACCOUNT_DANAMON';
+  if (lowerChannel.includes('maybank')) return 'VIRTUAL_ACCOUNT_MAYBANK';
+  if (lowerChannel.includes('btn')) return 'VIRTUAL_ACCOUNT_BTN';
+  if (lowerChannel.includes('btpn')) return 'VIRTUAL_ACCOUNT_BTPN';
+  if (lowerChannel.includes('mega')) return 'VIRTUAL_ACCOUNT_MEGA';
+  if (lowerChannel.includes('panin')) return 'VIRTUAL_ACCOUNT_PANIN';
+  if (lowerChannel.includes('ocbc')) return 'VIRTUAL_ACCOUNT_OCBC';
+  if (lowerChannel.includes('uob')) return 'VIRTUAL_ACCOUNT_UOB';
+  if (lowerChannel.includes('hsbc')) return 'VIRTUAL_ACCOUNT_HSBC';
+  if (lowerChannel.includes('sinarmas')) return 'VIRTUAL_ACCOUNT_SINARMAS';
+  if (lowerChannel.includes('bjb')) return 'VIRTUAL_ACCOUNT_BJB';
+  if (lowerChannel.includes('dki')) return 'VIRTUAL_ACCOUNT_DKI';
+  if (lowerChannel.includes('jateng')) return 'VIRTUAL_ACCOUNT_JATENG';
+  if (lowerChannel.includes('jatim')) return 'VIRTUAL_ACCOUNT_JATIM';
+  if (lowerChannel.includes('jabar')) return 'VIRTUAL_ACCOUNT_JABAR';
+  if (lowerChannel.includes('sumut')) return 'VIRTUAL_ACCOUNT_SUMUT';
+  if (lowerChannel.includes('sumsel')) return 'VIRTUAL_ACCOUNT_SUMSEL';
+  if (lowerChannel.includes('riau')) return 'VIRTUAL_ACCOUNT_RIAU';
+  if (lowerChannel.includes('kalbar')) return 'VIRTUAL_ACCOUNT_KALBAR';
+  if (lowerChannel.includes('kaltim')) return 'VIRTUAL_ACCOUNT_KALTIM';
+  if (lowerChannel.includes('sulsel')) return 'VIRTUAL_ACCOUNT_SULSEL';
+  if (lowerChannel.includes('bali')) return 'VIRTUAL_ACCOUNT_BALI';
   if (lowerChannel.includes('qris')) return 'QRIS';
+  if (lowerChannel.includes('visa')) return 'CREDIT_CARD_VISA';
+  if (lowerChannel.includes('mastercard')) return 'CREDIT_CARD_MASTERCARD';
+  if (lowerChannel.includes('jcb')) return 'CREDIT_CARD_JCB';
+  if (lowerChannel.includes('amex')) return 'CREDIT_CARD_AMEX';
+  if (lowerChannel.includes('credit')) return 'CREDIT_CARD';
+  if (lowerChannel.includes('ovo')) return 'OVO';
+  if (lowerChannel.includes('dana')) return 'DANA';
+  if (lowerChannel.includes('linkaja')) return 'LINKAJA';
+  if (lowerChannel.includes('shopee')) return 'SHOPEEPAY';
+  if (lowerChannel.includes('gopay')) return 'GOPAY';
+  if (lowerChannel.includes('jenius')) return 'JENIUS';
+  if (lowerChannel.includes('sakuku')) return 'SAKUKU';
+  if (lowerChannel.includes('tcash')) return 'TCASH';
+  if (lowerChannel.includes('isaku')) return 'ISAKU';
+  if (lowerChannel.includes('alfamart')) return 'ALFAMART';
+  if (lowerChannel.includes('indomaret')) return 'INDOMARET';
   
   // Default fallback
   return `VIRTUAL_ACCOUNT_${channel.toUpperCase()}`;
