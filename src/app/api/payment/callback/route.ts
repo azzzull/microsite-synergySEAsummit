@@ -48,10 +48,13 @@ function getPaymentMethodFromChannel(channel: string): string {
     
     // Credit Card
     'credit_card': 'CREDIT_CARD',
+    'card': 'CREDIT_CARD',
     'visa': 'CREDIT_CARD_VISA',
     'mastercard': 'CREDIT_CARD_MASTERCARD',
+    'master': 'CREDIT_CARD_MASTERCARD',
     'jcb': 'CREDIT_CARD_JCB',
     'amex': 'CREDIT_CARD_AMEX',
+    'american_express': 'CREDIT_CARD_AMEX',
     
     // E-Wallets
     'ovo': 'OVO',
@@ -66,7 +69,9 @@ function getPaymentMethodFromChannel(channel: string): string {
     
     // Convenience Store
     'alfamart': 'ALFAMART',
+    'alfa': 'ALFAMART',
     'indomaret': 'INDOMARET',
+    'indo': 'INDOMARET',
     
     // ATM Bersama
     'atm_bersama': 'ATM_BERSAMA',
@@ -110,23 +115,31 @@ function getPaymentMethodFromChannel(channel: string): string {
   if (lowerChannel.includes('kaltim')) return 'VIRTUAL_ACCOUNT_KALTIM';
   if (lowerChannel.includes('sulsel')) return 'VIRTUAL_ACCOUNT_SULSEL';
   if (lowerChannel.includes('bali')) return 'VIRTUAL_ACCOUNT_BALI';
-  if (lowerChannel.includes('qris')) return 'QRIS';
+  
+  // Convenience store patterns - try different variations
+  if (lowerChannel.includes('alfamart') || lowerChannel.includes('alfa')) return 'ALFAMART';
+  if (lowerChannel.includes('indomaret') || lowerChannel.includes('indo')) return 'INDOMARET';
+  
+  // Credit card patterns - try different variations  
   if (lowerChannel.includes('visa')) return 'CREDIT_CARD_VISA';
-  if (lowerChannel.includes('mastercard')) return 'CREDIT_CARD_MASTERCARD';
+  if (lowerChannel.includes('mastercard') || lowerChannel.includes('master')) return 'CREDIT_CARD_MASTERCARD';
   if (lowerChannel.includes('jcb')) return 'CREDIT_CARD_JCB';
-  if (lowerChannel.includes('amex')) return 'CREDIT_CARD_AMEX';
-  if (lowerChannel.includes('credit')) return 'CREDIT_CARD';
+  if (lowerChannel.includes('amex') || lowerChannel.includes('american')) return 'CREDIT_CARD_AMEX';
+  if (lowerChannel.includes('credit') || lowerChannel.includes('card')) return 'CREDIT_CARD';
+  
+  // QRIS patterns
+  if (lowerChannel.includes('qris') || lowerChannel.includes('qr')) return 'QRIS';
+  
+  // E-wallet patterns
   if (lowerChannel.includes('ovo')) return 'OVO';
   if (lowerChannel.includes('dana')) return 'DANA';
-  if (lowerChannel.includes('linkaja')) return 'LINKAJA';
+  if (lowerChannel.includes('linkaja') || lowerChannel.includes('link')) return 'LINKAJA';
   if (lowerChannel.includes('shopee')) return 'SHOPEEPAY';
-  if (lowerChannel.includes('gopay')) return 'GOPAY';
+  if (lowerChannel.includes('gopay') || lowerChannel.includes('gojek')) return 'GOPAY';
   if (lowerChannel.includes('jenius')) return 'JENIUS';
   if (lowerChannel.includes('sakuku')) return 'SAKUKU';
   if (lowerChannel.includes('tcash')) return 'TCASH';
   if (lowerChannel.includes('isaku')) return 'ISAKU';
-  if (lowerChannel.includes('alfamart')) return 'ALFAMART';
-  if (lowerChannel.includes('indomaret')) return 'INDOMARET';
   
   // Default fallback
   return `VIRTUAL_ACCOUNT_${channel.toUpperCase()}`;
@@ -142,14 +155,27 @@ export async function POST(request: NextRequest) {
     const { order, transaction } = body;
     const orderId = order?.invoice_number;
     const paymentStatus = transaction?.status;
-    const paymentChannel = transaction?.payment_channel || transaction?.channel || 'UNKNOWN';
+    
+    // Try multiple possible fields for payment channel
+    const paymentChannel = transaction?.payment_channel || 
+                          transaction?.channel || 
+                          transaction?.payment_method ||
+                          transaction?.method ||
+                          transaction?.bank_code ||
+                          transaction?.acquirer_id ||
+                          transaction?.payment_code ||
+                          order?.payment_channel ||
+                          order?.channel ||
+                          order?.payment_method ||
+                          'UNKNOWN';
     
     console.log("Processing payment:", {
       orderId,
       status: paymentStatus,
       amount: order?.amount,
       paymentChannel: paymentChannel,
-      fullTransactionData: transaction
+      fullTransactionData: transaction,
+      fullOrderData: order
     });
     
     if (paymentStatus === "SUCCESS" && orderId) {
