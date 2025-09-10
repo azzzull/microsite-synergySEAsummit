@@ -7,6 +7,7 @@ import { ChevronDownIcon } from "@heroicons/react/24/outline";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import axios from "axios";
+import { PRICING_CONFIG, formatPrice, calculateTotal } from "@/config/pricing";
 
 export default function RegisterPage() {
   const [form, setForm] = useState({
@@ -44,8 +45,8 @@ export default function RegisterPage() {
     }
 
     // Ticket quantity validation
-    if (form.ticketQuantity < 1 || form.ticketQuantity > 10) {
-      setError("Ticket quantity must be between 1 and 10");
+    if (form.ticketQuantity < 1) {
+      setError("Ticket quantity must be at least 1");
       return;
     }
 
@@ -136,8 +137,8 @@ export default function RegisterPage() {
                   The Premier Southeast Asia Business & Technology Summit: Connecting Innovation Across the Region!
                 </p>
                 <div className="border px-4 py-3 rounded-lg inline-block" style={{borderColor: "var(--color-gold)"}}>
-                  <p className="text-xl font-bold" style={{color: "var(--color-gold)"}}>Early Bird Price: Rp 250.000</p>
-                  <p className="text-sm" style={{color: "var(--color-lightgrey)"}}>*Limited time offer</p>
+                  <p className="text-xl font-bold" style={{color: "var(--color-gold)"}}>{PRICING_CONFIG.PRICE_LABEL}: Rp {formatPrice(PRICING_CONFIG.TICKET_PRICE)} per ticket</p>
+                  <p className="text-sm" style={{color: "var(--color-lightgrey)"}}>{PRICING_CONFIG.PROMOTIONAL_TEXT}</p>
                 </div>
               </div>
               <div className="flex flex-col items-center flex-shrink-0 order-1 md:order-2">
@@ -185,6 +186,32 @@ export default function RegisterPage() {
                         color: "var(--color-navy)"
                       }} 
                     />
+                  </div>
+                </div>
+
+                {/* Member ID */}
+                <div className="flex flex-col md:flex-row md:items-center gap-4">
+                  <label htmlFor="memberId" className="md:w-1/3 font-medium" style={{color: "var(--color-lightgrey)"}}>Member ID</label>
+                  <div className="md:w-2/3">
+                    <input 
+                      type="text" 
+                      id="memberId"
+                      name="memberId" 
+                      required 
+                      value={form.memberId} 
+                      onChange={handleChange}
+                      placeholder="Enter your member ID (minimum 6 digits)"
+                      className="w-full px-4 py-3 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-yellow-400" 
+                      style={{
+                        backgroundColor: "var(--color-lightgrey)", 
+                        color: "var(--color-navy)"
+                      }}
+                      pattern="[0-9]{6,}"
+                      title="Member ID must contain at least 6 digits"
+                    />
+                    <p className="text-xs mt-2" style={{color: "var(--color-gold)"}}>
+                      *Member ID must contain at least 6 digits
+                    </p>
                   </div>
                 </div>
 
@@ -286,65 +313,6 @@ export default function RegisterPage() {
                       <option value="Myanmar">Myanmar</option>
                       <option value="Other">Other</option>
                     </select>
-                  </div>
-                </div>
-
-                {/* Member ID */}
-                <div className="flex flex-col md:flex-row md:items-center gap-4">
-                  <label htmlFor="memberId" className="md:w-1/3 font-medium" style={{color: "var(--color-lightgrey)"}}>Member ID</label>
-                  <div className="md:w-2/3">
-                    <input 
-                      type="text" 
-                      id="memberId"
-                      name="memberId" 
-                      required 
-                      value={form.memberId} 
-                      onChange={handleChange}
-                      placeholder="Enter your member ID (minimum 6 digits)"
-                      className="w-full px-4 py-3 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-yellow-400" 
-                      style={{
-                        backgroundColor: "var(--color-lightgrey)", 
-                        color: "var(--color-navy)"
-                      }}
-                      pattern="[0-9]{6,}"
-                      title="Member ID must contain at least 6 digits"
-                    />
-                    <p className="text-xs mt-2" style={{color: "var(--color-gold)"}}>
-                      *Member ID must contain at least 6 digits
-                    </p>
-                  </div>
-                </div>
-
-                {/* Ticket Quantity */}
-                <div className="flex flex-col md:flex-row md:items-center gap-4">
-                  <label htmlFor="ticketQuantity" className="md:w-1/3 font-medium" style={{color: "var(--color-lightgrey)"}}>Number of Tickets</label>
-                  <div className="md:w-2/3">
-                    <select 
-                      id="ticketQuantity"
-                      name="ticketQuantity" 
-                      required 
-                      value={form.ticketQuantity} 
-                      onChange={(e) => setForm({ ...form, ticketQuantity: parseInt(e.target.value) })}
-                      className="w-full px-4 py-3 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-yellow-400" 
-                      style={{
-                        backgroundColor: "var(--color-lightgrey)", 
-                        color: "var(--color-navy)"
-                      }} 
-                    >
-                      <option value={1}>1 Ticket</option>
-                      <option value={2}>2 Tickets</option>
-                      <option value={3}>3 Tickets</option>
-                      <option value={4}>4 Tickets</option>
-                      <option value={5}>5 Tickets</option>
-                      <option value={6}>6 Tickets</option>
-                      <option value={7}>7 Tickets</option>
-                      <option value={8}>8 Tickets</option>
-                      <option value={9}>9 Tickets</option>
-                      <option value={10}>10 Tickets</option>
-                    </select>
-                    <p className="text-xs mt-2" style={{color: "var(--color-gold)"}}>
-                      *Maximum 10 tickets per registration
-                    </p>
                   </div>
                 </div>
 
@@ -487,6 +455,52 @@ export default function RegisterPage() {
                         border-top-color: var(--color-gold) !important;
                       }
                     `}</style>
+                  </div>
+                </div>
+
+                {/* Ticket Quantity */}
+                <div className="flex flex-col md:flex-row md:items-center gap-4">
+                  <label className="md:w-1/3 font-medium" style={{color: "var(--color-lightgrey)"}}>Number of Tickets</label>
+                  <div className="md:w-2/3">
+                    <div className="flex items-center gap-4">
+                      <button
+                        type="button"
+                        onClick={() => setForm({ ...form, ticketQuantity: Math.max(1, form.ticketQuantity - 1) })}
+                        className="w-10 h-10 rounded-lg flex items-center justify-center font-bold text-xl transition-all duration-200 hover:opacity-80"
+                        style={{
+                          backgroundColor: "var(--color-gold)",
+                          color: "var(--color-navy)"
+                        }}
+                      >
+                        -
+                      </button>
+                      <div className="flex-1 px-4 py-3 rounded-lg text-center font-semibold text-lg" 
+                           style={{
+                             backgroundColor: "var(--color-lightgrey)", 
+                             color: "var(--color-navy)"
+                           }}>
+                        {form.ticketQuantity} Ticket{form.ticketQuantity > 1 ? 's' : ''}
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => setForm({ ...form, ticketQuantity: form.ticketQuantity + 1 })}
+                        className="w-10 h-10 rounded-lg flex items-center justify-center font-bold text-xl transition-all duration-200 hover:opacity-80"
+                        style={{
+                          backgroundColor: "var(--color-gold)",
+                          color: "var(--color-navy)"
+                        }}
+                      >
+                        +
+                      </button>
+                    </div>
+                    <div className="mt-3 p-3 rounded-lg text-center" style={{backgroundColor: "rgba(255, 193, 7, 0.1)", borderColor: "var(--color-gold)", border: "1px solid"}}>
+                      <p className="text-lg font-bold" style={{color: "var(--color-gold)"}}>
+                        Total Amount: Rp {formatPrice(calculateTotal(form.ticketQuantity))}
+                      </p>
+                      <p className="text-sm" style={{color: "var(--color-lightgrey)"}}>
+                        Rp {formatPrice(PRICING_CONFIG.TICKET_PRICE)} × {form.ticketQuantity} ticket{form.ticketQuantity > 1 ? 's' : ''}
+                      </p>
+                    </div>
                   </div>
                 </div>
 

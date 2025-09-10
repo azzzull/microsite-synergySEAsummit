@@ -3,6 +3,7 @@ import axios from 'axios';
 import crypto from 'crypto';
 import { postgresDb } from '@/lib/postgresDatabase';
 import { emailService } from '@/lib/emailService';
+import { PRICING_CONFIG, calculateTotal } from '@/config/pricing';
 
 // Doku API Configuration
 const DOKU_BASE_URL = process.env.NEXT_PUBLIC_DOKU_BASE_URL || 'https://api-sandbox.doku.com';
@@ -72,16 +73,15 @@ export async function POST(request: NextRequest) {
 
     // Ticket quantity validation
     const quantity = ticketQuantity || 1;
-    if (quantity < 1 || quantity > 10) {
+    if (quantity < PRICING_CONFIG.MIN_QUANTITY) {
       return NextResponse.json(
-        { success: false, error: "Ticket quantity must be between 1 and 10" },
+        { success: false, error: `Ticket quantity must be at least ${PRICING_CONFIG.MIN_QUANTITY}` },
         { status: 400 }
       );
     }
 
     // Calculate total amount based on quantity
-    const basePrice = 250000; // IDR 250,000 per ticket
-    const totalAmount = basePrice * quantity;
+    const totalAmount = calculateTotal(quantity);
 
     // Check if environment variables are properly set
     if (!CLIENT_ID || !CLIENT_SECRET || CLIENT_ID === 'your_sandbox_client_id') {
