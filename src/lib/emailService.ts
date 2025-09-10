@@ -15,6 +15,27 @@ export interface EmailTicketData {
   qrCode: string;
   transactionId?: string;
   paidAt: string;
+  ticketNumber?: number; // For multiple tickets (Ticket 1 of 3, etc.)
+  totalTickets?: number; // Total number of tickets ordered
+}
+
+export interface EmailMultipleTicketsData {
+  orderId: string;
+  participantName: string;
+  participantEmail: string;
+  participantPhone: string;
+  eventName: string;
+  eventDate: string;
+  eventTime: string;
+  eventLocation: string;
+  totalAmount: number;
+  transactionId?: string;
+  paidAt: string;
+  tickets: Array<{
+    ticketId: string;
+    qrCode: string;
+    ticketNumber: number;
+  }>;
 }
 
 export interface EmailConfirmationData {
@@ -152,6 +173,10 @@ class EmailService {
   }
 
   private generateTicketHTML(data: EmailTicketData): string {
+    const ticketInfo = data.totalTickets && data.totalTickets > 1 
+      ? `Ticket ${data.ticketNumber} of ${data.totalTickets}` 
+      : 'Your Ticket';
+    
     return `
     <!DOCTYPE html>
     <html>
@@ -173,7 +198,7 @@ class EmailService {
     <body>
         <div class="container">
             <div class="header">
-                <h1>🎫 Your Event Ticket</h1>
+                <h1>🎫 ${ticketInfo}</h1>
                 <h2>Synergy SEA Summit 2025</h2>
             </div>
             
@@ -203,6 +228,12 @@ class EmailService {
                         <span class="label">Phone:</span>
                         <span class="value">${data.participantPhone}</span>
                     </div>
+                    ${data.totalTickets && data.totalTickets > 1 ? `
+                    <div class="info-row">
+                        <span class="label">Ticket Number:</span>
+                        <span class="value">${data.ticketNumber} of ${data.totalTickets}</span>
+                    </div>
+                    ` : ''}
                 </div>
 
                 <div class="ticket">
@@ -247,6 +278,128 @@ class EmailService {
                 </div>
 
                 <p>We look forward to seeing you at the event!</p>
+                <p>Best regards,<br>Synergy SEA Summit 2025 Team</p>
+            </div>
+
+            <div class="footer">
+                <p>This is an automated email. Please do not reply to this message.</p>
+                <p>© 2025 Synergy SEA Summit. All rights reserved.</p>
+            </div>
+        </div>
+    </body>
+    </html>
+    `;
+  }
+
+  private generateMultipleTicketsHTML(data: EmailMultipleTicketsData): string {
+    const ticketsHTML = data.tickets.map(ticket => `
+      <div class="ticket">
+        <h3 style="color: #070d2d; margin-top: 0;">TICKET ${ticket.ticketNumber} OF ${data.tickets.length}</h3>
+        <div class="info-row">
+          <span class="label">Ticket ID:</span>
+          <span class="value">${ticket.ticketId}</span>
+        </div>
+        <div class="qr-section" style="margin: 15px 0;">
+          <img src="${ticket.qrCode}" alt="QR Code ${ticket.ticketNumber}" style="max-width: 150px;">
+        </div>
+      </div>
+    `).join('');
+
+    return `
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="utf-8">
+        <title>Your Synergy SEA Summit 2025 Tickets</title>
+        <style>
+            body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+            .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+            .header { background: linear-gradient(135deg, #04091c, #070d2d); color: white; padding: 30px 20px; text-align: center; }
+            .ticket { border: 2px dashed #070d2d; margin: 20px 0; padding: 20px; background: #eef4ff; }
+            .qr-section { text-align: center; margin: 15px 0; padding: 15px; background: white; border-radius: 5px; }
+            .footer { text-align: center; font-size: 12px; color: #666; margin-top: 30px; }
+            .info-row { display: flex; justify-content: space-between; margin: 10px 0; }
+            .label { font-weight: bold; }
+            .value { color: #070d2d; }
+            .summary-box { background: #e8f5e8; border: 2px solid #4caf50; padding: 20px; border-radius: 8px; margin: 20px 0; }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="header">
+                <h1>🎫 Your ${data.tickets.length} Tickets</h1>
+                <h2>Synergy SEA Summit 2025</h2>
+            </div>
+            
+            <div style="padding: 20px;">
+                <p>Dear <strong>${data.participantName}</strong>,</p>
+                <p>Thank you for registering for Synergy SEA Summit 2025! Your payment has been confirmed and your ${data.tickets.length} tickets are ready.</p>
+                
+                <div class="summary-box">
+                    <h3 style="color: #2e7d32; margin-top: 0;">ORDER SUMMARY</h3>
+                    <div class="info-row">
+                        <span class="label">Order ID:</span>
+                        <span class="value">${data.orderId}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">Participant:</span>
+                        <span class="value">${data.participantName}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">Email:</span>
+                        <span class="value">${data.participantEmail}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">Phone:</span>
+                        <span class="value">${data.participantPhone}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">Total Tickets:</span>
+                        <span class="value">${data.tickets.length} tickets</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">Total Amount:</span>
+                        <span class="value">Rp ${data.totalAmount.toLocaleString('id-ID')}</span>
+                    </div>
+                </div>
+
+                <div class="ticket" style="background: #f5f5f5;">
+                    <h3 style="color: #070d2d; margin-top: 0;">EVENT DETAILS</h3>
+                    <div class="info-row">
+                        <span class="label">Event:</span>
+                        <span class="value">${data.eventName}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">Date:</span>
+                        <span class="value">${data.eventDate}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">Time:</span>
+                        <span class="value">${data.eventTime}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">Location:</span>
+                        <span class="value">${data.eventLocation}</span>
+                    </div>
+                </div>
+
+                <h2 style="color: #070d2d; text-align: center; margin: 30px 0;">YOUR TICKETS</h2>
+                ${ticketsHTML}
+
+                <div style="background: #e3f2fd; padding: 15px; border-radius: 5px; margin: 20px 0;">
+                    <h4 style="margin-top: 0; color: #1976d2;">Important Instructions:</h4>
+                    <ul>
+                        <li>Each ticket has a unique QR code - bring all ${data.tickets.length} tickets to the event</li>
+                        <li>Arrive 30 minutes before the event starts</li>
+                        <li>Bring a valid ID that matches your registration</li>
+                        <li>Save this email or screenshot all QR codes</li>
+                        <li>Each ticket allows entry for one person</li>
+                        <li>No refunds or transfers allowed</li>
+                        <li>For inquiries, contact us at info@synergyseasummit.com</li>
+                    </ul>
+                </div>
+
+                <p>We look forward to seeing you and your companions at the event!</p>
                 <p>Best regards,<br>Synergy SEA Summit 2025 Team</p>
             </div>
 
@@ -308,6 +461,39 @@ class EmailService {
     </body>
     </html>
     `;
+  }
+
+  async sendMultipleTickets(data: EmailMultipleTicketsData): Promise<{ success: boolean; messageId?: string; error?: string }> {
+    try {
+      // Prepare attachments for all QR codes
+      const attachments = data.tickets.map((ticket, index) => ({
+        filename: `ticket-${ticket.ticketNumber}-${ticket.ticketId}.png`,
+        path: ticket.qrCode,
+        cid: `qrcode-${index + 1}`
+      }));
+
+      const emailContent = {
+        from: process.env.SMTP_FROM || 'noreply@synergyseasummit.com',
+        to: data.participantEmail,
+        subject: `🎫 Your ${data.tickets.length} Synergy SEA Summit 2025 Tickets - Order ${data.orderId}`,
+        html: this.generateMultipleTicketsHTML(data),
+        attachments
+      };
+
+      console.log(`📧 Sending ${data.tickets.length} tickets email to:`, data.participantEmail);
+      const result = await this.sendEmailWithFallback(emailContent);
+      
+      if (result.success) {
+        console.log(`✅ Multiple tickets email sent via ${result.provider}:`, result.messageId);
+      } else {
+        console.error('❌ Multiple tickets email failed:', result.error);
+      }
+      
+      return result;
+    } catch (error: any) {
+      console.error('❌ Multiple tickets email error:', error);
+      return { success: false, error: error.message };
+    }
   }
 
   async sendTicket(data: EmailTicketData): Promise<{ success: boolean; messageId?: string; error?: string }> {

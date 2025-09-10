@@ -219,58 +219,97 @@ export async function POST(request: NextRequest) {
 
         if (registrationResult.success && registrationResult.registration) {
           const registration = registrationResult.registration as any;
+          const ticketQuantity = registration.ticket_quantity || 1;
+          const totalAmount = parseInt(order?.amount || "250000");
 
-          // Generate e-ticket
-          const ticketId = `TICKET-${orderId}-${Date.now()}`;
-          const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${ticketId}`;
-          
-          // Create ticket record
-          await postgresDb.createTicket({
-            ticketId,
-            orderId,
-            participantName: registration.fullName,
-            participantEmail: registration.email,
-            participantPhone: registration.phone,
-            eventName: "Synergy SEA Summit 2025",
-            eventDate: "November 8, 2025",
-            eventLocation: "The Stones Hotel, Legian Bali",
-            qrCode: qrCodeUrl,
-            emailSent: false
-          });
+          console.log(`Creating ${ticketQuantity} tickets for order:`, orderId);
 
-          // Send e-ticket email
-          console.log("Sending e-ticket email to:", registration.email);
+          // Generate multiple tickets based on quantity
+          const tickets = [];
+          const emailTickets = [];
+
+          for (let i = 1; i <= ticketQuantity; i++) {
+            const ticketId = `TICKET-${orderId}-${i}-${Date.now()}`;
+            const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${ticketId}`;
+            
+            // Create ticket record in database
+            const ticketResult = await postgresDb.createTicket({
+              ticketId,
+              orderId,
+              participantName: registration.fullName,
+              participantEmail: registration.email,
+              participantPhone: registration.phone,
+              eventName: "Synergy SEA Summit 2025",
+              eventDate: "November 8, 2025",
+              eventLocation: "The Stones Hotel, Legian Bali",
+              qrCode: qrCodeUrl,
+              emailSent: false
+            });
+
+            tickets.push({
+              ticketId,
+              qrCode: qrCodeUrl,
+              ticketNumber: i
+            });
+
+            console.log(`Ticket ${i}/${ticketQuantity} created:`, ticketId);
+          }
+
+          // Send email with all tickets
+          console.log(`Sending email with ${ticketQuantity} tickets to:`, registration.email);
           console.log("Email send timestamp:", new Date().toISOString());
-          const emailResult = await emailService.sendTicket({
-            ticketId,
-            orderId,
-            participantName: registration.fullName,
-            participantEmail: registration.email,
-            participantPhone: registration.phone,
-            eventName: "Synergy SEA Summit 2025",
-            eventDate: "November 8, 2025",
-            eventTime: "09:00 AM - 05:00 PM WITA",
-            eventLocation: "The Stones Hotel, Legian Bali",
-            amount: parseInt(order?.amount || "250000"),
-            qrCode: qrCodeUrl,
-            transactionId: transaction?.original_request_id,
-            paidAt: transaction?.date || new Date().toISOString()
-          });
+
+          let emailResult;
+
+          if (ticketQuantity === 1) {
+            // Send single ticket email
+            emailResult = await emailService.sendTicket({
+              ticketId: tickets[0].ticketId,
+              orderId,
+              participantName: registration.fullName,
+              participantEmail: registration.email,
+              participantPhone: registration.phone,
+              eventName: "Synergy SEA Summit 2025",
+              eventDate: "November 8, 2025",
+              eventTime: "09:00 AM - 05:00 PM WITA",
+              eventLocation: "The Stones Hotel, Legian Bali",
+              amount: totalAmount,
+              qrCode: tickets[0].qrCode,
+              transactionId: transaction?.original_request_id,
+              paidAt: transaction?.date || new Date().toISOString()
+            });
+          } else {
+            // Send multiple tickets email
+            emailResult = await emailService.sendMultipleTickets({
+              orderId,
+              participantName: registration.fullName,
+              participantEmail: registration.email,
+              participantPhone: registration.phone,
+              eventName: "Synergy SEA Summit 2025",
+              eventDate: "November 8, 2025",
+              eventTime: "09:00 AM - 05:00 PM WITA",
+              eventLocation: "The Stones Hotel, Legian Bali",
+              totalAmount: totalAmount,
+              transactionId: transaction?.original_request_id,
+              paidAt: transaction?.date || new Date().toISOString(),
+              tickets: tickets
+            });
+          }
 
           console.log("Email send result:", emailResult);
 
-          // Note: Email status tracking disabled due to database schema limitations
-          // Update ticket status based on email success
+          // Update all tickets status based on email success
+          const emailStatus = emailResult.success ? 'email_sent' : 'email_failed';
+          for (const ticket of tickets) {
+            await postgresDb.updateTicket(orderId, {
+              status: emailStatus
+            });
+          }
+
           if (emailResult.success) {
-            await postgresDb.updateTicket(orderId, {
-              status: 'email_sent'
-            });
-            console.log("E-ticket sent successfully to:", registration.email);
+            console.log(`E-tickets (${ticketQuantity}) sent successfully to:`, registration.email);
           } else {
-            console.error("Failed to send e-ticket email:", emailResult.error);
-            await postgresDb.updateTicket(orderId, {
-              status: 'email_failed'
-            });
+            console.error("Failed to send e-tickets email:", emailResult.error);
           }
 
           console.log("Payment processed successfully for:", orderId);
