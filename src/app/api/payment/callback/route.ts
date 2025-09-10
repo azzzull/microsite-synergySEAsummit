@@ -23,6 +23,20 @@ export async function POST(request: NextRequest) {
       console.log("Payment successful for order:", orderId);
       
       try {
+        // Check if ticket already exists to prevent duplicate processing
+        const existingTickets = await postgresDb.getTickets();
+        const existingTicket = existingTickets.tickets.find((ticket: any) => ticket.orderId === orderId);
+        
+        if (existingTicket) {
+          console.log("Ticket already exists for order:", orderId, "- skipping duplicate processing");
+          return NextResponse.json({ 
+            message: "Payment already processed",
+            status: "ALREADY_PROCESSED",
+            orderId,
+            existingTicketId: existingTicket.ticketId
+          });
+        }
+
         // Update registration status
         const registrationResult = await postgresDb.updateRegistration(orderId, {
           status: "paid"
@@ -59,6 +73,7 @@ export async function POST(request: NextRequest) {
 
           // Send e-ticket email
           console.log("Sending e-ticket email to:", registration.email);
+          console.log("Email send timestamp:", new Date().toISOString());
           const emailResult = await emailService.sendTicket({
             ticketId,
             orderId,

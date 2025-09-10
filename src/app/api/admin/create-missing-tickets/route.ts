@@ -48,6 +48,23 @@ export async function POST(request: NextRequest) {
         });
 
         if (ticketResult.success) {
+          // Check if email was already sent by checking ticket status
+          const existingTicketWithEmail = ticketsResult.tickets.find((t: any) => 
+            t.orderId === registration.orderId && (t.status === 'email_sent' || t.status === 'active')
+          );
+          
+          if (existingTicketWithEmail) {
+            console.log(`Email already sent for order ${registration.orderId}, skipping email send`);
+            createdTickets.push({
+              orderId: registration.orderId,
+              participantName: registration.fullName,
+              participantEmail: registration.email,
+              ticketId: ticketResult.ticket.ticketCode,
+              emailStatus: 'already_sent'
+            });
+            continue;
+          }
+
           createdTickets.push({
             orderId: registration.orderId,
             participantName: registration.fullName,
