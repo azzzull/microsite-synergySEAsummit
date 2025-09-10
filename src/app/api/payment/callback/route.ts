@@ -70,8 +70,10 @@ function getPaymentMethodFromChannel(channel: string): string {
     // Convenience Store
     'alfamart': 'ALFAMART',
     'alfa': 'ALFAMART',
+    'online_to_offline_alfa': 'ALFAMART',
     'indomaret': 'INDOMARET',
     'indo': 'INDOMARET',
+    'online_to_offline_indomaret': 'INDOMARET',
     
     // ATM Bersama
     'atm_bersama': 'ATM_BERSAMA',
@@ -117,8 +119,8 @@ function getPaymentMethodFromChannel(channel: string): string {
   if (lowerChannel.includes('bali')) return 'VIRTUAL_ACCOUNT_BALI';
   
   // Convenience store patterns - try different variations
-  if (lowerChannel.includes('alfamart') || lowerChannel.includes('alfa')) return 'ALFAMART';
-  if (lowerChannel.includes('indomaret') || lowerChannel.includes('indo')) return 'INDOMARET';
+  if (lowerChannel.includes('alfamart') || lowerChannel.includes('alfa') || lowerChannel.includes('online_to_offline_alfa')) return 'ALFAMART';
+  if (lowerChannel.includes('indomaret') || lowerChannel.includes('indo') || lowerChannel.includes('online_to_offline_indomaret')) return 'INDOMARET';
   
   // Credit card patterns - try different variations  
   if (lowerChannel.includes('visa')) return 'CREDIT_CARD_VISA';
@@ -152,7 +154,7 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     console.log("Callback body:", JSON.stringify(body, null, 2));
 
-    const { order, transaction } = body;
+    const { order, transaction, acquirer, channel, online_to_offline_payment } = body;
     const orderId = order?.invoice_number;
     const paymentStatus = transaction?.status;
     
@@ -167,6 +169,9 @@ export async function POST(request: NextRequest) {
                           order?.payment_channel ||
                           order?.channel ||
                           order?.payment_method ||
+                          channel?.id ||
+                          acquirer?.id ||
+                          online_to_offline_payment?.identifier?.find((i: any) => i.name === 'AGENT_ID')?.value ||
                           'UNKNOWN';
     
     console.log("Processing payment:", {
@@ -174,6 +179,9 @@ export async function POST(request: NextRequest) {
       status: paymentStatus,
       amount: order?.amount,
       paymentChannel: paymentChannel,
+      acquirerId: acquirer?.id,
+      channelId: channel?.id,
+      agentId: online_to_offline_payment?.identifier?.find((i: any) => i.name === 'AGENT_ID')?.value,
       fullTransactionData: transaction,
       fullOrderData: order
     });
