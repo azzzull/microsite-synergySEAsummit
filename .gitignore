@@ -39,6 +39,37 @@ yarn-error.log*
 *VERCEL_EMAIL*
 *SMTP_CREDENTIALS*
 
+# development and setup files
+DATABASE_SCHEMA.md
+ENV_SETUP.md
+FIX_DOKU_REDIRECT.md
+POSTGRESQL_SETUP.md
+PRODUCTION_DATA_SOLUTION.md
+RAILWAY_SETUP.md
+TROUBLESHOOTING_VERCEL.md
+VERCEL_DEPLOYMENT_CHECKLIST.md
+migrate-data.js
+populate-db.js
+test-connection.js
+
+# unused pages and APIs
+src/app/check-payment/
+src/app/database-setup/
+src/app/test/
+src/app/api/database-inspect/
+src/app/api/debug/
+src/app/api/force-setup/
+src/app/api/hello/
+src/app/api/payment/webhook/
+src/app/api/quick-setup/
+src/app/api/setup/
+src/app/api/sql-runner/
+src/app/api/test-callback/
+src/app/api/test/
+
+# old database file
+src/lib/database.ts
+
 # vercel
 .vercel
 
