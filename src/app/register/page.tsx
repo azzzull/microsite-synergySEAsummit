@@ -169,8 +169,8 @@ export default function RegisterPage() {
               <form onSubmit={handleSubmit} className="space-y-6">
                 
                 {/* Full Name */}
-                <div className="flex flex-col md:flex-row md:items-center gap-4">
-                  <label htmlFor="fullName" className="md:w-1/3 font-medium" style={{color: "var(--color-lightgrey)"}}>Full Name</label>
+                <div className="flex flex-col md:flex-row md:items-start gap-4">
+                  <label htmlFor="fullName" className="md:w-1/3 font-medium md:pt-3" style={{color: "var(--color-lightgrey)"}}>Full Name</label>
                   <div className="md:w-2/3">
                     <input 
                       type="text" 
@@ -190,8 +190,8 @@ export default function RegisterPage() {
                 </div>
 
                 {/* Member ID */}
-                <div className="flex flex-col md:flex-row md:items-center gap-4">
-                  <label htmlFor="memberId" className="md:w-1/3 font-medium" style={{color: "var(--color-lightgrey)"}}>Member ID</label>
+                <div className="flex flex-col md:flex-row md:items-start gap-4">
+                  <label htmlFor="memberId" className="md:w-1/3 font-medium md:pt-3" style={{color: "var(--color-lightgrey)"}}>Member ID</label>
                   <div className="md:w-2/3">
                     <input 
                       type="text" 
@@ -216,8 +216,8 @@ export default function RegisterPage() {
                 </div>
 
                 {/* Phone Number */}
-                <div className="flex flex-col md:flex-row md:items-center gap-4">
-                  <label htmlFor="phone" className="md:w-1/3 font-medium" style={{color: "var(--color-lightgrey)"}}>Phone Number</label>
+                <div className="flex flex-col md:flex-row md:items-start gap-4">
+                  <label htmlFor="phone" className="md:w-1/3 font-medium md:pt-3" style={{color: "var(--color-lightgrey)"}}>Phone Number</label>
                   <div className="md:w-2/3">
                     <input 
                       type="tel" 
@@ -241,8 +241,8 @@ export default function RegisterPage() {
                 </div>
 
                 {/* Email */}
-                <div className="flex flex-col md:flex-row md:items-center gap-4">
-                  <label htmlFor="email" className="md:w-1/3 font-medium" style={{color: "var(--color-lightgrey)"}}>Email</label>
+                <div className="flex flex-col md:flex-row md:items-start gap-4">
+                  <label htmlFor="email" className="md:w-1/3 font-medium md:pt-3" style={{color: "var(--color-lightgrey)"}}>Email</label>
                   <div className="md:w-2/3">
                     <input 
                       type="email" 
@@ -265,8 +265,8 @@ export default function RegisterPage() {
                 </div>
 
                 {/* Address */}
-                <div className="flex flex-col md:flex-row md:items-center gap-4">
-                  <label htmlFor="address" className="md:w-1/3 font-medium" style={{color: "var(--color-lightgrey)"}}>Address</label>
+                <div className="flex flex-col md:flex-row md:items-start gap-4">
+                  <label htmlFor="address" className="md:w-1/3 font-medium md:pt-3" style={{color: "var(--color-lightgrey)"}}>Address</label>
                   <div className="md:w-2/3">
                     <textarea 
                       id="address"
@@ -286,8 +286,8 @@ export default function RegisterPage() {
                 </div>
 
                 {/* Country */}
-                <div className="flex flex-col md:flex-row md:items-center gap-4">
-                  <label htmlFor="country" className="md:w-1/3 font-medium" style={{color: "var(--color-lightgrey)"}}>Country</label>
+                <div className="flex flex-col md:flex-row md:items-start gap-4">
+                  <label htmlFor="country" className="md:w-1/3 font-medium md:pt-3" style={{color: "var(--color-lightgrey)"}}>Country</label>
                   <div className="md:w-2/3">
                     <select 
                       id="country"
@@ -317,8 +317,8 @@ export default function RegisterPage() {
                 </div>
 
                 {/* Date of Birth */}
-                <div className="flex flex-col md:flex-row md:items-center gap-4">
-                  <label htmlFor="dob" className="md:w-1/3 font-medium" style={{color: "var(--color-lightgrey)"}}>Date of Birth</label>
+                <div className="flex flex-col md:flex-row md:items-start gap-4">
+                  <label htmlFor="dob" className="md:w-1/3 font-medium md:pt-3" style={{color: "var(--color-lightgrey)"}}>Date of Birth</label>
                   <div className="md:w-2/3 relative">
                     <DatePicker
                       selected={form.dob}
@@ -459,14 +459,14 @@ export default function RegisterPage() {
                 </div>
 
                 {/* Ticket Quantity */}
-                <div className="flex flex-col md:flex-row md:items-center gap-4">
-                  <label className="md:w-1/3 font-medium" style={{color: "var(--color-lightgrey)"}}>Number of Tickets</label>
+                <div className="flex flex-col md:flex-row md:items-start gap-4">
+                  <label className="md:w-1/3 font-medium md:pt-2" style={{color: "var(--color-lightgrey)"}}>Number of Tickets</label>
                   <div className="md:w-2/3">
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-3">
                       <button
                         type="button"
                         onClick={() => setForm({ ...form, ticketQuantity: Math.max(1, form.ticketQuantity - 1) })}
-                        className="w-10 h-10 rounded-lg flex items-center justify-center font-bold text-xl transition-all duration-200 hover:opacity-80"
+                        className="w-8 h-8 rounded-lg flex items-center justify-center font-bold text-lg transition-all duration-200 hover:opacity-80 cursor-pointer"
                         style={{
                           backgroundColor: "var(--color-gold)",
                           color: "var(--color-navy)"
@@ -474,7 +474,7 @@ export default function RegisterPage() {
                       >
                         -
                       </button>
-                      <div className="flex-1 px-4 py-3 rounded-lg text-center font-semibold text-lg" 
+                      <div className="flex-1 px-3 py-2 rounded-lg text-center font-medium" 
                            style={{
                              backgroundColor: "var(--color-lightgrey)", 
                              color: "var(--color-navy)"
@@ -484,7 +484,7 @@ export default function RegisterPage() {
                       <button
                         type="button"
                         onClick={() => setForm({ ...form, ticketQuantity: form.ticketQuantity + 1 })}
-                        className="w-10 h-10 rounded-lg flex items-center justify-center font-bold text-xl transition-all duration-200 hover:opacity-80"
+                        className="w-8 h-8 rounded-lg flex items-center justify-center font-bold text-lg transition-all duration-200 hover:opacity-80 cursor-pointer"
                         style={{
                           backgroundColor: "var(--color-gold)",
                           color: "var(--color-navy)"
@@ -493,11 +493,11 @@ export default function RegisterPage() {
                         +
                       </button>
                     </div>
-                    <div className="mt-3 p-3 rounded-lg text-center" style={{backgroundColor: "rgba(255, 193, 7, 0.1)", borderColor: "var(--color-gold)", border: "1px solid"}}>
-                      <p className="text-lg font-bold" style={{color: "var(--color-gold)"}}>
+                    <div className="mt-2 p-2 rounded-lg text-center border" style={{borderColor: "var(--color-gold)"}}>
+                      <p className="text-sm font-medium" style={{color: "var(--color-gold)"}}>
                         Total Amount: Rp {formatPrice(calculateTotal(form.ticketQuantity))}
                       </p>
-                      <p className="text-sm" style={{color: "var(--color-lightgrey)"}}>
+                      <p className="text-xs" style={{color: "var(--color-lightgrey)"}}>
                         Rp {formatPrice(PRICING_CONFIG.TICKET_PRICE)} × {form.ticketQuantity} ticket{form.ticketQuantity > 1 ? 's' : ''}
                       </p>
                     </div>
