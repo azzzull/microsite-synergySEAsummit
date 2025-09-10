@@ -40,7 +40,7 @@ export const RegisterFloatingButton = () => {
           bg-[var(--color-gold)] text-[var(--color-navy)]
           shadow-lg rounded-full transition-all duration-300
           active:scale-90 hover:scale-105
-          ${hovered && !isMobile ? "w-48 h-16 px-6" : "w-16 h-16"}
+          ${hovered && !isMobile ? "w-48 h-16 px-6" : isMobile ? "w-14 h-14" : "w-16 h-16"}
         `}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
@@ -49,8 +49,8 @@ export const RegisterFloatingButton = () => {
         {/* Mobile Layout - Always show icon with small text below */}
         {isMobile && (
           <div className="flex flex-col items-center justify-center">
-            <TicketIcon className="w-6 h-6" />
-            <span className="text-xs font-medium mt-1 leading-none">
+            <TicketIcon className="w-5 h-5" />
+            <span className="text-xs font-medium mt-0.5 leading-none">
               Register
             </span>
           </div>
