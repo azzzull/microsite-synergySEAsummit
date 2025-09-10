@@ -2,6 +2,43 @@ import { NextRequest, NextResponse } from 'next/server';
 import { postgresDb } from '@/lib/postgresDatabase';
 import { emailService } from '@/lib/emailService';
 
+// Helper function to map payment channel to readable payment method
+function getPaymentMethodFromChannel(channel: string): string {
+  const channelMappings: { [key: string]: string } = {
+    'virtual_account_bca': 'VIRTUAL_ACCOUNT_BCA',
+    'virtual_account_mandiri': 'VIRTUAL_ACCOUNT_MANDIRI', 
+    'virtual_account_bni': 'VIRTUAL_ACCOUNT_BNI',
+    'virtual_account_bri': 'VIRTUAL_ACCOUNT_BRI',
+    'virtual_account_permata': 'VIRTUAL_ACCOUNT_PERMATA',
+    'virtual_account_cimb': 'VIRTUAL_ACCOUNT_CIMB',
+    'qris': 'QRIS',
+    'credit_card': 'CREDIT_CARD',
+    'ovo': 'OVO',
+    'dana': 'DANA',
+    'linkaja': 'LINKAJA',
+    'shopeepay': 'SHOPEEPAY',
+    'gopay': 'GOPAY'
+  };
+
+  // Try to find exact match first
+  const lowerChannel = channel.toLowerCase();
+  if (channelMappings[lowerChannel]) {
+    return channelMappings[lowerChannel];
+  }
+
+  // Try to match partial patterns for VA
+  if (lowerChannel.includes('mandiri')) return 'VIRTUAL_ACCOUNT_MANDIRI';
+  if (lowerChannel.includes('bca')) return 'VIRTUAL_ACCOUNT_BCA';
+  if (lowerChannel.includes('bni')) return 'VIRTUAL_ACCOUNT_BNI';
+  if (lowerChannel.includes('bri')) return 'VIRTUAL_ACCOUNT_BRI';
+  if (lowerChannel.includes('permata')) return 'VIRTUAL_ACCOUNT_PERMATA';
+  if (lowerChannel.includes('cimb')) return 'VIRTUAL_ACCOUNT_CIMB';
+  if (lowerChannel.includes('qris')) return 'QRIS';
+  
+  // Default fallback
+  return `VIRTUAL_ACCOUNT_${channel.toUpperCase()}`;
+}
+
 export async function POST(request: NextRequest) {
   try {
     console.log("DOKU Payment Callback received");
@@ -12,11 +49,14 @@ export async function POST(request: NextRequest) {
     const { order, transaction } = body;
     const orderId = order?.invoice_number;
     const paymentStatus = transaction?.status;
+    const paymentChannel = transaction?.payment_channel || transaction?.channel || 'UNKNOWN';
     
     console.log("Processing payment:", {
       orderId,
       status: paymentStatus,
-      amount: order?.amount
+      amount: order?.amount,
+      paymentChannel: paymentChannel,
+      fullTransactionData: transaction
     });
     
     if (paymentStatus === "SUCCESS" && orderId) {
@@ -46,7 +86,7 @@ export async function POST(request: NextRequest) {
         await postgresDb.updatePayment(orderId, {
           status: "success",
           transactionId: transaction?.original_request_id,
-          paymentMethod: "VIRTUAL_ACCOUNT_BCA",
+          paymentMethod: getPaymentMethodFromChannel(paymentChannel),
           paidAt: transaction?.date || new Date().toISOString()
         });
 
