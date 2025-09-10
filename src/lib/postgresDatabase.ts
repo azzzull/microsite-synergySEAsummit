@@ -248,6 +248,8 @@ export class PostgresDatabase {
         orderId: row.order_id,
         fullName: row.full_name,
         dateOfBirth: row.date_of_birth,
+        memberId: row.member_id,
+        ticketQuantity: row.ticket_quantity,
         createdAt: row.jakarta_created_at || row.created_at,
         updatedAt: row.jakarta_updated_at || row.updated_at
       }));

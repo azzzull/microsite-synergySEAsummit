@@ -10,6 +10,8 @@ interface Registration {
   fullName: string;
   email: string;
   phone: string;
+  memberId?: string;
+  ticketQuantity?: number;
   amount: number;
   status: string;
   createdAt: string;
@@ -199,6 +201,8 @@ export default function AdminPage() {
                     <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{color: "var(--color-navy)"}}>Name</th>
                     <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{color: "var(--color-navy)"}}>Email</th>
                     <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{color: "var(--color-navy)"}}>Phone</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{color: "var(--color-navy)"}}>Member ID</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{color: "var(--color-navy)"}}>Qty</th>
                     <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{color: "var(--color-navy)"}}>Amount</th>
                     <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{color: "var(--color-navy)"}}>Status</th>
                     <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{color: "var(--color-navy)"}}>Created</th>
@@ -211,6 +215,8 @@ export default function AdminPage() {
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{reg.fullName}</td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{reg.email}</td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{reg.phone}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{reg.memberId || '-'}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{reg.ticketQuantity || 1}</td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Rp {reg.amount.toLocaleString()}</td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${

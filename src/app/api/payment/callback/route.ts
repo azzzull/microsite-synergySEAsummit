@@ -229,7 +229,9 @@ export async function POST(request: NextRequest) {
           const emailTickets = [];
 
           for (let i = 1; i <= ticketQuantity; i++) {
-            const ticketId = `TICKET-${orderId}-${i}-${Date.now()}`;
+            const timestamp = Date.now();
+            const randomSuffix = Math.random().toString(36).substring(2, 8);
+            const ticketId = `TICKET-${orderId}-${i.toString().padStart(2, '0')}-${timestamp}-${randomSuffix}`;
             const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${ticketId}`;
             
             // Create ticket record in database
