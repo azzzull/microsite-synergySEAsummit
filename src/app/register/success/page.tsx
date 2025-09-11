@@ -259,18 +259,6 @@ function PaymentSuccessPageContent() {
                     Kembali ke Beranda
                   </button>
                 </Link>
-                <Link href="/hall-of-fame" className="block">
-                  <button 
-                    className="w-full py-3 px-4 rounded-lg font-medium transition-all duration-200 cursor-pointer hover:brightness-110 hover:scale-105 active:scale-95"
-                    style={{
-                      backgroundColor: "transparent",
-                      color: "var(--color-gold)",
-                      border: `1px solid var(--color-gold)`
-                    }}
-                  >
-                    Lihat Peserta Lain
-                  </button>
-                </Link>
               </div>
             </div>
           )}
