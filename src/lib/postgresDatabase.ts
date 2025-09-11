@@ -116,9 +116,15 @@ class PostgresDatabase {
     try {
       console.log('🔧 Creating registration with PostgreSQL...');
       
-      // Create Jakarta timestamp explicitly
-      const jakartaTime = new Date().toLocaleString('sv-SE', { timeZone: 'Asia/Jakarta' });
-      const jakartaTimestamp = jakartaTime.replace(' ', 'T') + '+07:00';
+      // Create Jakarta timestamp correctly
+      const now = new Date();
+      console.log('Current UTC time:', now.toISOString());
+      
+      // Get Jakarta time properly 
+      const jakartaTime = new Date(now.getTime() + (7 * 60 * 60 * 1000));
+      const jakartaTimestamp = jakartaTime.toISOString().replace('Z', '+07:00');
+      
+      console.log('Jakarta timestamp:', jakartaTimestamp);
       
       const queryText = `
         INSERT INTO registrations (

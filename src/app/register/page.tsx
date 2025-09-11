@@ -107,11 +107,19 @@ export default function RegisterPage() {
     
     try {
       // Save form data to sessionStorage and redirect to review page
+      // Format date properly without timezone issues
+      const formatDateForStorage = (date: Date) => {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+      };
+
       sessionStorage.setItem('registrationData', JSON.stringify({
         fullName: form.fullName,
         phone: form.phone,
         email: form.email,
-        dob: form.dob?.toISOString().split('T')[0], // Format date as YYYY-MM-DD
+        dob: form.dob ? formatDateForStorage(form.dob) : null, // Format date as YYYY-MM-DD without timezone conversion
         address: form.address,
         country: form.country,
         memberId: form.memberId,
