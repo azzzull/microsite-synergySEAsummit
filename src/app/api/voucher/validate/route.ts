@@ -13,53 +13,12 @@ interface VoucherData {
   isActive: boolean;
 }
 
-// Mock voucher database - in production, this should be in a real database
-const VOUCHERS: Record<string, VoucherData> = {
-  'WELCOME10': {
-    code: 'WELCOME10',
-    type: 'percentage',
-    value: 10,
-    description: '10% discount for new members',
-    minPurchase: 0,
-    maxDiscount: 50000, // Max Rp 50,000 discount
-    isActive: true
-  },
-  'SAVE25K': {
-    code: 'SAVE25K',
-    type: 'fixed',
-    value: 25000,
-    description: 'Rp 25,000 off your order',
-    minPurchase: 100000, // Min Rp 100,000 purchase
-    isActive: true
-  },
-  'EARLYBIRD': {
-    code: 'EARLYBIRD',
-    type: 'percentage',
-    value: 15,
-    description: '15% early bird discount',
-    minPurchase: 0,
-    maxDiscount: 75000, // Max Rp 75,000 discount
-    expiryDate: '2025-10-01',
-    isActive: true
-  },
-  'STUDENT20': {
-    code: 'STUDENT20',
-    type: 'percentage',
-    value: 20,
-    description: '20% student discount',
-    minPurchase: 0,
-    maxDiscount: 100000, // Max Rp 100,000 discount
-    isActive: true
-  },
-  'BULK50K': {
-    code: 'BULK50K',
-    type: 'fixed',
-    value: 50000,
-    description: 'Rp 50,000 off for bulk orders',
-    minPurchase: 500000, // Min Rp 500,000 (2+ tickets)
-    isActive: true
-  }
-};
+import { Pool } from 'pg';
+
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL || process.env.POSTGRES_URL,
+  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
+});
 
 export async function POST(request: NextRequest) {
   try {
@@ -81,7 +40,11 @@ export async function POST(request: NextRequest) {
     }
 
     const voucherCode = code.toUpperCase().trim();
-    const voucher = VOUCHERS[voucherCode];
+    const result = await pool.query(
+      `SELECT * FROM vouchers WHERE code = $1`,
+      [voucherCode]
+    );
+    const voucher = result.rows[0];
 
     // Check if voucher exists
     if (!voucher) {
@@ -92,7 +55,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Check if voucher is active
-    if (!voucher.isActive) {
+    if (!voucher.is_active) {
       return NextResponse.json({
         success: false,
         error: 'This voucher is no longer active'
@@ -100,8 +63,8 @@ export async function POST(request: NextRequest) {
     }
 
     // Check expiry date
-    if (voucher.expiryDate) {
-      const expiryDate = new Date(voucher.expiryDate);
+    if (voucher.expiry_date) {
+      const expiryDate = new Date(voucher.expiry_date);
       const now = new Date();
       if (now > expiryDate) {
         return NextResponse.json({
@@ -112,15 +75,15 @@ export async function POST(request: NextRequest) {
     }
 
     // Check minimum purchase requirement
-    if (voucher.minPurchase && subtotal < voucher.minPurchase) {
+    if (voucher.min_purchase && subtotal < voucher.min_purchase) {
       return NextResponse.json({
         success: false,
-        error: `Minimum purchase of Rp ${voucher.minPurchase.toLocaleString('id-ID')} required for this voucher`
+        error: `Minimum purchase of Rp ${voucher.min_purchase.toLocaleString('id-ID')} required for this voucher`
       }, { status: 400 });
     }
 
     // Check usage limit (if implemented)
-    if (voucher.usageLimit && voucher.usedCount && voucher.usedCount >= voucher.usageLimit) {
+    if (voucher.usage_limit && voucher.used_count && voucher.used_count >= voucher.usage_limit) {
       return NextResponse.json({
         success: false,
         error: 'This voucher has reached its usage limit'
@@ -132,8 +95,8 @@ export async function POST(request: NextRequest) {
     if (voucher.type === 'percentage') {
       discountAmount = subtotal * (voucher.value / 100);
       // Apply max discount limit for percentage vouchers
-      if (voucher.maxDiscount && discountAmount > voucher.maxDiscount) {
-        discountAmount = voucher.maxDiscount;
+      if (voucher.max_discount && discountAmount > voucher.max_discount) {
+        discountAmount = voucher.max_discount;
       }
     } else {
       // Fixed amount discount

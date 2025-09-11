@@ -3,8 +3,8 @@ import React, { useState, useEffect } from "react";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/Button";
+import { formatPrice, fetchCurrentPrice, calculateTotal as calcTotal, PRICING_CONFIG } from "@/utils/clientPricing";
 import axios from "axios";
-import { PRICING_CONFIG, formatPrice, calculateTotal } from "@/config/pricing";
 
 interface RegistrationData {
   fullName: string;
@@ -32,19 +32,34 @@ export default function ReviewOrderPage() {
   const [voucherError, setVoucherError] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [ticketPrice, setTicketPrice] = useState<number>(PRICING_CONFIG.FALLBACK_PRICE);
 
   useEffect(() => {
-    // Load registration data from sessionStorage
     const savedData = sessionStorage.getItem('registrationData');
     if (savedData) {
       const data = JSON.parse(savedData);
       setRegistrationData(data);
       setTicketQuantity(data.ticketQuantity);
     } else {
-      // Redirect back to register if no data
       window.location.href = '/register';
     }
+    fetchPricing();
   }, []);
+
+  async function fetchPricing() {
+    try {
+      const price = await fetchCurrentPrice();
+      setTicketPrice(price);
+      console.log('Ticket price updated to:', price);
+    } catch (err) {
+      setTicketPrice(PRICING_CONFIG.FALLBACK_PRICE);
+      console.error('Failed to fetch ticket price, using default:', PRICING_CONFIG.FALLBACK_PRICE);
+    }
+  }
+
+  function calculateTotal(quantity: number) {
+    return calcTotal(quantity, ticketPrice);
+  }
 
   const subtotal = calculateTotal(ticketQuantity);
   const discountAmount = appliedVoucher 
@@ -52,12 +67,11 @@ export default function ReviewOrderPage() {
       ? subtotal * (appliedVoucher.value / 100)
       : appliedVoucher.value
     : 0;
-  const total = subtotal - discountAmount;
+  const total = Math.max(subtotal - discountAmount, 0); // Ensure total is not less than 0
 
   const handleQuantityChange = (newQuantity: number) => {
     if (newQuantity >= 1) {
       setTicketQuantity(newQuantity);
-      // Update sessionStorage
       if (registrationData) {
         const updatedData = { ...registrationData, ticketQuantity: newQuantity };
         setRegistrationData(updatedData);
@@ -76,7 +90,6 @@ export default function ReviewOrderPage() {
     setVoucherError("");
 
     try {
-      // Call voucher validation API
       const response = await axios.post('/api/voucher/validate', {
         code: voucherCode,
         subtotal: subtotal
@@ -110,29 +123,24 @@ export default function ReviewOrderPage() {
     setError(null);
 
     try {
-      // Call payment API with updated data and voucher
+      // Ensure the amount is at least 1
+      const finalAmount = Math.max(total, 1);
+
       const response = await axios.post('/api/payment', {
         ...registrationData,
         ticketQuantity: ticketQuantity,
         voucher: appliedVoucher ? {
           code: appliedVoucher.code,
           discountAmount: discountAmount
-        } : null
+        } : null,
+        amount: finalAmount, // Send the adjusted amount
       });
 
       if (response.data.success) {
-        // Clear sessionStorage
         sessionStorage.removeItem('registrationData');
-        
-        // Redirect to payment
         if (response.data.payment_url) {
-          if (response.data.payment_url.startsWith('http')) {
-            window.location.href = response.data.payment_url;
-          } else {
-            window.location.href = response.data.payment_url;
-          }
+          window.location.href = response.data.payment_url;
         } else {
-          // Redirect to payment success page
           window.location.href = '/payment';
         }
       } else {
@@ -166,7 +174,6 @@ export default function ReviewOrderPage() {
       
       <main className="flex-grow mt-16 sm:mt-20 md:mt-20 pt-4 md:pt-8">
         <div className="max-w-4xl mx-auto px-4">
-          {/* Header */}
           <div className="text-center mb-8">
             <h1 className="text-3xl md:text-4xl font-bold mb-4" style={{color: "var(--color-gold)"}}>
               Review Your Order
@@ -177,7 +184,6 @@ export default function ReviewOrderPage() {
           </div>
 
           <div className="grid md:grid-cols-2 gap-8">
-            {/* Registration Details */}
             <div className="bg-white/5 rounded-lg p-6 backdrop-blur-sm">
               <h2 className="text-xl font-semibold mb-4" style={{color: "var(--color-gold)"}}>
                 Registration Details
@@ -229,13 +235,11 @@ export default function ReviewOrderPage() {
               </button>
             </div>
 
-            {/* Order Summary */}
             <div className="bg-white/5 rounded-lg p-6 backdrop-blur-sm">
               <h2 className="text-xl font-semibold mb-4" style={{color: "var(--color-gold)"}}>
                 Order Summary
               </h2>
               
-              {/* Ticket Quantity Counter */}
               <div className="mb-6">
                 <label className="block text-sm font-medium mb-2" style={{color: "var(--color-lightgrey)"}}>
                   Number of Tickets
@@ -268,7 +272,6 @@ export default function ReviewOrderPage() {
                 </div>
               </div>
 
-              {/* Voucher Section */}
               <div className="mb-6">
                 <label className="block text-sm font-medium mb-2" style={{color: "var(--color-lightgrey)"}}>
                   Voucher Code (Optional)
@@ -309,7 +312,6 @@ export default function ReviewOrderPage() {
                 )}
               </div>
 
-              {/* Price Breakdown */}
               <div className="border-t border-gray-600 pt-4">
                 <div className="space-y-2">
                   <div className="flex justify-between">
@@ -341,7 +343,6 @@ export default function ReviewOrderPage() {
                 </div>
               </div>
 
-              {/* Action Buttons */}
               <div className="mt-6 space-y-3">
                 {error && (
                   <div className="p-3 rounded-lg bg-red-900/30 border border-red-600">

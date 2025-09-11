@@ -2,9 +2,6 @@
 // This file centralizes all pricing-related settings for easy management
 
 export const PRICING_CONFIG = {
-  // Current ticket price in IDR
-  TICKET_PRICE: 250000, // IDR 250,000 - Sandbox testing price (same as real early bird price)
-  
   // Price display label
   PRICE_LABEL: "Early Bird Price", // Early bird pricing for sandbox testing
   
@@ -25,7 +22,30 @@ export function formatPrice(amount: number): string {
   return amount.toLocaleString(PRICING_CONFIG.LOCALE);
 }
 
-// Helper function to calculate total
-export function calculateTotal(quantity: number): number {
-  return PRICING_CONFIG.TICKET_PRICE * quantity;
+// Fetch ticket price dynamically from the API
+export async function fetchTicketPrice(): Promise<number> {
+  try {
+    const res = await fetch('/api/admin/pricing');
+    const data = await res.json();
+    if (data.success && Array.isArray(data.pricing) && data.pricing.length > 0) {
+      return data.pricing[0].price;
+    }
+    throw new Error('Failed to fetch ticket price from API');
+  } catch (error) {
+    console.error('Error fetching ticket price:', error);
+    // Import fallback from pricingService instead of hardcoding
+    const { pricingService } = await import('@/lib/pricingService');
+    return pricingService.getFallbackPrice();
+  }
+}
+
+// Helper function to calculate total with dynamic pricing
+export async function calculateTotal(quantity: number): Promise<number> {
+  const ticketPrice = await fetchTicketPrice();
+  return ticketPrice * quantity;
+}
+
+// Synchronous version for compatibility (uses fallback price)
+export function calculateTotalSync(quantity: number, ticketPrice: number): number {
+  return ticketPrice * quantity;
 }

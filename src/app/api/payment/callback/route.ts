@@ -220,7 +220,8 @@ export async function POST(request: NextRequest) {
         if (registrationResult.success && registrationResult.registration) {
           const registration = registrationResult.registration as any;
           const ticketQuantity = registration.ticket_quantity || 1;
-          const totalAmount = parseInt(order?.amount || "250000");
+          // Get dynamic price from database instead of hardcoded value
+          const totalAmount = parseInt(order?.amount || "0");
 
           console.log(`Creating ${ticketQuantity} tickets for order:`, orderId);
 

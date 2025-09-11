@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/Button";
@@ -21,6 +21,46 @@ export default function RegisterPage() {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [pricingInfo, setPricingInfo] = useState<{
+    currentPrice: number;
+    isEarlyBird: boolean;
+    earlyBirdEnd: Date | null;
+    normalPrice: number | null;
+    label: string;
+    promotionalText?: string;
+  } | null>(null);
+
+  useEffect(() => {
+    fetchPricingInfo();
+  }, []);
+
+  const fetchPricingInfo = async () => {
+    try {
+      const response = await fetch('/api/pricing/info');
+      const data = await response.json();
+      
+      if (data.success) {
+        setPricingInfo({
+          currentPrice: data.currentPrice,
+          isEarlyBird: data.isEarlyBird,
+          earlyBirdEnd: data.earlyBirdEnd ? new Date(data.earlyBirdEnd) : null,
+          normalPrice: data.normalPrice,
+          label: data.label,
+          promotionalText: data.promotionalText
+        });
+      }
+    } catch (error) {
+      console.error('Error fetching pricing info:', error);
+    }
+  };
+
+  const formatPrice = (price: number) => {
+    return new Intl.NumberFormat('id-ID', {
+      style: 'currency',
+      currency: 'IDR',
+      minimumFractionDigits: 0
+    }).format(price);
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -104,8 +144,33 @@ export default function RegisterPage() {
                   The Premier Southeast Asia Business & Technology Summit: Connecting Innovation Across the Region!
                 </p>
                 <div className="border px-4 py-3 rounded-lg inline-block" style={{borderColor: "var(--color-gold)"}}>
-                  <p className="text-xl font-bold" style={{color: "var(--color-gold)"}}>Early Bird Special: Rp 250.000 per ticket</p>
-                  <p className="text-sm" style={{color: "var(--color-lightgrey)"}}>Limited time offer - Save big on your summit experience!</p>
+                  {pricingInfo ? (
+                    <>
+                      <p className="text-xl font-bold" style={{color: "var(--color-gold)"}}>
+                        {pricingInfo.isEarlyBird ? 'Early Bird Special' : 'Ticket Price'}: {formatPrice(pricingInfo.currentPrice)} per ticket
+                      </p>
+                      <p className="text-sm" style={{color: "var(--color-lightgrey)"}}>
+                        {pricingInfo.isEarlyBird 
+                          ? (pricingInfo.promotionalText || 'Limited time offer - Save big on your summit experience!')
+                          : 'Regular pricing - Secure your spot at the summit!'
+                        }
+                      </p>
+                      {pricingInfo.isEarlyBird && pricingInfo.earlyBirdEnd && (
+                        <p className="text-xs mt-1" style={{color: "var(--color-gold)"}}>
+                          Early bird ends: {pricingInfo.earlyBirdEnd.toLocaleDateString('id-ID', {
+                            year: 'numeric',
+                            month: 'long', 
+                            day: 'numeric'
+                          })}
+                        </p>
+                      )}
+                    </>
+                  ) : (
+                    <>
+                      <p className="text-xl font-bold" style={{color: "var(--color-gold)"}}>Loading pricing...</p>
+                      <p className="text-sm" style={{color: "var(--color-lightgrey)"}}>Please wait while we fetch the latest prices</p>
+                    </>
+                  )}
                 </div>
               </div>
               <div className="flex flex-col items-center flex-shrink-0 order-1 md:order-2">

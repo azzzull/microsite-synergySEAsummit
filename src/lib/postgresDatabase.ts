@@ -1,5 +1,9 @@
 // Railway PostgreSQL Database Layer using pg
-import { Pool } from 'pg';
+import { Pool, Client } from 'pg';
+import { secureLog, dbLog } from './secureLogging';
+
+// Database configuration
+const isProduction = process.env.NODE_ENV === 'production';
 import { getCurrentJakartaISO } from './timezone';
 
 // Create a connection pool for Railway PostgreSQL with robust configuration
@@ -19,8 +23,8 @@ pool.on('error', (err) => {
   console.error('❌ PostgreSQL pool error:', err);
 });
 
-export class PostgresDatabase {
-  private async executeQuery(text: string, params: any[] = [], retries: number = 2): Promise<any> {
+class PostgresDatabase {
+  async executeQuery(text: string, params: any[] = [], retries: number = 2): Promise<any> {
     let client;
     let attempt = 0;
     
@@ -75,7 +79,7 @@ export class PostgresDatabase {
   }
 
   // Alternative method: Direct connection without pool for problematic queries
-  private async executeQueryDirect(text: string, params: any[] = []): Promise<any> {
+  async executeQueryDirect(text: string, params: any[] = []): Promise<any> {
     const { Client } = require('pg');
     
     const client = new Client({

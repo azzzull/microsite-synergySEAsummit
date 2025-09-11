@@ -9,7 +9,7 @@ import Link from "next/link";
 function PaymentPageContent() {
   const searchParams = useSearchParams();
   const orderId = searchParams.get('order_id');
-  const amount = searchParams.get('amount') || '250000';
+  const amount = searchParams.get('amount') || '0'; // Will be fetched dynamically if not provided
   const paymentUrl = searchParams.get('payment_url');
   const tokenId = searchParams.get('token_id');
   const paymentType = searchParams.get('payment_type');

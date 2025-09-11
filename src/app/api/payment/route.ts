@@ -3,7 +3,10 @@ import axios from 'axios';
 import crypto from 'crypto';
 import { postgresDb } from '@/lib/postgresDatabase';
 import { emailService } from '@/lib/emailService';
-import { PRICING_CONFIG, calculateTotal } from '@/config/pricing';
+import { PRICING_CONFIG } from '@/config/pricing';
+import { pricingService } from '@/lib/pricingService';
+import { secureLog } from '@/lib/secureLogging';
+import { InputValidator } from '@/lib/validation';
 
 // Doku API Configuration
 const DOKU_BASE_URL = process.env.NEXT_PUBLIC_DOKU_BASE_URL || 'https://api-sandbox.doku.com';
@@ -80,8 +83,9 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Calculate total amount based on quantity
-    let totalAmount = calculateTotal(quantity);
+    // Calculate total amount based on quantity using dynamic pricing
+    const ticketPrice = await pricingService.getCurrentPrice();
+    let totalAmount = ticketPrice * quantity;
     let originalAmount = totalAmount;
     let discountAmount = 0;
     let voucherInfo = null;

@@ -3,7 +3,6 @@
   "devCommand": "npm run dev",
   "env": {
     "NEXT_PUBLIC_DOKU_BASE_URL": "https://api-sandbox.doku.com",
-    "NEXT_PUBLIC_EVENT_PRICE": "250000",
     "NEXT_PUBLIC_EVENT_NAME": "Synergy SEA Summit 2025",
     "NEXT_PUBLIC_EVENT_CURRENCY": "IDR"
   },

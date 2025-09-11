@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { emailService } from '@/lib/emailService';
+import { pricingService } from '@/lib/pricingService';
 
 export async function GET() {
   try {
@@ -42,6 +43,9 @@ export async function POST(request: NextRequest) {
 
     console.log('🧪 Sending test email to:', email);
 
+    // Get current price dynamically
+    const currentPrice = await pricingService.getCurrentPrice();
+
     if (type === 'ticket') {
       // Send test ticket email
       const testTicketData = {
@@ -54,7 +58,7 @@ export async function POST(request: NextRequest) {
         eventDate: 'November 8, 2025',
         eventTime: '09:00 AM - 05:00 PM WITA',
         eventLocation: 'The Stones Hotel, Legian Bali',
-        amount: 250000,
+        amount: currentPrice,
         qrCode: 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=TEST-TICKET',
         transactionId: 'TEST-TRANSACTION-' + Date.now(),
         paidAt: new Date().toISOString()
@@ -77,7 +81,7 @@ export async function POST(request: NextRequest) {
         participantName: 'Test Participant',
         participantEmail: email,
         paymentStatus: 'success',
-        amount: 250000
+        amount: currentPrice
       };
 
       const result = await emailService.sendPaymentConfirmation(testConfirmationData);
