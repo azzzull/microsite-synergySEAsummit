@@ -119,9 +119,10 @@ export class PostgresDatabase {
       const queryText = `
         INSERT INTO registrations (
           order_id, full_name, phone, email, date_of_birth, 
-          address, country, member_id, ticket_quantity, amount, status, created_at, updated_at
+          address, country, member_id, ticket_quantity, amount, status, 
+          voucher_code, original_amount, discount_amount, created_at, updated_at
         )
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16)
         RETURNING *;
       `;
       
@@ -129,6 +130,7 @@ export class PostgresDatabase {
         data.orderId, data.fullName, data.phone, 
         data.email, data.dob, data.address, 
         data.country, data.memberId, data.ticketQuantity, data.amount, data.status || 'pending',
+        data.voucherCode || null, data.originalAmount || data.amount, data.discountAmount || 0,
         jakartaTimestamp, jakartaTimestamp
       ];
 

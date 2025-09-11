@@ -6,8 +6,6 @@ import { Button } from "@/components/Button";
 import { ChevronDownIcon } from "@heroicons/react/24/outline";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import axios from "axios";
-import { PRICING_CONFIG, formatPrice, calculateTotal } from "@/config/pricing";
 
 export default function RegisterPage() {
   const [form, setForm] = useState({
@@ -68,9 +66,8 @@ export default function RegisterPage() {
     setError(null);
     
     try {
-      console.log('Submitting registration form...');
-      // Call payment API
-      const response = await axios.post('/api/payment', {
+      // Save form data to sessionStorage and redirect to review page
+      sessionStorage.setItem('registrationData', JSON.stringify({
         fullName: form.fullName,
         phone: form.phone,
         email: form.email,
@@ -79,44 +76,14 @@ export default function RegisterPage() {
         country: form.country,
         memberId: form.memberId,
         ticketQuantity: form.ticketQuantity
-      });
-
-      console.log('Payment API response:', response.data);
-
-      if (response.data.success) {
-        // Redirect to payment page or show payment instructions
-        if (response.data.payment_url) {
-          console.log('Redirecting to:', response.data.payment_url);
-          // Check if it's an external URL or internal redirect
-          if (response.data.payment_url.startsWith('http')) {
-            window.location.href = response.data.payment_url;
-          } else {
-            window.location.href = response.data.payment_url;
-          }
-        } else {
-          // Show payment instructions (for VA/QRIS)
-          setSuccess(true);
-          console.log('Payment created:', response.data);
-        }
-      } else {
-        throw new Error(response.data.error || 'Payment creation failed');
-      }
+      }));
+      
+      // Redirect to review page
+      window.location.href = '/review-order';
       
     } catch (error: any) {
-      console.error('Registration error:', error);
-      console.error('Error response:', error.response?.data);
-      
-      let errorMessage = 'Registration failed. Please try again.';
-      
-      if (error.response?.data?.error) {
-        errorMessage = error.response.data.error;
-      } else if (error.response?.data?.details) {
-        errorMessage = error.response.data.details;
-      } else if (error.message) {
-        errorMessage = error.message;
-      }
-      
-      setError(errorMessage);
+      console.error('Error:', error);
+      setError('Something went wrong. Please try again.');
       setLoading(false);
     }
   };
@@ -137,8 +104,8 @@ export default function RegisterPage() {
                   The Premier Southeast Asia Business & Technology Summit: Connecting Innovation Across the Region!
                 </p>
                 <div className="border px-4 py-3 rounded-lg inline-block" style={{borderColor: "var(--color-gold)"}}>
-                  <p className="text-xl font-bold" style={{color: "var(--color-gold)"}}>{PRICING_CONFIG.PRICE_LABEL}: Rp {formatPrice(PRICING_CONFIG.TICKET_PRICE)} per ticket</p>
-                  <p className="text-sm" style={{color: "var(--color-lightgrey)"}}>{PRICING_CONFIG.PROMOTIONAL_TEXT}</p>
+                  <p className="text-xl font-bold" style={{color: "var(--color-gold)"}}>Fill your information below</p>
+                  <p className="text-sm" style={{color: "var(--color-lightgrey)"}}>Review and payment in the next step</p>
                 </div>
               </div>
               <div className="flex flex-col items-center flex-shrink-0 order-1 md:order-2">
@@ -493,14 +460,6 @@ export default function RegisterPage() {
                         +
                       </button>
                     </div>
-                    <div className="mt-2 p-2 rounded-lg text-center border" style={{borderColor: "var(--color-gold)"}}>
-                      <p className="text-sm font-medium" style={{color: "var(--color-gold)"}}>
-                        Total Amount: Rp {formatPrice(calculateTotal(form.ticketQuantity))}
-                      </p>
-                      <p className="text-xs" style={{color: "var(--color-lightgrey)"}}>
-                        Rp {formatPrice(PRICING_CONFIG.TICKET_PRICE)} × {form.ticketQuantity} ticket{form.ticketQuantity > 1 ? 's' : ''}
-                      </p>
-                    </div>
                   </div>
                 </div>
 
@@ -511,7 +470,7 @@ export default function RegisterPage() {
                     className="cursor-pointer text-md py-3 px-6 bg-[var(--color-gold)] border border-[var(--color-gold)] rounded-lg hover:bg-[var(--color-gold)]"
                     style={{color: "var(--color-navy)"}}
                   >
-                    {loading ? "Processing..." : "Submit Registration"}
+                    {loading ? "Processing..." : "Review Order →"}
                   </Button>
                 </div>
               </form>

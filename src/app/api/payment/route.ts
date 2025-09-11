@@ -44,9 +44,9 @@ export async function POST(request: NextRequest) {
   try {
     console.log('=== DOKU Checkout API Called ===');
     const body = await request.json();
-    const { fullName, phone, email, dob, address, country, memberId, ticketQuantity } = body;
+    const { fullName, phone, email, dob, address, country, memberId, ticketQuantity, voucher } = body;
 
-    console.log('Request body:', { fullName, phone, email, dob, address, country, memberId, ticketQuantity });
+    console.log('Request body:', { fullName, phone, email, dob, address, country, memberId, ticketQuantity, voucher });
     console.log('Environment variables check:', {
       DOKU_BASE_URL,
       CLIENT_ID: CLIENT_ID?.substring(0, 15) + '...',
@@ -81,7 +81,30 @@ export async function POST(request: NextRequest) {
     }
 
     // Calculate total amount based on quantity
-    const totalAmount = calculateTotal(quantity);
+    let totalAmount = calculateTotal(quantity);
+    let originalAmount = totalAmount;
+    let discountAmount = 0;
+    let voucherInfo = null;
+
+    // Apply voucher discount if provided
+    if (voucher && voucher.discountAmount && voucher.code) {
+      discountAmount = voucher.discountAmount;
+      totalAmount = totalAmount - discountAmount;
+      
+      // Ensure total amount is not negative
+      if (totalAmount < 0) {
+        totalAmount = 0;
+      }
+      
+      voucherInfo = {
+        code: voucher.code,
+        discountAmount: discountAmount,
+        originalAmount: originalAmount,
+        finalAmount: totalAmount
+      };
+      
+      console.log('💸 Voucher applied:', voucherInfo);
+    }
 
     // Check if environment variables are properly set
     if (!CLIENT_ID || !CLIENT_SECRET || CLIENT_ID === 'your_sandbox_client_id') {
@@ -109,6 +132,9 @@ export async function POST(request: NextRequest) {
         success: true, 
         order_id: orderId,
         amount: totalAmount,
+        original_amount: originalAmount,
+        discount_amount: discountAmount,
+        voucher_info: voucherInfo,
         payment_url: simulationData.payment_url,
         token_id: simulationData.token_id,
         expired_date: simulationData.expired_date,
@@ -282,6 +308,9 @@ export async function POST(request: NextRequest) {
         memberId,
         ticketQuantity: quantity,
         amount: totalAmount,
+        originalAmount: originalAmount,
+        discountAmount: discountAmount,
+        voucherCode: voucherInfo?.code || null,
         status: 'pending'
       });
 
@@ -310,6 +339,9 @@ export async function POST(request: NextRequest) {
         success: true, 
         order_id: orderId,
         amount: totalAmount,
+        original_amount: originalAmount,
+        discount_amount: discountAmount,
+        voucher_info: voucherInfo,
         payment_url: response.data.response.payment.url,
         token_id: response.data.response.payment.token_id,
         expired_date: response.data.response.payment.expired_date,
@@ -354,6 +386,9 @@ export async function POST(request: NextRequest) {
       memberId,
       ticketQuantity: quantity,
       amount: totalAmount,
+      originalAmount: originalAmount,
+      discountAmount: discountAmount,
+      voucherCode: voucherInfo?.code || null,
       status: 'pending'
     });
 
@@ -369,6 +404,9 @@ export async function POST(request: NextRequest) {
       success: true, 
       order_id: orderId,
       amount: totalAmount,
+      original_amount: originalAmount,
+      discount_amount: discountAmount,
+      voucher_info: voucherInfo,
       payment_url: simulationData.payment_url,
       token_id: simulationData.token_id,
       expired_date: simulationData.expired_date,
