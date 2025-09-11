@@ -55,6 +55,13 @@ export default function AdminDashboardPage() {
 	const [payments, setPayments] = useState<Payment[]>([]);
 	const [tickets, setTickets] = useState<Ticket[]>([]);
 	const [loading, setLoading] = useState(true);
+	
+	// Pagination states
+	const [registrationPage, setRegistrationPage] = useState(1);
+	const [paymentPage, setPaymentPage] = useState(1);
+	const [ticketPage, setTicketPage] = useState(1);
+	const itemsPerPage = 5;
+	
 	const router = useRouter();
 
 	useEffect(() => {
@@ -65,6 +72,71 @@ export default function AdminDashboardPage() {
 		}
 		fetchData();
 	}, [router]);
+
+	// Pagination helper functions
+	const paginate = (items: any[], currentPage: number) => {
+		const startIndex = (currentPage - 1) * itemsPerPage;
+		return items.slice(startIndex, startIndex + itemsPerPage);
+	};
+
+	const getTotalPages = (itemCount: number) => {
+		return Math.ceil(itemCount / itemsPerPage);
+	};
+
+	const PaginationControls = ({ currentPage, totalPages, onPageChange, label }: {
+		currentPage: number;
+		totalPages: number;
+		onPageChange: (page: number) => void;
+		label: string;
+	}) => {
+		if (totalPages <= 1) return null;
+
+		return (
+			<div className="flex items-center justify-between mt-4 px-6 py-3 border-t border-gray-600">
+				<span className="text-sm text-gray-400">
+					{label} - Page {currentPage} of {totalPages}
+				</span>
+				<div className="flex gap-2">
+					<button
+						onClick={() => onPageChange(currentPage - 1)}
+						disabled={currentPage === 1}
+						className="px-3 py-1 rounded text-sm bg-white/10 hover:bg-white/20 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+						style={{color: "var(--color-lightgrey)"}}
+					>
+						Previous
+					</button>
+					
+					{/* Page numbers */}
+					{Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+						<button
+							key={page}
+							onClick={() => onPageChange(page)}
+							className={`px-3 py-1 rounded text-sm transition-all ${
+								currentPage === page 
+									? 'text-[var(--color-navy)] font-medium'
+									: 'hover:bg-white/20'
+							}`}
+							style={{
+								backgroundColor: currentPage === page ? "var(--color-gold)" : "transparent",
+								color: currentPage === page ? "var(--color-navy)" : "var(--color-lightgrey)"
+							}}
+						>
+							{page}
+						</button>
+					))}
+					
+					<button
+						onClick={() => onPageChange(currentPage + 1)}
+						disabled={currentPage === totalPages}
+						className="px-3 py-1 rounded text-sm bg-white/10 hover:bg-white/20 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+						style={{color: "var(--color-lightgrey)"}}
+					>
+						Next
+					</button>
+				</div>
+			</div>
+		);
+	};
 
 	async function fetchData() {
 		try {
@@ -106,7 +178,9 @@ export default function AdminDashboardPage() {
 
 			{/* Registrations Table */}
 			<div className="mb-8">
-				<h3 className="text-xl font-semibold mb-4" style={{color: "var(--color-lightgrey)"}}>Registrations ({registrations.length})</h3>
+				<h3 className="text-xl font-semibold mb-4" style={{color: "var(--color-lightgrey)"}}>
+					Registrations ({registrations.length} total)
+				</h3>
 				<div className="bg-white/5 rounded-lg backdrop-blur-sm overflow-hidden">
 					<div className="overflow-x-auto">
 						<table className="w-full">
@@ -127,7 +201,7 @@ export default function AdminDashboardPage() {
 								</tr>
 							</thead>
 							<tbody className="divide-y divide-gray-700">
-								{registrations.map((reg, index) => (
+								{paginate(registrations, registrationPage).map((reg, index) => (
 									<tr key={`registration-${reg.orderId}-${index}`} className="hover:bg-white/5">
 										<td className="px-6 py-4 font-mono text-sm font-medium" style={{color: "var(--color-gold)"}}>{reg.orderId}</td>
 										<td className="px-6 py-4 text-sm">{reg.fullName}</td>
@@ -179,12 +253,20 @@ export default function AdminDashboardPage() {
 							</tbody>
 						</table>
 					</div>
+					<PaginationControls
+						currentPage={registrationPage}
+						totalPages={getTotalPages(registrations.length)}
+						onPageChange={setRegistrationPage}
+						label="Registrations"
+					/>
 				</div>
 			</div>
 
 			{/* Payments Table */}
 			<div className="mb-8">
-				<h3 className="text-xl font-semibold mb-4" style={{color: "var(--color-lightgrey)"}}>Payments ({payments.length})</h3>
+				<h3 className="text-xl font-semibold mb-4" style={{color: "var(--color-lightgrey)"}}>
+					Payments ({payments.length} total)
+				</h3>
 				<div className="bg-white/5 rounded-lg backdrop-blur-sm overflow-hidden">
 					<div className="overflow-x-auto">
 						<table className="w-full">
@@ -199,7 +281,7 @@ export default function AdminDashboardPage() {
 								</tr>
 							</thead>
 							<tbody className="divide-y divide-gray-700">
-								{payments.map((payment, index) => (
+								{paginate(payments, paymentPage).map((payment, index) => (
 									<tr key={`payment-${payment.orderId}-${index}`} className="hover:bg-white/5">
 										<td className="px-6 py-4 font-mono text-sm font-medium" style={{color: "var(--color-gold)"}}>{payment.orderId}</td>
 										<td className="px-6 py-4 text-sm">Rp {payment.amount.toLocaleString()}</td>
@@ -220,12 +302,20 @@ export default function AdminDashboardPage() {
 							</tbody>
 						</table>
 					</div>
+					<PaginationControls
+						currentPage={paymentPage}
+						totalPages={getTotalPages(payments.length)}
+						onPageChange={setPaymentPage}
+						label="Payments"
+					/>
 				</div>
 			</div>
 
 			{/* Tickets Table */}
 			<div className="mb-8">
-				<h3 className="text-xl font-semibold mb-4" style={{color: "var(--color-lightgrey)"}}>E-Tickets ({tickets.length})</h3>
+				<h3 className="text-xl font-semibold mb-4" style={{color: "var(--color-lightgrey)"}}>
+					E-Tickets ({tickets.length} total)
+				</h3>
 				<div className="bg-white/5 rounded-lg backdrop-blur-sm overflow-hidden">
 					<div className="overflow-x-auto">
 						<table className="w-full">
@@ -240,7 +330,7 @@ export default function AdminDashboardPage() {
 								</tr>
 							</thead>
 							<tbody className="divide-y divide-gray-700">
-								{tickets.map((ticket, index) => (
+								{paginate(tickets, ticketPage).map((ticket, index) => (
 									<tr key={`ticket-${ticket.ticketId || ticket.id || index}`} className="hover:bg-white/5">
 										<td className="px-6 py-4 font-mono text-sm font-medium" style={{color: "var(--color-gold)"}}>
 											{ticket.ticketId || ticket.ticketCode || 'N/A'}
@@ -263,6 +353,12 @@ export default function AdminDashboardPage() {
 							</tbody>
 						</table>
 					</div>
+					<PaginationControls
+						currentPage={ticketPage}
+						totalPages={getTotalPages(tickets.length)}
+						onPageChange={setTicketPage}
+						label="E-Tickets"
+					/>
 				</div>
 			</div>
 		</div>
