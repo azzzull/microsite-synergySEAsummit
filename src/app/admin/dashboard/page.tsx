@@ -91,38 +91,87 @@ export default function AdminDashboardPage() {
 	}) => {
 		if (totalPages <= 1) return null;
 
+		// Smart pagination: show max 7 page buttons
+		const getVisiblePages = () => {
+			const delta = 2; // Show 2 pages before and after current page
+			const range = [];
+			
+			// Always show first page
+			if (currentPage > delta + 2) {
+				range.push(1);
+				if (currentPage > delta + 3) {
+					range.push('...');
+				}
+			}
+			
+			// Show pages around current page
+			const start = Math.max(1, currentPage - delta);
+			const end = Math.min(totalPages, currentPage + delta);
+			
+			for (let i = start; i <= end; i++) {
+				range.push(i);
+			}
+			
+			// Always show last page
+			if (currentPage < totalPages - delta - 1) {
+				if (currentPage < totalPages - delta - 2) {
+					range.push('...');
+				}
+				range.push(totalPages);
+			}
+			
+			return range;
+		};
+
+		const visiblePages = getVisiblePages();
+
 		return (
 			<div className="flex items-center justify-between mt-4 px-6 py-3 border-t border-gray-600">
 				<span className="text-sm text-gray-400">
-					{label} - Page {currentPage} of {totalPages}
+					{label} - Page {currentPage} of {totalPages} (showing {Math.min(itemsPerPage, totalPages * itemsPerPage - (currentPage - 1) * itemsPerPage)} items)
 				</span>
-				<div className="flex gap-2">
+				<div className="flex gap-2 items-center">
+					<button
+						onClick={() => onPageChange(1)}
+						disabled={currentPage === 1}
+						className="px-3 py-1 rounded text-sm bg-white/10 hover:bg-white/20 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+						style={{color: "var(--color-lightgrey)"}}
+						title="First Page"
+					>
+						««
+					</button>
+					
 					<button
 						onClick={() => onPageChange(currentPage - 1)}
 						disabled={currentPage === 1}
 						className="px-3 py-1 rounded text-sm bg-white/10 hover:bg-white/20 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
 						style={{color: "var(--color-lightgrey)"}}
 					>
-						Previous
+						‹ Prev
 					</button>
 					
-					{/* Page numbers */}
-					{Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-						<button
-							key={page}
-							onClick={() => onPageChange(page)}
-							className={`px-3 py-1 rounded text-sm transition-all ${
-								currentPage === page 
-									? 'text-[var(--color-navy)] font-medium'
-									: 'hover:bg-white/20'
-							}`}
-							style={{
-								backgroundColor: currentPage === page ? "var(--color-gold)" : "transparent",
-								color: currentPage === page ? "var(--color-navy)" : "var(--color-lightgrey)"
-							}}
-						>
-							{page}
-						</button>
+					{/* Smart page numbers */}
+					{visiblePages.map((page, index) => (
+						<span key={index}>
+							{page === '...' ? (
+								<span className="px-3 py-1 text-gray-500">...</span>
+							) : (
+								<button
+									onClick={() => onPageChange(page as number)}
+									className={`px-3 py-1 rounded text-sm transition-all min-w-[32px] ${
+										currentPage === page 
+											? 'text-[var(--color-navy)] font-medium'
+											: 'hover:bg-white/20'
+									}`}
+									style={{
+										backgroundColor: currentPage === page ? "var(--color-gold)" : "transparent",
+										color: currentPage === page ? "var(--color-navy)" : "var(--color-lightgrey)"
+									}}
+								>
+									{page}
+								</button>
+							)}
+						</span>
 					))}
 					
 					<button
@@ -131,7 +180,17 @@ export default function AdminDashboardPage() {
 						className="px-3 py-1 rounded text-sm bg-white/10 hover:bg-white/20 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
 						style={{color: "var(--color-lightgrey)"}}
 					>
-						Next
+						Next ›
+					</button>
+					
+					<button
+						onClick={() => onPageChange(totalPages)}
+						disabled={currentPage === totalPages}
+						className="px-3 py-1 rounded text-sm bg-white/10 hover:bg-white/20 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+						style={{color: "var(--color-lightgrey)"}}
+						title="Last Page"
+					>
+						»»
 					</button>
 				</div>
 			</div>
