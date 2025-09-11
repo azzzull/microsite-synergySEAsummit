@@ -24,6 +24,20 @@ interface VoucherData {
   description: string;
 }
 
+// Helper function to format date display properly
+function formatDateDisplay(dateString: string): string {
+  // Parse date as YYYY-MM-DD and create Date object in local timezone
+  const [year, month, day] = dateString.split('-').map(Number);
+  const date = new Date(year, month - 1, day); // month is 0-indexed in JS Date
+  
+  // Format as dd/mm/yyyy (Indonesian format)
+  return date.toLocaleDateString('en-GB', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric'
+  });
+}
+
 export default function ReviewOrderPage() {
   const [registrationData, setRegistrationData] = useState<RegistrationData | null>(null);
   const [ticketQuantity, setTicketQuantity] = useState(1);
@@ -212,7 +226,7 @@ export default function ReviewOrderPage() {
                 
                 <div>
                   <label className="text-sm font-medium" style={{color: "var(--color-lightgrey)"}}>Date of Birth</label>
-                  <p className="text-white">{new Date(registrationData.dob).toLocaleDateString()}</p>
+                  <p className="text-white">{formatDateDisplay(registrationData.dob)}</p>
                 </div>
                 
                 <div>
@@ -228,7 +242,7 @@ export default function ReviewOrderPage() {
               
               <button
                 onClick={handleBackToRegister}
-                className="mt-4 text-sm underline transition-opacity hover:opacity-80"
+                className="mt-4 text-sm underline transition-opacity hover:opacity-80 hover:cursor-pointer"
                 style={{color: "var(--color-gold)"}}
               >
                 ← Edit Registration Details
@@ -248,7 +262,7 @@ export default function ReviewOrderPage() {
                   <button
                     onClick={() => handleQuantityChange(ticketQuantity - 1)}
                     disabled={ticketQuantity <= 1}
-                    className="w-10 h-10 rounded-lg flex items-center justify-center font-bold text-lg transition-all duration-200 hover:opacity-80 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="w-10 h-10 rounded-lg flex items-center justify-center font-bold text-lg transition-all duration-200 hover:opacity-80 hover:cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                     style={{
                       backgroundColor: "var(--color-gold)",
                       color: "var(--color-navy)"
@@ -261,7 +275,7 @@ export default function ReviewOrderPage() {
                   </div>
                   <button
                     onClick={() => handleQuantityChange(ticketQuantity + 1)}
-                    className="w-10 h-10 rounded-lg flex items-center justify-center font-bold text-lg transition-all duration-200 hover:opacity-80"
+                    className="w-10 h-10 rounded-lg flex items-center justify-center font-bold text-lg transition-all duration-200 hover:opacity-80 hover:cursor-pointer"
                     style={{
                       backgroundColor: "var(--color-gold)",
                       color: "var(--color-navy)"
@@ -301,7 +315,7 @@ export default function ReviewOrderPage() {
                     </div>
                     <button
                       onClick={handleRemoveVoucher}
-                      className="text-red-400 hover:text-red-300 text-sm underline"
+                      className="text-red-400 hover:text-red-300 text-sm underline hover:cursor-pointer"
                     >
                       Remove
                     </button>
@@ -360,7 +374,7 @@ export default function ReviewOrderPage() {
                 
                 <button
                   onClick={handleBackToRegister}
-                  className="w-full py-2 text-center text-sm underline transition-opacity hover:opacity-80"
+                  className="w-full py-2 text-center text-sm underline transition-opacity hover:opacity-80 hover:cursor-pointer"
                   style={{color: "var(--color-gold)"}}
                 >
                   ← Back to Registration
