@@ -35,12 +35,12 @@ const nextConfig: NextConfig = {
             key: 'Content-Security-Policy',
             value: [
               "default-src 'self'",
-              "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://api.qrserver.com",
+              "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://api.qrserver.com https://maps.googleapis.com https://maps.gstatic.com",
               "style-src 'self' 'unsafe-inline'", 
-              "img-src 'self' data: https: http: https://i.ytimg.com https://img.youtube.com",
+              "img-src 'self' data: https: http: https://i.ytimg.com https://img.youtube.com https://maps.googleapis.com https://maps.gstatic.com https://streetviewpixels-pa.googleapis.com",
               "font-src 'self' data:",
-              "connect-src 'self' https://api-sandbox.doku.com https://api.doku.com https://sandbox.doku.com https://doku.com https://www.youtube.com https://youtube.com https://i.ytimg.com",
-              "frame-src 'self' https://sandbox.doku.com https://doku.com https://www.youtube.com https://youtube.com",
+              "connect-src 'self' https://api-sandbox.doku.com https://api.doku.com https://sandbox.doku.com https://doku.com https://www.youtube.com https://youtube.com https://i.ytimg.com https://maps.googleapis.com https://maps.gstatic.com",
+              "frame-src 'self' https://sandbox.doku.com https://doku.com https://www.youtube.com https://youtube.com https://maps.googleapis.com https://www.google.com",
               "object-src 'none'",
               "base-uri 'self'",
               "form-action 'self'"
