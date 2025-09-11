@@ -104,8 +104,8 @@ export default function RegisterPage() {
                   The Premier Southeast Asia Business & Technology Summit: Connecting Innovation Across the Region!
                 </p>
                 <div className="border px-4 py-3 rounded-lg inline-block" style={{borderColor: "var(--color-gold)"}}>
-                  <p className="text-xl font-bold" style={{color: "var(--color-gold)"}}>Fill your information below</p>
-                  <p className="text-sm" style={{color: "var(--color-lightgrey)"}}>Review and payment in the next step</p>
+                  <p className="text-xl font-bold" style={{color: "var(--color-gold)"}}>Early Bird Special: Rp 250.000 per ticket</p>
+                  <p className="text-sm" style={{color: "var(--color-lightgrey)"}}>Limited time offer - Save big on your summit experience!</p>
                 </div>
               </div>
               <div className="flex flex-col items-center flex-shrink-0 order-1 md:order-2">
