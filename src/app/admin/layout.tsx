@@ -56,12 +56,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               <h1 className="text-3xl font-bold mb-2" style={{color: "var(--color-gold)"}}>Admin Panel</h1>
               <p className="text-gray-500">All timestamps displayed in Jakarta Time (WIB)</p>
             </div>
-            <button
-              onClick={handleLogout}
-              className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 hover:cursor-pointer transition-colors"
-            >
-              Logout
-            </button>
           </div>
 
           <AdminNavigation />

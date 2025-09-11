@@ -14,7 +14,7 @@ export default function AdminLoginPage() {
   useEffect(() => {
     // If already authenticated, redirect to dashboard
     if (isAdminAuthenticated()) {
-      router.replace("/admin/pricing");
+      router.replace("/admin/dashboard");
     }
   }, [router]);
 
@@ -36,7 +36,11 @@ export default function AdminLoginPage() {
       if (data.success) {
         // Use new secure authentication with JWT token
         setAdminAuthentication(data.token);
-        router.push("/admin/pricing");
+        
+        // Wait a bit for token to be stored
+        setTimeout(() => {
+          router.push("/admin/dashboard");
+        }, 100);
       } else {
         if (res.status === 429) {
           setError("Too many login attempts. Please try again later.");

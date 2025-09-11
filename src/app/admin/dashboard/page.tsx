@@ -1,5 +1,7 @@
 "use client";
 import { useState, useEffect } from 'react';
+import { useRouter } from "next/navigation";
+import { isAdminAuthenticated } from "@/lib/auth";
 import { convertToJakartaTime } from "@/lib/timezone";
 
 interface Registration {
@@ -50,10 +52,16 @@ export default function AdminDashboardPage() {
 	const [payments, setPayments] = useState<Payment[]>([]);
 	const [tickets, setTickets] = useState<Ticket[]>([]);
 	const [loading, setLoading] = useState(true);
+	const router = useRouter();
 
 	useEffect(() => {
+		// Check authentication first
+		if (!isAdminAuthenticated()) {
+			router.replace("/admin/login");
+			return;
+		}
 		fetchData();
-	}, []);
+	}, [router]);
 
 	async function fetchData() {
 		try {

@@ -27,6 +27,7 @@ export default function AdminNavigation() {
   };
 
   const navItems = [
+    { href: '/admin/dashboard', label: 'Dashboard' },
     { href: '/admin/pricing', label: 'Pricing' },
     { href: '/admin/vouchers', label: 'Vouchers' },
   ];

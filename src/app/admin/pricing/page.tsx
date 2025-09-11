@@ -1,15 +1,26 @@
 "use client";
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { isAdminAuthenticated } from "@/lib/auth";
 
 export default function AdminPricingPage() {
   const [pricing, setPricing] = useState<any[]>([]);
   const [form, setForm] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
+    // Check authentication first
+    console.log("Checking auth in pricing page...");
+    if (!isAdminAuthenticated()) {
+      console.log("Not authenticated, redirecting to login...");
+      router.replace("/admin/login");
+      return;
+    }
+    console.log("Authenticated, fetching pricing data...");
     fetchPricing();
-  }, []);
+  }, [router]);
 
   async function fetchPricing() {
     setLoading(true);

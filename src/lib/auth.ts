@@ -163,7 +163,7 @@ export function authenticateRequest(request: NextRequest): AuthToken | null {
 }
 
 /**
- * Client-side authentication check
+ * Client-side authentication check (simplified)
  */
 export function isAdminAuthenticated(): boolean {
   if (typeof window === 'undefined') return false;
@@ -171,8 +171,19 @@ export function isAdminAuthenticated(): boolean {
   const token = localStorage.getItem('admin_token') || getCookie('admin_token');
   if (!token) return false;
   
-  const decoded = verifyToken(token);
-  return decoded !== null;
+  // Simple check: token exists and looks like a JWT (has 3 parts separated by dots)
+  const tokenParts = token.split('.');
+  if (tokenParts.length !== 3) return false;
+  
+  try {
+    // Decode payload without verification (server will verify properly)
+    const payload = JSON.parse(atob(tokenParts[1]));
+    const isExpired = payload.exp && payload.exp < Date.now() / 1000;
+    return !isExpired;
+  } catch (error) {
+    console.warn('Token parsing failed:', error);
+    return false;
+  }
 }
 
 /**
