@@ -47,16 +47,26 @@ export default function HomePage() {
       {/* ===== VERSION 1: HERO SECTION WITH GATES ===== */}
       
       <section className="relative w-full min-h-[60vh] md:min-h-screen flex flex-col items-center justify-center overflow-visible z-10 pt-20 pb-8 md:pt-24 md:pb-12">
-        <div className="relative w-[90%] sm:w-[80%] md:w-[70%] lg:w-[60%] xl:w-[55%] 2xl:w-[50%] aspect-video overflow-hidden rounded-lg mb-6 md:mb-8">
+        <div className="relative w-[90%] sm:w-[80%] md:w-[70%] lg:w-[60%] xl:w-[55%] 2xl:w-[50%] aspect-video overflow-hidden rounded-lg mb-6 md:mb-8 bg-gray-800 flex items-center justify-center">
           <iframe 
             className="absolute inset-0 w-full h-full"
             style={{transform: 'scale(1)', transformOrigin: 'center'}}
-            src="https://www.youtube.com/embed/BFS9n4B_2xA?autoplay=1&mute=1&loop=1&playlist=BFS9n4B_2xA&controls=1&modestbranding=1&rel=0&fs=1"
+            src="https://www.youtube.com/embed/BFS9n4B_2xA?rel=0&modestbranding=1&controls=1&showinfo=0&fs=1&cc_load_policy=0&iv_load_policy=3&autohide=1"
             title="Synergy SEA Summit 2025 Teaser"
             frameBorder="0"
-            allow="autoplay; encrypted-media; fullscreen"
+            allow="accelerometer; encrypted-media; gyroscope; picture-in-picture; web-share"
             allowFullScreen
+            loading="lazy"
+            referrerPolicy="strict-origin-when-cross-origin"
           ></iframe>
+          {/* Fallback content if iframe fails to load */}
+          <div className="absolute inset-0 flex items-center justify-center bg-gray-800 text-white opacity-0 hover:opacity-100 transition-opacity duration-300 pointer-events-none">
+            <div className="text-center">
+              <div className="text-6xl mb-4">▶️</div>
+              <p className="text-lg font-semibold">Synergy SEA Summit 2025</p>
+              <p className="text-sm opacity-75">Official Teaser</p>
+            </div>
+          </div>
         </div>
         
         <div className="text-center px-4 max-w-4xl relative z-10">

@@ -37,10 +37,10 @@ const nextConfig: NextConfig = {
               "default-src 'self'",
               "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://api.qrserver.com",
               "style-src 'self' 'unsafe-inline'", 
-              "img-src 'self' data: https: http:",
+              "img-src 'self' data: https: http: https://i.ytimg.com https://img.youtube.com",
               "font-src 'self' data:",
-              "connect-src 'self' https://api-sandbox.doku.com https://api.doku.com https://sandbox.doku.com https://doku.com",
-              "frame-src 'self' https://sandbox.doku.com https://doku.com",
+              "connect-src 'self' https://api-sandbox.doku.com https://api.doku.com https://sandbox.doku.com https://doku.com https://www.youtube.com https://youtube.com https://i.ytimg.com",
+              "frame-src 'self' https://sandbox.doku.com https://doku.com https://www.youtube.com https://youtube.com",
               "object-src 'none'",
               "base-uri 'self'",
               "form-action 'self'"
