@@ -116,15 +116,8 @@ class PostgresDatabase {
     try {
       console.log('🔧 Creating registration with PostgreSQL...');
       
-      // Create Jakarta timestamp correctly
-      const now = new Date();
-      console.log('Current UTC time:', now.toISOString());
-      
-      // Get Jakarta time properly 
-      const jakartaTime = new Date(now.getTime() + (7 * 60 * 60 * 1000));
-      const jakartaTimestamp = jakartaTime.toISOString().replace('Z', '+07:00');
-      
-      console.log('Jakarta timestamp:', jakartaTimestamp);
+      // Let PostgreSQL handle the timezone conversion properly
+      console.log('Current time will be handled by PostgreSQL timezone conversion');
       
       const queryText = `
         INSERT INTO registrations (
@@ -132,7 +125,8 @@ class PostgresDatabase {
           address, country, member_id, ticket_quantity, amount, status, 
           voucher_code, original_amount, discount_amount, created_at, updated_at
         )
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, 
+                timezone('Asia/Jakarta', now()), timezone('Asia/Jakarta', now()))
         RETURNING *;
       `;
       
@@ -140,13 +134,12 @@ class PostgresDatabase {
         data.orderId, data.fullName, data.phone, 
         data.email, data.dob, data.address, 
         data.country, data.memberId, data.ticketQuantity, data.amount, data.status || 'pending',
-        data.voucherCode || null, data.originalAmount || data.amount, data.discountAmount || 0,
-        jakartaTimestamp, jakartaTimestamp
+        data.voucherCode || null, data.originalAmount || data.amount, data.discountAmount || 0
       ];
 
       const result = await this.executeQuery(queryText, params);
       const registration = result.rows[0];
-      console.log('📝 Registration created in Postgres with Jakarta time:', registration.id, jakartaTimestamp);
+      console.log('📝 Registration created in Postgres with Jakarta timezone:', registration.id, registration.created_at);
       
       return { 
         success: true, 
@@ -228,14 +221,8 @@ class PostgresDatabase {
       const queryText = `
         SELECT 
           *,
-          CASE 
-            WHEN created_at::text LIKE '%+07%' THEN created_at
-            ELSE created_at AT TIME ZONE 'UTC' AT TIME ZONE 'Asia/Jakarta'
-          END as jakarta_created_at,
-          CASE 
-            WHEN updated_at::text LIKE '%+07%' THEN updated_at
-            ELSE updated_at AT TIME ZONE 'UTC' AT TIME ZONE 'Asia/Jakarta'
-          END as jakarta_updated_at
+          created_at AT TIME ZONE 'Asia/Jakarta' as jakarta_created_at,
+          updated_at AT TIME ZONE 'Asia/Jakarta' as jakarta_updated_at
         FROM registrations 
         ORDER BY created_at DESC;
       `;
