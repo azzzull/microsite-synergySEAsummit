@@ -164,7 +164,7 @@ export default function ReviewOrderPage() {
     <div className="min-h-screen flex flex-col" style={{background: "linear-gradient(to bottom, var(--color-navy-dark) 0%, var(--color-navy) 40vh, var(--color-navy) 100%)", color: "var(--color-lightgrey)"}}>
       <Navbar />
       
-      <main className="flex-grow py-8">
+      <main className="flex-grow mt-16 sm:mt-20 md:mt-20 pt-4 md:pt-8">
         <div className="max-w-4xl mx-auto px-4">
           {/* Header */}
           <div className="text-center mb-8">
