@@ -12,6 +12,9 @@ interface Registration {
 	memberId?: string;
 	ticketQuantity?: number;
 	amount: number;
+	originalAmount?: number;
+	discountAmount?: number;
+	voucherCode?: string;
 	status: string;
 	createdAt: string;
 }
@@ -115,7 +118,10 @@ export default function AdminDashboardPage() {
 									<th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Phone</th>
 									<th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Member ID</th>
 									<th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Qty</th>
-									<th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Amount</th>
+									<th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Original</th>
+									<th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Voucher</th>
+									<th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Discount</th>
+									<th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Final</th>
 									<th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Status</th>
 									<th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Created</th>
 								</tr>
@@ -129,7 +135,35 @@ export default function AdminDashboardPage() {
 										<td className="px-6 py-4 text-sm">{reg.phone}</td>
 										<td className="px-6 py-4 text-sm">{reg.memberId || '-'}</td>
 										<td className="px-6 py-4 text-sm">{reg.ticketQuantity || 1}</td>
-										<td className="px-6 py-4 text-sm">Rp {reg.amount.toLocaleString()}</td>
+										<td className="px-6 py-4 text-sm">
+											{reg.originalAmount ? `Rp ${reg.originalAmount.toLocaleString()}` : `Rp ${reg.amount.toLocaleString()}`}
+										</td>
+										<td className="px-6 py-4 text-sm">
+											{reg.voucherCode ? (
+												<span className="px-2 py-1 bg-green-900 text-green-300 rounded text-xs font-mono">
+													{reg.voucherCode}
+												</span>
+											) : (
+												<span className="text-gray-500">-</span>
+											)}
+										</td>
+										<td className="px-6 py-4 text-sm">
+											{reg.discountAmount && reg.discountAmount > 0 ? (
+												<span className="text-green-400 font-medium">
+													-Rp {reg.discountAmount.toLocaleString()}
+												</span>
+											) : (
+												<span className="text-gray-500">-</span>
+											)}
+										</td>
+										<td className="px-6 py-4 text-sm font-medium">
+											Rp {reg.amount.toLocaleString()}
+											{reg.discountAmount && reg.discountAmount > 0 && (
+												<div className="text-xs text-green-400">
+													({Math.round((reg.discountAmount / (reg.originalAmount || reg.amount)) * 100)}% off)
+												</div>
+											)}
+										</td>
 										<td className="px-6 py-4 text-sm">
 											<span className={`px-2 py-1 rounded text-xs ${
 												reg.status === 'paid' ? 'bg-green-900 text-green-300' : 'bg-yellow-900 text-yellow-300'

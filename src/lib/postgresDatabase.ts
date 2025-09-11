@@ -256,6 +256,9 @@ class PostgresDatabase {
         dateOfBirth: row.date_of_birth,
         memberId: row.member_id,
         ticketQuantity: row.ticket_quantity,
+        voucherCode: row.voucher_code,
+        originalAmount: row.original_amount,
+        discountAmount: row.discount_amount,
         createdAt: row.jakarta_created_at || row.created_at,
         updatedAt: row.jakarta_updated_at || row.updated_at
       }));
@@ -663,12 +666,32 @@ class PostgresDatabase {
           date_of_birth DATE NOT NULL,
           address TEXT NOT NULL,
           country VARCHAR(100) NOT NULL,
+          member_id VARCHAR(255),
+          ticket_quantity INTEGER DEFAULT 1,
           amount INTEGER NOT NULL DEFAULT 250000,
+          original_amount INTEGER,
+          discount_amount INTEGER DEFAULT 0,
+          voucher_code VARCHAR(100),
           status VARCHAR(50) NOT NULL DEFAULT 'pending',
           created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
           updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         );
       `);
+
+      // Add voucher columns if they don't exist (for existing tables)
+      try {
+        await this.executeQuery(`
+          ALTER TABLE registrations 
+          ADD COLUMN IF NOT EXISTS member_id VARCHAR(255),
+          ADD COLUMN IF NOT EXISTS ticket_quantity INTEGER DEFAULT 1,
+          ADD COLUMN IF NOT EXISTS original_amount INTEGER,
+          ADD COLUMN IF NOT EXISTS discount_amount INTEGER DEFAULT 0,
+          ADD COLUMN IF NOT EXISTS voucher_code VARCHAR(100);
+        `);
+        console.log('✅ Voucher columns added/verified in registrations table');
+      } catch (alterError) {
+        console.log('ℹ️ Voucher columns may already exist:', alterError);
+      }
 
       // Create payments table
       await this.executeQuery(`
