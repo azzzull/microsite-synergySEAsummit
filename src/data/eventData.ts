@@ -38,13 +38,13 @@ export const agenda = [
 
 export const hallOfFame = [
   {
-    name: "Prof. Dr. H. Rina Wijaya S.Kom, M.M",
-    category: "Best Innovator",
+    name: "TbA",
+    category: "???",
     photo: "/siluete.png"
   },
   {
-    name: "Kevin Tan",
-    category: "Top Contributor",
+    name: "TbA",
+    category: "???",
     photo: "/siluete.png"
   }
 ];
