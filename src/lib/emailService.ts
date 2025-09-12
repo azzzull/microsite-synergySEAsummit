@@ -61,19 +61,23 @@ class EmailService {
   }
 
   private initializeProviders() {
-    // Provider 1: Primary SMTP (Gmail, Outlook, etc.)
-    this.addProvider('Primary SMTP', {
-      host: process.env.SMTP_HOST || 'smtp.gmail.com',
-      port: parseInt(process.env.SMTP_PORT || '587'),
-      secure: process.env.SMTP_SECURE === 'true',
-      auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS
-      },
-      tls: {
-        rejectUnauthorized: false
-      }
-    });
+    // Provider 1: Primary SMTP - Only initialize if all required env vars are present
+    if (process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS) {
+      this.addProvider('Primary SMTP', {
+        host: process.env.SMTP_HOST,
+        port: parseInt(process.env.SMTP_PORT || '587'),
+        secure: process.env.SMTP_SECURE === 'true',
+        auth: {
+          user: process.env.SMTP_USER,
+          pass: process.env.SMTP_PASS
+        },
+        tls: {
+          rejectUnauthorized: false
+        }
+      });
+    } else {
+      console.log('⚠️ Primary SMTP not configured - missing required environment variables (SMTP_HOST, SMTP_USER, SMTP_PASS)');
+    }
 
     // Provider 2: SendGrid (if configured)
     if (process.env.SENDGRID_API_KEY) {
@@ -109,15 +113,21 @@ class EmailService {
 
   private addProvider(name: string, config: any) {
     try {
-      if (config.auth.user && config.auth.pass) {
+      // Validate all required config fields
+      if (config.host && config.auth && config.auth.user && config.auth.pass) {
         const transporter = nodemailer.createTransport(config);
         this.providers.push({
           name,
           transporter,
           isConfigured: true
         });
+        console.log(`✅ ${name} configured successfully with host: ${config.host}`);
       } else {
-        console.log(`⚠️ ${name} not configured - missing credentials`);
+        const missing = [];
+        if (!config.host) missing.push('SMTP_HOST');
+        if (!config.auth?.user) missing.push('SMTP_USER');
+        if (!config.auth?.pass) missing.push('SMTP_PASS');
+        console.log(`⚠️ ${name} not configured - missing: ${missing.join(', ')}`);
       }
     } catch (error) {
       console.error(`❌ ${name} initialization failed:`, error);
@@ -463,7 +473,7 @@ class EmailService {
     `;
   }
 
-  async sendMultipleTickets(data: EmailMultipleTicketsData): Promise<{ success: boolean; messageId?: string; error?: string }> {
+  async sendMultipleTickets(data: EmailMultipleTicketsData): Promise<{ success: boolean; messageId?: string; error?: string; provider?: string }> {
     try {
       // Prepare attachments for all QR codes
       const attachments = data.tickets.map((ticket, index) => ({
@@ -496,7 +506,7 @@ class EmailService {
     }
   }
 
-  async sendTicket(data: EmailTicketData): Promise<{ success: boolean; messageId?: string; error?: string }> {
+  async sendTicket(data: EmailTicketData): Promise<{ success: boolean; messageId?: string; error?: string; provider?: string }> {
     try {
       const emailContent = {
         from: process.env.SMTP_FROM || 'noreply@synergyseasummit.com',
@@ -528,7 +538,7 @@ class EmailService {
     }
   }
 
-  async sendPaymentConfirmation(data: EmailConfirmationData): Promise<{ success: boolean; messageId?: string; error?: string }> {
+  async sendPaymentConfirmation(data: EmailConfirmationData): Promise<{ success: boolean; messageId?: string; error?: string; provider?: string }> {
     try {
       const emailContent = {
         from: process.env.SMTP_FROM || 'noreply@synergyseasummit.com',
