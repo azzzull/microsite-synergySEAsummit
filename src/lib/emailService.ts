@@ -283,7 +283,7 @@ class EmailService {
                         <li>Bring a valid ID that matches your registration</li>
                         <li>Save this email or screenshot the QR code</li>
                         <li>No refunds or transfers allowed</li>
-                        <li>For inquiries, contact us at info@synergyseasummit.com</li>
+                        <li>For inquiries, contact us at ${process.env.SUPPORT_EMAIL || 'synergyindonesiasales@gmail.com'}</li>
                     </ul>
                 </div>
 
@@ -405,7 +405,7 @@ class EmailService {
                         <li>Save this email or screenshot all QR codes</li>
                         <li>Each ticket allows entry for one person</li>
                         <li>No refunds or transfers allowed</li>
-                        <li>For inquiries, contact us at info@synergyseasummit.com</li>
+                        <li>For inquiries, contact us at ${process.env.SUPPORT_EMAIL || 'synergyindonesiasales@gmail.com'}</li>
                     </ul>
                 </div>
 
@@ -483,7 +483,7 @@ class EmailService {
       }));
 
       const emailContent = {
-        from: process.env.SMTP_FROM || 'noreply@synergyseasummit.com',
+        from: process.env.SMTP_FROM || process.env.DEFAULT_FROM_EMAIL || 'synergyindonesiasales@gmail.com',
         to: data.participantEmail,
         subject: `🎫 Your ${data.tickets.length} Synergy SEA Summit 2025 Tickets - Order ${data.orderId}`,
         html: this.generateMultipleTicketsHTML(data),
@@ -509,7 +509,7 @@ class EmailService {
   async sendTicket(data: EmailTicketData): Promise<{ success: boolean; messageId?: string; error?: string; provider?: string }> {
     try {
       const emailContent = {
-        from: process.env.SMTP_FROM || 'noreply@synergyseasummit.com',
+        from: process.env.SMTP_FROM || process.env.DEFAULT_FROM_EMAIL || 'synergyindonesiasales@gmail.com',
         to: data.participantEmail,
         subject: `🎫 Your Synergy SEA Summit 2025 Ticket - ${data.ticketId}`,
         html: this.generateTicketHTML(data),
@@ -541,7 +541,7 @@ class EmailService {
   async sendPaymentConfirmation(data: EmailConfirmationData): Promise<{ success: boolean; messageId?: string; error?: string; provider?: string }> {
     try {
       const emailContent = {
-        from: process.env.SMTP_FROM || 'noreply@synergyseasummit.com',
+        from: process.env.SMTP_FROM || process.env.DEFAULT_FROM_EMAIL || 'synergyindonesiasales@gmail.com',
         to: data.participantEmail,
         subject: `Payment ${data.paymentStatus === 'success' ? 'Confirmed' : 'Update'} - Synergy SEA Summit 2025`,
         html: this.generateConfirmationHTML(data)

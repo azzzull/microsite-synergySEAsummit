@@ -92,7 +92,7 @@ const nextConfig: NextConfig = {
               value: 'http',
             },
           ],
-          destination: 'https://synergy-sea-summit2025.vercel.app/:path*',
+          destination: (process.env.NEXT_PUBLIC_PRODUCTION_URL || 'https://synergyseasummit.co.id') + '/:path*',
           permanent: true,
         },
       ];

@@ -227,8 +227,8 @@ function PaymentPageContent() {
             
             <p className="text-gray-400 text-sm">
               Need help? Contact our support team at{" "}
-              <a href="mailto:support@synergyseasummit.com" className="text-[var(--color-gold)] hover:underline">
-                support@synergyseasummit.com
+              <a href={`mailto:${process.env.NEXT_PUBLIC_SUPPORT_EMAIL || 'synergyindonesiasales@gmail.com'}`} className="text-[var(--color-gold)] hover:underline">
+                {process.env.NEXT_PUBLIC_SUPPORT_EMAIL || 'synergyindonesiasales@gmail.com'}
               </a>
             </p>
           </div>

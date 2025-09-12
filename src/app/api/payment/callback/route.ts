@@ -323,7 +323,7 @@ export async function POST(request: NextRequest) {
           
           // Use production URL if we're in production or if explicitly set
           if (process.env.NODE_ENV === 'production' || process.env.VERCEL_URL) {
-            baseUrl = process.env.NEXT_PUBLIC_PRODUCTION_URL || 'https://synergy-sea-summit2025.vercel.app';
+            baseUrl = process.env.NEXT_PUBLIC_PRODUCTION_URL || process.env.NEXT_PUBLIC_DOMAIN || 'https://synergyseasummit.co.id';
           }
           
           const successUrl = `${baseUrl}/register/success?order_id=${orderId}`;

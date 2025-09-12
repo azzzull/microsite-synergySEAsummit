@@ -153,8 +153,13 @@ export async function POST(request: NextRequest) {
     const orderId = generateOrderId();
     const requestId = crypto.randomUUID();
     
-    // Use tunnel URL if available, otherwise fallback to base URL
-    const publicUrl = process.env.NEXT_PUBLIC_TUNNEL_URL || process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
+    // Determine the correct public URL based on environment
+    let publicUrl = process.env.NEXT_PUBLIC_TUNNEL_URL || process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
+    
+    // Use production URL if we're in production or if explicitly set
+    if (process.env.NODE_ENV === 'production' || process.env.VERCEL_URL) {
+      publicUrl = process.env.NEXT_PUBLIC_PRODUCTION_URL || process.env.NEXT_PUBLIC_DOMAIN || 'https://synergyseasummit.co.id';
+    }
     
     console.log('🌐 Using public URL for DOKU callbacks:', publicUrl);
     
