@@ -3,6 +3,11 @@
   text-decoration: none !important;
 }
 
+/* Remove underline from Admin Navigation links in all browsers */
+.admin-nav-link {
+  text-decoration: none !important;
+}
+
 /* Custom breakpoint for Handara gates - only show on screens 1100px and above */
 .handara-gates {
   display: none;

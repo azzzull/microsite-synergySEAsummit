@@ -40,7 +40,7 @@ export default function AdminNavigation() {
             <Link
               key={item.href}
               href={item.href}
-              className={`px-4 py-2 rounded-lg transition-colors hover:cursor-pointer ${
+              className={`admin-nav-link px-4 py-2 rounded-lg transition-colors hover:cursor-pointer ${
                 pathname === item.href
                   ? 'bg-[var(--color-gold)] text-[var(--color-navy)]'
                   : 'text-[var(--color-lightgrey)] hover:bg-white/10'
@@ -54,14 +54,14 @@ export default function AdminNavigation() {
         <div className="flex items-center space-x-4">
           {currentUser && (
             <span className="text-gray-300 text-sm">
-              👤 {currentUser.username}
+              {currentUser.username}
             </span>
           )}
           <button
             onClick={handleLogout}
             className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors hover:cursor-pointer"
           >
-            🔒 Logout
+            Logout
           </button>
         </div>
       </div>

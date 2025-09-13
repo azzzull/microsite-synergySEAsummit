@@ -1,62 +1,10 @@
 "use client";
-import React, { useState } from "react";
+import React from "react";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { Card } from "@/components/Card";
 import { hotels, restaurants, places } from "@/data/eventData";
-import { MapPinIcon, ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/24/outline";
-
-// Component terpisah untuk setiap hotel card
-function HotelCard({ hotel, index }: { hotel: { name: string; description: string; photo: string; distance: string }, index: number }) {
-  const [isExpanded, setIsExpanded] = useState(false);
-
-  const handleClick = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setIsExpanded(prev => !prev);
-  };
-
-  return (
-    <Card className="overflow-hidden w-full md:flex-1 md:min-w-[300px] md:max-w-[calc(50%-0.5rem)] transition-all duration-300 ease-in-out">
-      <div 
-        className="p-4 cursor-pointer select-none transition-colors duration-200"
-        onClick={handleClick}
-        onMouseDown={(e) => e.preventDefault()}
-      >
-        <div className="flex justify-between items-center pointer-events-none">
-          <span className="font-semibold" style={{color: "var(--color-gold)"}}>{hotel.name}</span>
-          <div className="flex items-center gap-2">
-            <span className="text-sm" style={{color: "var(--color-lightgrey)"}}>{hotel.distance}</span>
-            <div className="transition-transform duration-300 ease-in-out" style={{transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)'}}>
-              <ChevronDownIcon className="w-5 h-5" style={{color: "var(--color-lightgrey)"}} />
-            </div>
-          </div>
-        </div>
-      </div>
-      
-      <div 
-        className={`overflow-hidden transition-all duration-300 ease-in-out ${
-          isExpanded ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
-        }`}
-      >
-        <div className="px-4 pb-4 border-t border-gray-600">
-          <div className="flex flex-col md:flex-row gap-4 mt-4">
-            <img 
-              src={hotel.photo} 
-              alt={hotel.name} 
-              className="w-full md:w-32 h-24 object-cover rounded-lg transition-all duration-300"
-            />
-            <div className="flex-1">
-              <p className="text-sm leading-relaxed transition-all duration-300" style={{color: "var(--color-lightgrey)"}}>
-                {hotel.description}
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </Card>
-  );
-}
+import { MapPinIcon } from "@heroicons/react/24/outline";
 
 export default function LocationPage() {
   return (
@@ -113,30 +61,72 @@ export default function LocationPage() {
             </Card>
           </div>
           {/* Hotels */}
-    <h2 className="text-xl font-bold mb-4" style={{color: "var(--color-gold)"}}>Nearby Hotels</h2>
-          <div className="flex flex-col md:flex-row md:flex-wrap gap-4 mb-8 md:items-start">
+          <h2 className="text-2xl font-bold mb-6" style={{color: "var(--color-gold)"}}>Nearby Hotels</h2>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-12">
             {hotels.map((hotel: { name: string; description: string; photo: string; distance: string }, idx: number) => (
-              <HotelCard key={`hotel-${idx}-${hotel.name}`} hotel={hotel} index={idx} />
+              <Card key={`hotel-${idx}-${hotel.name}`} className="p-6 hover:bg-white/10 transition-colors duration-200">
+                <div className="flex justify-between items-start mb-4">
+                  <h3 className="font-semibold text-xl" style={{color: "var(--color-gold)"}}>{hotel.name}</h3>
+                  <div className="flex items-center bg-[var(--color-gold)]/20 px-3 py-1 rounded-full ml-4">
+                    <MapPinIcon className="w-4 h-4 mr-1" style={{color: "var(--color-gold)"}} />
+                    <span className="text-sm font-medium whitespace-nowrap" style={{color: "var(--color-gold)"}}>{hotel.distance}</span>
+                  </div>
+                </div>
+                <p className="text-base leading-relaxed" style={{color: "var(--color-lightgrey)", lineHeight: "1.6"}}>
+                  {hotel.description}
+                </p>
+              </Card>
             ))}
           </div>
           {/* Restaurants */}
-    <h2 className="text-xl font-bold mb-4" style={{color: "var(--color-gold)"}}>Recommended Restaurants</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-            {restaurants.map((resto: { name: string; rating: number; link: string }, idx: number) => (
-              <Card key={idx} className="flex justify-between items-center">
-      <span className="font-semibold" style={{color: "var(--color-gold)"}}>{resto.name}</span>
-                <span style={{color: "var(--color-lightgrey)"}}>⭐ {resto.rating}</span>
-                <a href={resto.link} target="_blank" rel="noopener" className="underline cursor-pointer" style={{color: "var(--color-lightgrey)"}}>Visit</a>
+          <h2 className="text-2xl font-bold mb-6" style={{color: "var(--color-gold)"}}>Recommended Restaurants</h2>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-12">
+            {restaurants.map((resto: { name: string; rating: number; description: string; link: string }, idx: number) => (
+              <Card key={`resto-${idx}-${resto.name}`} className="p-6 hover:bg-white/10 transition-colors duration-200 flex flex-col h-full">
+                <div className="flex justify-between items-start mb-4">
+                  <h3 className="font-semibold text-xl" style={{color: "var(--color-gold)"}}>{resto.name}</h3>
+                  <div className="flex flex-col items-end ml-4">
+                    <div className="flex items-center bg-[var(--color-gold)]/20 px-3 py-1 rounded-full mb-1">
+                      <span className="text-lg mr-1">⭐</span>
+                      <span className="text-sm font-medium whitespace-nowrap" style={{color: "var(--color-gold)"}}>{resto.rating}</span>
+                    </div>
+                    <span className="text-xs opacity-70" style={{color: "var(--color-lightgrey)"}}>(by tripadvisor.co.id)</span>
+                  </div>
+                </div>
+                <p className="text-base leading-relaxed mb-5 flex-grow" style={{color: "var(--color-lightgrey)", lineHeight: "1.6"}}>
+                  {resto.description}
+                </p>
+                <a 
+                  href={resto.link} 
+                  target="_blank" 
+                  rel="noopener" 
+                  className="inline-flex items-center px-4 py-2 bg-[var(--color-gold)] text-[var(--color-navy)] rounded-lg text-sm font-semibold hover:opacity-90 transition-opacity duration-200 cursor-pointer mt-auto w-fit"
+                >
+                  <MapPinIcon className="w-4 h-4 mr-2" />
+                  Visit Restaurant
+                </a>
               </Card>
             ))}
           </div>
           {/* Places in Bali */}
-    <h2 className="text-xl font-bold mb-4" style={{color: "var(--color-gold)"}}>Recommended Places in Bali</h2>
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+          <h2 className="text-2xl font-bold mb-6" style={{color: "var(--color-gold)"}}>Recommended Places in Bali</h2>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {places.map((place: { name: string; photo: string; link: string }, idx: number) => (
-              <Card key={idx} className="flex flex-col items-center">
-                <img src={place.photo} alt={place.name} className="w-16 h-16 rounded-lg mb-2 object-cover border" style={{borderColor: "var(--color-gold)"}} />
-                <a href={place.link} target="_blank" rel="noopener" className="font-semibold underline text-center cursor-pointer" style={{color: "var(--color-gold)"}}>{place.name}</a>
+              <Card key={idx} className="p-4 hover:bg-white/10 transition-colors duration-200 text-center">
+                <img 
+                  src={place.photo} 
+                  alt={place.name} 
+                  className="w-full h-80 rounded-lg mb-3 mx-auto object-cover border-2 border-[var(--color-gold)]/30" 
+                />
+                <a 
+                  href={place.link} 
+                  target="_blank" 
+                  rel="noopener" 
+                  className="font-medium text-sm hover:underline cursor-pointer transition-colors duration-200" 
+                  style={{color: "var(--color-gold)"}}
+                >
+                  {place.name}
+                </a>
               </Card>
             ))}
           </div>

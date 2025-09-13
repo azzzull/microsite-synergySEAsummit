@@ -203,7 +203,7 @@ export default function VoucherManagementPage() {
                 value={formData.code}
                 onChange={(e) => setFormData({...formData, code: e.target.value.toUpperCase()})}
                 className="w-full px-3 py-2 rounded-lg bg-white/10 text-white border border-gray-600 focus:border-[var(--color-gold)] focus:outline-none"
-                placeholder="SAVE20"
+                placeholder="Insert code voucher ex: SYNERGY2025"
                 required
                 disabled={!!editingVoucher}
               />
@@ -214,11 +214,11 @@ export default function VoucherManagementPage() {
               <select
                 value={formData.type}
                 onChange={(e) => setFormData({...formData, type: e.target.value as 'percentage' | 'fixed'})}
-                className="w-full px-3 py-2 rounded-lg bg-white/10 text-white border border-gray-600 focus:border-[var(--color-gold)] focus:outline-none"
+                className="w-full px-3 py-2 rounded-lg text-white bg-white/10 border border-gray-600 focus:border-[var(--color-gold)] focus:outline-none"
                 required
               >
-                <option value="percentage">Percentage (%)</option>
-                <option value="fixed">Fixed Amount (Rp)</option>
+                <option value="percentage" className="bg-white/10" style={{color: "var(--color-navy)"}}>Percentage (%)</option>
+                <option value="fixed" className="bg-white/10" style={{color: "var(--color-navy)"}}>Fixed Amount (Rp)</option>
               </select>
             </div>
 
