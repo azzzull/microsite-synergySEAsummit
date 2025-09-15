@@ -74,53 +74,44 @@ export default function AdminDashboardPage() {
 		// Get headers from first object
 		const headers = Object.keys(data[0]);
 		
-		// Helper function to escape CSV values properly
-		const escapeCSVValue = (value: any) => {
-			if (value === null || value === undefined) {
-				return '';
-			}
-			
-			const stringValue = String(value);
-			
-			// If value contains comma, newline, or double quote, wrap in quotes
-			if (stringValue.includes(',') || stringValue.includes('\n') || stringValue.includes('\r') || stringValue.includes('"')) {
-				// Escape existing quotes by doubling them
-				return `"${stringValue.replace(/"/g, '""')}"`;
-			}
-			
-			return stringValue;
-		};
+		// Create CSV with semicolon separator for better Excel compatibility
+		const csvRows = [];
 		
-		// Create CSV content with proper formatting
-		const csvRows = [
-			// Header row - wrap each header in quotes to ensure proper separation
-			headers.map(header => `"${header}"`).join(','),
-			// Data rows
-			...data.map(row => 
-				headers.map(header => escapeCSVValue(row[header])).join(',')
-			)
-		];
+		// Header row
+		csvRows.push(headers.join(';'));
+		
+		// Data rows
+		data.forEach(row => {
+			const values = headers.map(header => {
+				let value = row[header];
+				if (value === null || value === undefined) {
+					return '';
+				}
+				// Clean the value and remove any problematic characters
+				return String(value).replace(/;/g, ',').replace(/\r?\n/g, ' ');
+			});
+			csvRows.push(values.join(';'));
+		});
 
 		const csvContent = csvRows.join('\n');
 
-		// Add BOM for UTF-8 to ensure proper display in Excel
-		const BOM = '\uFEFF';
-		const blob = new Blob([BOM + csvContent], { 
+		// Create and download file with proper encoding
+		const blob = new Blob(['\ufeff' + csvContent], { 
 			type: 'text/csv;charset=utf-8;' 
 		});
 		
 		const link = document.createElement('a');
+		const url = URL.createObjectURL(blob);
 		
-		if (link.download !== undefined) {
-			const url = URL.createObjectURL(blob);
-			link.setAttribute('href', url);
-			link.setAttribute('download', `${filename}_${new Date().toISOString().split('T')[0]}.csv`);
-			link.style.visibility = 'hidden';
-			document.body.appendChild(link);
-			link.click();
-			document.body.removeChild(link);
-			URL.revokeObjectURL(url); // Clean up
-		}
+		link.setAttribute('href', url);
+		link.setAttribute('download', `${filename}_${new Date().toISOString().split('T')[0]}.csv`);
+		link.style.visibility = 'hidden';
+		
+		document.body.appendChild(link);
+		link.click();
+		document.body.removeChild(link);
+		
+		URL.revokeObjectURL(url);
 	};
 
 	// Format data for CSV export
@@ -133,12 +124,12 @@ export default function AdminDashboardPage() {
 			'Phone': reg.phone || '',
 			'Member ID': reg.memberId || '',
 			'Ticket Quantity': reg.ticketQuantity || 1,
-			'Original Amount (IDR)': (reg.originalAmount || reg.amount)?.toLocaleString('id-ID') || '0',
+			'Original Amount IDR': (reg.originalAmount || reg.amount) || 0,
 			'Voucher Code': reg.voucherCode || '',
-			'Discount Amount (IDR)': (reg.discountAmount || 0)?.toLocaleString('id-ID') || '0',
-			'Final Amount (IDR)': reg.amount?.toLocaleString('id-ID') || '0',
+			'Discount Amount IDR': (reg.discountAmount || 0),
+			'Final Amount IDR': reg.amount || 0,
 			'Payment Status': reg.status || '',
-			'Created At (Jakarta Time)': convertToJakartaTime(reg.createdAt) || ''
+			'Created At Jakarta Time': convertToJakartaTime(reg.createdAt) || ''
 		}));
 	};
 
@@ -146,12 +137,12 @@ export default function AdminDashboardPage() {
 		return payments.map((payment, index) => ({
 			'No': index + 1,
 			'Order ID': payment.orderId || '',
-			'Amount (IDR)': payment.amount?.toLocaleString('id-ID') || '0',
+			'Amount IDR': payment.amount || 0,
 			'Payment Status': payment.status || '',
 			'Transaction ID': payment.transactionId || '',
 			'Payment Method': payment.paymentMethod || 'DOKU',
-			'Paid At (Jakarta Time)': payment.paidAt ? convertToJakartaTime(payment.paidAt) : '',
-			'Created At (Jakarta Time)': convertToJakartaTime(payment.createdAt) || ''
+			'Paid At Jakarta Time': payment.paidAt ? convertToJakartaTime(payment.paidAt) : '',
+			'Created At Jakarta Time': convertToJakartaTime(payment.createdAt) || ''
 		}));
 	};
 
@@ -165,12 +156,12 @@ export default function AdminDashboardPage() {
 			'Participant Phone': ticket.participantPhone || '',
 			'Event Name': ticket.eventName || 'Synergy SEA Summit 2025',
 			'Event Date': ticket.eventDate || '2025-11-08',
-			'Event Location': ticket.eventLocation || 'The Stones Hotel, Legian Bali',
+			'Event Location': ticket.eventLocation || 'The Stones Hotel Legian Bali',
 			'Email Sent': ticket.emailSent ? 'Yes' : 'No',
-			'Email Sent At (Jakarta Time)': ticket.emailSentAt ? convertToJakartaTime(ticket.emailSentAt) : '',
+			'Email Sent At Jakarta Time': ticket.emailSentAt ? convertToJakartaTime(ticket.emailSentAt) : '',
 			'Ticket Status': ticket.status || 'Active',
-			'Created At (Jakarta Time)': convertToJakartaTime(ticket.createdAt ?? ticket.issuedAt ?? "") || '',
-			'Updated At (Jakarta Time)': ticket.updatedAt ? convertToJakartaTime(ticket.updatedAt) : ''
+			'Created At Jakarta Time': convertToJakartaTime(ticket.createdAt ?? ticket.issuedAt ?? "") || '',
+			'Updated At Jakarta Time': ticket.updatedAt ? convertToJakartaTime(ticket.updatedAt) : ''
 		}));
 	};
 
