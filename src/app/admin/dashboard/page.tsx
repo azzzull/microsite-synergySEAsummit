@@ -64,6 +64,112 @@ export default function AdminDashboardPage() {
 	
 	const router = useRouter();
 
+	// CSV Export utility functions
+	const exportToCSV = (data: any[], filename: string) => {
+		if (!data || data.length === 0) {
+			alert('No data to export');
+			return;
+		}
+
+		// Get headers from first object
+		const headers = Object.keys(data[0]);
+		
+		// Convert data to CSV format
+		const csvContent = [
+			// Header row
+			headers.join(','),
+			// Data rows
+			...data.map(row => 
+				headers.map(header => {
+					const value = row[header];
+					// Handle values that might contain commas or quotes
+					if (typeof value === 'string' && (value.includes(',') || value.includes('"'))) {
+						return `"${value.replace(/"/g, '""')}"`;
+					}
+					return value || '';
+				}).join(',')
+			)
+		].join('\n');
+
+		// Create blob and download
+		const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+		const link = document.createElement('a');
+		
+		if (link.download !== undefined) {
+			const url = URL.createObjectURL(blob);
+			link.setAttribute('href', url);
+			link.setAttribute('download', `${filename}_${new Date().toISOString().split('T')[0]}.csv`);
+			link.style.visibility = 'hidden';
+			document.body.appendChild(link);
+			link.click();
+			document.body.removeChild(link);
+		}
+	};
+
+	// Format data for CSV export
+	const formatRegistrationDataForCSV = (registrations: Registration[]) => {
+		return registrations.map(reg => ({
+			'Order ID': reg.orderId,
+			'Full Name': reg.fullName,
+			'Email': reg.email,
+			'Phone': reg.phone,
+			'Member ID': reg.memberId || 'N/A',
+			'Ticket Quantity': reg.ticketQuantity || 1,
+			'Original Amount': reg.originalAmount || reg.amount,
+			'Voucher Code': reg.voucherCode || 'None',
+			'Discount Amount': reg.discountAmount || 0,
+			'Final Amount': reg.amount,
+			'Payment Status': reg.status,
+			'Created At': convertToJakartaTime(reg.createdAt)
+		}));
+	};
+
+	const formatPaymentDataForCSV = (payments: Payment[]) => {
+		return payments.map(payment => ({
+			'Order ID': payment.orderId,
+			'Amount': payment.amount,
+			'Payment Status': payment.status,
+			'Transaction ID': payment.transactionId || 'N/A',
+			'Payment Method': payment.paymentMethod || 'N/A',
+			'Paid At': payment.paidAt ? convertToJakartaTime(payment.paidAt) : 'N/A',
+			'Created At': convertToJakartaTime(payment.createdAt)
+		}));
+	};
+
+	const formatTicketDataForCSV = (tickets: Ticket[]) => {
+		return tickets.map(ticket => ({
+			'Ticket ID': ticket.ticketId || ticket.ticketCode || 'N/A',
+			'Order ID': ticket.orderId || 'N/A',
+			'Participant Name': ticket.participantName || ticket.fullName || 'N/A',
+			'Participant Email': ticket.participantEmail || ticket.email || 'N/A',
+			'Participant Phone': ticket.participantPhone || 'N/A',
+			'Event Name': ticket.eventName || 'Synergy SEA Summit 2025',
+			'Event Date': ticket.eventDate || '2025-11-08',
+			'Event Location': ticket.eventLocation || 'The Stones Hotel, Legian Bali',
+			'Email Sent': ticket.emailSent ? 'Yes' : 'No',
+			'Email Sent At': ticket.emailSentAt ? convertToJakartaTime(ticket.emailSentAt) : 'N/A',
+			'Status': ticket.status || 'Active',
+			'Created At': convertToJakartaTime(ticket.createdAt ?? ticket.issuedAt ?? ""),
+			'Updated At': ticket.updatedAt ? convertToJakartaTime(ticket.updatedAt) : 'N/A'
+		}));
+	};
+
+	// Export handlers
+	const handleExportRegistrations = () => {
+		const csvData = formatRegistrationDataForCSV(registrations);
+		exportToCSV(csvData, 'synergy_registrations');
+	};
+
+	const handleExportPayments = () => {
+		const csvData = formatPaymentDataForCSV(payments);
+		exportToCSV(csvData, 'synergy_payments');
+	};
+
+	const handleExportTickets = () => {
+		const csvData = formatTicketDataForCSV(tickets);
+		exportToCSV(csvData, 'synergy_tickets');
+	};
+
 	useEffect(() => {
 		// Check authentication first
 		if (!isAdminAuthenticated()) {
@@ -318,6 +424,23 @@ export default function AdminDashboardPage() {
 						onPageChange={setRegistrationPage}
 						label="Registrations"
 					/>
+					{/* Export CSV Button */}
+					<div className="flex justify-end px-6 py-3 border-t border-gray-600">
+						<button
+							onClick={handleExportRegistrations}
+							className="px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 flex items-center gap-2 hover:opacity-90"
+							style={{
+								backgroundColor: "var(--color-gold)",
+								color: "var(--color-navy)"
+							}}
+							disabled={registrations.length === 0}
+						>
+							<svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+								<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+							</svg>
+							Export to CSV ({registrations.length} records)
+						</button>
+					</div>
 				</div>
 			</div>
 
@@ -367,6 +490,23 @@ export default function AdminDashboardPage() {
 						onPageChange={setPaymentPage}
 						label="Payments"
 					/>
+					{/* Export CSV Button */}
+					<div className="flex justify-end px-6 py-3 border-t border-gray-600">
+						<button
+							onClick={handleExportPayments}
+							className="px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 flex items-center gap-2 hover:opacity-90"
+							style={{
+								backgroundColor: "var(--color-gold)",
+								color: "var(--color-navy)"
+							}}
+							disabled={payments.length === 0}
+						>
+							<svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+								<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+							</svg>
+							Export to CSV ({payments.length} records)
+						</button>
+					</div>
 				</div>
 			</div>
 
@@ -418,6 +558,23 @@ export default function AdminDashboardPage() {
 						onPageChange={setTicketPage}
 						label="E-Tickets"
 					/>
+					{/* Export CSV Button */}
+					<div className="flex justify-end px-6 py-3 border-t border-gray-600">
+						<button
+							onClick={handleExportTickets}
+							className="px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 flex items-center gap-2 hover:opacity-90"
+							style={{
+								backgroundColor: "var(--color-gold)",
+								color: "var(--color-navy)"
+							}}
+							disabled={tickets.length === 0}
+						>
+							<svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+								<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+							</svg>
+							Export to CSV ({tickets.length} records)
+						</button>
+					</div>
 				</div>
 			</div>
 		</div>
