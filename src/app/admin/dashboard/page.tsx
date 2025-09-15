@@ -74,25 +74,41 @@ export default function AdminDashboardPage() {
 		// Get headers from first object
 		const headers = Object.keys(data[0]);
 		
-		// Convert data to CSV format
-		const csvContent = [
-			// Header row
-			headers.join(','),
+		// Helper function to escape CSV values properly
+		const escapeCSVValue = (value: any) => {
+			if (value === null || value === undefined) {
+				return '';
+			}
+			
+			const stringValue = String(value);
+			
+			// If value contains comma, newline, or double quote, wrap in quotes
+			if (stringValue.includes(',') || stringValue.includes('\n') || stringValue.includes('\r') || stringValue.includes('"')) {
+				// Escape existing quotes by doubling them
+				return `"${stringValue.replace(/"/g, '""')}"`;
+			}
+			
+			return stringValue;
+		};
+		
+		// Create CSV content with proper formatting
+		const csvRows = [
+			// Header row - wrap each header in quotes to ensure proper separation
+			headers.map(header => `"${header}"`).join(','),
 			// Data rows
 			...data.map(row => 
-				headers.map(header => {
-					const value = row[header];
-					// Handle values that might contain commas or quotes
-					if (typeof value === 'string' && (value.includes(',') || value.includes('"'))) {
-						return `"${value.replace(/"/g, '""')}"`;
-					}
-					return value || '';
-				}).join(',')
+				headers.map(header => escapeCSVValue(row[header])).join(',')
 			)
-		].join('\n');
+		];
 
-		// Create blob and download
-		const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+		const csvContent = csvRows.join('\n');
+
+		// Add BOM for UTF-8 to ensure proper display in Excel
+		const BOM = '\uFEFF';
+		const blob = new Blob([BOM + csvContent], { 
+			type: 'text/csv;charset=utf-8;' 
+		});
+		
 		const link = document.createElement('a');
 		
 		if (link.download !== undefined) {
@@ -103,54 +119,58 @@ export default function AdminDashboardPage() {
 			document.body.appendChild(link);
 			link.click();
 			document.body.removeChild(link);
+			URL.revokeObjectURL(url); // Clean up
 		}
 	};
 
 	// Format data for CSV export
 	const formatRegistrationDataForCSV = (registrations: Registration[]) => {
-		return registrations.map(reg => ({
-			'Order ID': reg.orderId,
-			'Full Name': reg.fullName,
-			'Email': reg.email,
-			'Phone': reg.phone,
-			'Member ID': reg.memberId || 'N/A',
+		return registrations.map((reg, index) => ({
+			'No': index + 1,
+			'Order ID': reg.orderId || '',
+			'Full Name': reg.fullName || '',
+			'Email': reg.email || '',
+			'Phone': reg.phone || '',
+			'Member ID': reg.memberId || '',
 			'Ticket Quantity': reg.ticketQuantity || 1,
-			'Original Amount': reg.originalAmount || reg.amount,
-			'Voucher Code': reg.voucherCode || 'None',
-			'Discount Amount': reg.discountAmount || 0,
-			'Final Amount': reg.amount,
-			'Payment Status': reg.status,
-			'Created At': convertToJakartaTime(reg.createdAt)
+			'Original Amount (IDR)': (reg.originalAmount || reg.amount)?.toLocaleString('id-ID') || '0',
+			'Voucher Code': reg.voucherCode || '',
+			'Discount Amount (IDR)': (reg.discountAmount || 0)?.toLocaleString('id-ID') || '0',
+			'Final Amount (IDR)': reg.amount?.toLocaleString('id-ID') || '0',
+			'Payment Status': reg.status || '',
+			'Created At (Jakarta Time)': convertToJakartaTime(reg.createdAt) || ''
 		}));
 	};
 
 	const formatPaymentDataForCSV = (payments: Payment[]) => {
-		return payments.map(payment => ({
-			'Order ID': payment.orderId,
-			'Amount': payment.amount,
-			'Payment Status': payment.status,
-			'Transaction ID': payment.transactionId || 'N/A',
-			'Payment Method': payment.paymentMethod || 'N/A',
-			'Paid At': payment.paidAt ? convertToJakartaTime(payment.paidAt) : 'N/A',
-			'Created At': convertToJakartaTime(payment.createdAt)
+		return payments.map((payment, index) => ({
+			'No': index + 1,
+			'Order ID': payment.orderId || '',
+			'Amount (IDR)': payment.amount?.toLocaleString('id-ID') || '0',
+			'Payment Status': payment.status || '',
+			'Transaction ID': payment.transactionId || '',
+			'Payment Method': payment.paymentMethod || 'DOKU',
+			'Paid At (Jakarta Time)': payment.paidAt ? convertToJakartaTime(payment.paidAt) : '',
+			'Created At (Jakarta Time)': convertToJakartaTime(payment.createdAt) || ''
 		}));
 	};
 
 	const formatTicketDataForCSV = (tickets: Ticket[]) => {
-		return tickets.map(ticket => ({
-			'Ticket ID': ticket.ticketId || ticket.ticketCode || 'N/A',
-			'Order ID': ticket.orderId || 'N/A',
-			'Participant Name': ticket.participantName || ticket.fullName || 'N/A',
-			'Participant Email': ticket.participantEmail || ticket.email || 'N/A',
-			'Participant Phone': ticket.participantPhone || 'N/A',
+		return tickets.map((ticket, index) => ({
+			'No': index + 1,
+			'Ticket ID': ticket.ticketId || ticket.ticketCode || '',
+			'Order ID': ticket.orderId || '',
+			'Participant Name': ticket.participantName || ticket.fullName || '',
+			'Participant Email': ticket.participantEmail || ticket.email || '',
+			'Participant Phone': ticket.participantPhone || '',
 			'Event Name': ticket.eventName || 'Synergy SEA Summit 2025',
 			'Event Date': ticket.eventDate || '2025-11-08',
 			'Event Location': ticket.eventLocation || 'The Stones Hotel, Legian Bali',
 			'Email Sent': ticket.emailSent ? 'Yes' : 'No',
-			'Email Sent At': ticket.emailSentAt ? convertToJakartaTime(ticket.emailSentAt) : 'N/A',
-			'Status': ticket.status || 'Active',
-			'Created At': convertToJakartaTime(ticket.createdAt ?? ticket.issuedAt ?? ""),
-			'Updated At': ticket.updatedAt ? convertToJakartaTime(ticket.updatedAt) : 'N/A'
+			'Email Sent At (Jakarta Time)': ticket.emailSentAt ? convertToJakartaTime(ticket.emailSentAt) : '',
+			'Ticket Status': ticket.status || 'Active',
+			'Created At (Jakarta Time)': convertToJakartaTime(ticket.createdAt ?? ticket.issuedAt ?? "") || '',
+			'Updated At (Jakarta Time)': ticket.updatedAt ? convertToJakartaTime(ticket.updatedAt) : ''
 		}));
 	};
 
