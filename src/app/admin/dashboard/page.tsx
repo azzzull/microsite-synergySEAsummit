@@ -448,7 +448,7 @@ export default function AdminDashboardPage() {
 					<div className="flex justify-end px-6 py-3 border-t border-gray-600">
 						<button
 							onClick={handleExportRegistrations}
-							className="px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 flex items-center gap-2 hover:opacity-90"
+							className="px-4 py-2 cursor-pointer rounded-md text-sm font-medium transition-all duration-200 flex items-center gap-2 hover:opacity-90"
 							style={{
 								backgroundColor: "var(--color-gold)",
 								color: "var(--color-navy)"
@@ -514,7 +514,7 @@ export default function AdminDashboardPage() {
 					<div className="flex justify-end px-6 py-3 border-t border-gray-600">
 						<button
 							onClick={handleExportPayments}
-							className="px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 flex items-center gap-2 hover:opacity-90"
+							className="px-4 py-2 cursor-pointer rounded-md text-sm font-medium transition-all duration-200 flex items-center gap-2 hover:opacity-90"
 							style={{
 								backgroundColor: "var(--color-gold)",
 								color: "var(--color-navy)"
@@ -582,7 +582,7 @@ export default function AdminDashboardPage() {
 					<div className="flex justify-end px-6 py-3 border-t border-gray-600">
 						<button
 							onClick={handleExportTickets}
-							className="px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 flex items-center gap-2 hover:opacity-90"
+							className="px-4 py-2 cursor-pointer rounded-md text-sm font-medium transition-all duration-200 flex items-center gap-2 hover:opacity-90"
 							style={{
 								backgroundColor: "var(--color-gold)",
 								color: "var(--color-navy)"
