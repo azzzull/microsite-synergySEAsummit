@@ -51,64 +51,65 @@ export const hallOfFame = [
 
 export const hotels = [
   { 
-    name: "Bali Beach Resort", 
-    description: "Luxury beachfront resort with stunning ocean views, infinity pool, and world-class spa facilities. Perfect for relaxation after the summit.",
-    photo: "/siluete.png",
+    name: "Pullman Bali Legian Beach", 
+    description: "The perfect blend of sun-kissed relaxation and contemporary elegance tucked in the bustling Kuta and Legian area, the resort embodies a laid-back sophistication that promises an unforgettable escape.",
+    photo: "/hotel/PullmanBali.jpg",
+    distance: "1 minutes from venue"
+  },
+  { 
+    name: "Mamaka by Ovolo", 
+    description: "MAMAKA by Ovolo is a luxury hotel with a youthful spirit. So youthful, in fact, that the list of complimentary amenities — self-service laundry, morning coffee, happy-hour drinks — might remind you of the nicest hostel you stayed",
+    photo: "/hotel/Mamaka.jpg",
+    distance: "2 minutes from venue"
+  },
+  { 
+    name: "Amaris Hotel Kuta", 
+    description: "Amaris Hotel Kuta is a trendy hotel in the heart of the famous Legian area in Kuta, Bali. Surrounded by chic restaurants and a lively nightlife scene, Amaris Hotel Kuta provides some of the best that the island has to offer.",
+    photo: "/hotel/Amaris.jpg",
+    distance: "4 minutes from venue"
+  },
+  { 
+    name: "Pop Hotel Kuta Beach", 
+    description: "POP! Hotel Kuta Beach is the perfect place to stay that provides decent facilities as well as great services. POP! Hotel Kuta Beach is the smartest choice for you who are looking for affordable accommodation with outstanding service",
+
+    photo: "/hotel/pophotel.jpg",
     distance: "5 minutes from venue"
   },
   { 
-    name: "Ubud Luxury Stay", 
-    description: "Tranquil retreat surrounded by lush rice terraces and tropical gardens. Experience authentic Balinese culture and traditional hospitality.",
-    photo: "/siluete.png",
-    distance: "45 minutes from venue"
+    name: "Four Points by Sheraton Bali", 
+    description: "Four Points by Sheraton Bali, Kuta is a contemporary hotel nestled at the heart of the Legian-Kuta area, offering an island holiday vibe with modern comforts. ",
+    photo: "/hotel/fourpoints.jpg",
+    distance: "11 minutes from venue"
   },
   { 
-    name: "Kuta Central Hotel", 
-    description: "Modern hotel in the heart of Kuta with easy access to shopping, dining, and nightlife. Close to airport and major attractions.",
-    photo: "/siluete.png",
-    distance: "20 minutes from venue"
+    name: "Champlung Mas Hotel", 
+    description: "Champlung Mas Hotel & Spa is a welcoming four-star hotel located in the heart of Legian, Bali. Accommodation is uniquely designed with contemporary decor.",
+    photo: "/hotel/champlung.jpg",
+    distance: "11 minutes from venue"
   },
   { 
-    name: "Sanur Paradise", 
-    description: "Peaceful beachside hotel with calm waters perfect for swimming. Enjoy sunrise views and traditional Balinese architecture.",
-    photo: "/siluete.png",
-    distance: "25 minutes from venue"
-  },
-  { 
-    name: "Nusa Dua Suites", 
-    description: "Elegant suites in Bali's premium resort area. Features championship golf course, pristine beaches, and upscale dining options.",
-    photo: "/siluete.png",
-    distance: "30 minutes from venue"
-  },
-  { 
-    name: "Legian Comfort Inn", 
-    description: "Comfortable mid-range hotel with modern amenities and friendly service. Walking distance to beautiful Legian Beach and surf spots.",
-    photo: "/siluete.png",
-    distance: "8 minutes from venue"
-  },
-  { 
-    name: "Seminyak Villas", 
-    description: "Stylish boutique villas with private pools and contemporary design. Located in trendy Seminyak with chic restaurants and beach clubs.",
-    photo: "/siluete.png",
-    distance: "15 minutes from venue"
-  },
-  { 
-    name: "Jimbaran Bay Resort", 
-    description: "Oceanfront resort famous for fresh seafood dining on the beach. Watch stunning sunsets while enjoying grilled fish and local cuisine.",
-    photo: "/siluete.png",
-    distance: "35 minutes from venue"
-  },
-  { 
-    name: "Canggu Surf Lodge", 
-    description: "Hip surfer-friendly accommodation with co-working spaces and healthy cafes. Perfect for digital nomads and surf enthusiasts.",
-    photo: "/siluete.png",
+    name: "Mercure Bali Legian", 
+    description: "Mercure Kuta Bali is ideal for travelers who want direct beach access, vibrant surroundings, and a hotel that combines resort-like relaxation with urban convenience",
+    photo: "/hotel/mercure.jpg",
     distance: "12 minutes from venue"
   },
   { 
-    name: "Denpasar Grand Hotel", 
-    description: "Business hotel in the city center with conference facilities and airport shuttle. Ideal for extended stays and corporate travelers.",
-    photo: "/siluete.png",
-    distance: "40 minutes from venue"
+    name: "Hard Rock Hotel Bali", 
+    description: "Hard Rock Hotel Bali is a vibrant, music-inspired beachfront hotel located on Kuta Beach, known for combining entertainment with upscale resort-style amenities.",
+    photo: "/hotel/hardrock.jpg",
+    distance: "12 minutes from venue"
+  },
+  { 
+    name: "Aloft Bali Kuta at Beachwalk", 
+    description: "Aloft Bali Kuta at Beachwalk brings a fresh, vibrant energy to the heart of Kuta. Just steps from Kuta Beach and directly connected to Beachwalk Mall, this modern lifestyle hotel blends bold design with playful social spaces—perfect for both relaxation and networking.",
+    photo: "/hotel/aloft.jpg",
+    distance: "13 minutes from venue"
+  },
+  { 
+    name: "The Kuta Beach Heritage Hotel", 
+    description: "The Kuta Beach Heritage Hotel – Managed by Accor offers a refined blend of modern luxury and Balinese coastal charm, ideally located just steps from Kuta Beach. With 159 well-appointed rooms inspired by seaside village life—surfing, sailing, fishing—the hotel captures a relaxed yet elegant aesthetic.",
+    photo: "/hotel/thekuta.jpg",
+    distance: "15 minutes from venue"
   }
 ];
 

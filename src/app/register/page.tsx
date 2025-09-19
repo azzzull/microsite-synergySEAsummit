@@ -147,9 +147,9 @@ export default function RegisterPage() {
             <div className="flex flex-col md:flex-row items-center md:items-center md:justify-between gap-8 md:gap-8">
               <div className="flex flex-col justify-center text-center md:text-left flex-1 order-2 md:order-1">
                 <p className="text-lg mb-3" style={{color: "var(--color-lightgrey)"}}>Synergy SEA Summit 2025</p>
-                <h2 className="text-4xl md:text-4xl font-bold mb-4 leading-tight" style={{color: "var(--color-gold)"}}>Register Yourself Now!</h2>
+                <h2 className="text-4xl md:text-4xl font-bold mb-4 leading-tight" style={{color: "var(--color-gold)"}}>Step Into Your Greatness, Join the Synergy SEA Summit 2025!</h2>
                 <p className="text-base leading-relaxed mb-4" style={{color: "var(--color-lightgrey)"}}>
-                  The Premier Southeast Asia Business & Technology Summit: Connecting Innovation Across the Region!
+                  A full day of empowerment, inspiration, and breakthrough moments.
                 </p>
                 <div className="border px-4 py-3 rounded-lg inline-block" style={{borderColor: "var(--color-gold)"}}>
                   {pricingInfo ? (

@@ -64,17 +64,24 @@ export default function LocationPage() {
           <h2 className="text-2xl font-bold mb-6" style={{color: "var(--color-gold)"}}>Nearby Hotels</h2>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-12">
             {hotels.map((hotel: { name: string; description: string; photo: string; distance: string }, idx: number) => (
-              <Card key={`hotel-${idx}-${hotel.name}`} className="p-6 hover:bg-white/10 transition-colors duration-200">
-                <div className="flex justify-between items-start mb-4">
-                  <h3 className="font-semibold text-xl" style={{color: "var(--color-gold)"}}>{hotel.name}</h3>
-                  <div className="flex items-center bg-[var(--color-gold)]/20 px-3 py-1 rounded-full ml-4">
-                    <MapPinIcon className="w-4 h-4 mr-1" style={{color: "var(--color-gold)"}} />
-                    <span className="text-sm font-medium whitespace-nowrap" style={{color: "var(--color-gold)"}}>{hotel.distance}</span>
+              <Card key={`hotel-${idx}-${hotel.name}`} className="p-0 hover:bg-white/10 transition-colors duration-200 overflow-hidden">
+                <img 
+                  src={hotel.photo} 
+                  alt={hotel.name} 
+                  className="w-full h-60 object-cover" 
+                />
+                <div className="p-6">
+                  <div className="flex justify-between items-start mb-4">
+                    <h3 className="font-semibold text-xl" style={{color: "var(--color-gold)"}}>{hotel.name}</h3>
+                    <div className="flex items-center bg-[var(--color-gold)]/20 px-3 py-1 rounded-full ml-4">
+                      <MapPinIcon className="w-4 h-4 mr-1" style={{color: "var(--color-gold)"}} />
+                      <span className="text-sm font-medium whitespace-nowrap" style={{color: "var(--color-gold)"}}>{hotel.distance}</span>
+                    </div>
                   </div>
+                  <p className="text-base leading-relaxed" style={{color: "var(--color-lightgrey)", lineHeight: "1.6"}}>
+                    {hotel.description}
+                  </p>
                 </div>
-                <p className="text-base leading-relaxed" style={{color: "var(--color-lightgrey)", lineHeight: "1.6"}}>
-                  {hotel.description}
-                </p>
               </Card>
             ))}
           </div>

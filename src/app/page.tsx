@@ -74,7 +74,7 @@ export default function HomePage() {
             Synergy SEA Summit 2025
           </motion.h1>
           <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, delay: 0.3 }} className="text-lg md:text-2xl mb-6" style={{color: "var(--color-lightgrey)"}}>
-            Where Innovation Meets Culture in Bali
+            Unleash Your Potential, Live the Synergy Spirit
           </motion.p>
           <Button>Register Now</Button>
         </div>
@@ -148,7 +148,8 @@ export default function HomePage() {
         {/* Event Description */}
         <section className="max-w-2xl mx-auto py-8 px-4 text-center">
           <h2 className="text-2xl font-bold mb-2" style={{color: "var(--color-gold)"}}>Event Overview</h2>
-          <p className="mb-4" style={{color: "var(--color-lightgrey)"}}>Synergy SEA Summit 2025 brings together Southeast Asia's brightest minds in tech, innovation, and culture for three days of inspiration, networking, and celebration in Bali.</p>
+          <p className="mb-4 text-lg" style={{color: "var(--color-lightgrey)"}}>A full day of empowerment, insights, and Synergy spirit all in Bali. <br />
+Unlock your potential with Southeast Asia’s top achievers</p>
         </section>
         {/* Agenda Highlight */}
         <section className="max-w-4xl mx-auto py-8 px-4">
