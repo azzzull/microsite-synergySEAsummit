@@ -76,7 +76,9 @@ export default function HomePage() {
           <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, delay: 0.3 }} className="text-lg md:text-2xl mb-6" style={{color: "var(--color-lightgrey)"}}>
             Unleash Your Potential, Live the Synergy Spirit
           </motion.p>
-          <Button>Register Now</Button>
+          <a href="/register">
+            <Button>Register Now</Button>
+          </a>
         </div>
       </section>
       
