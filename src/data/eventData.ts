@@ -197,13 +197,13 @@ export const baliMustTry = [
     items: [
       { 
         name: "Seafood Pantai Jimbaran", 
-        link: "#",
+        link: "https://www.tripadvisor.co.id/Restaurants-g297696-c33-Jimbaran_South_Kuta_Bali.html",
         description: "A seafood dinner in Jimbaran is more than just a meal it's a memorable experience filled with delicious food, beautiful scenery, and a romantic atmosphere."
       },
       { 
-        name: "Seafood Pantai Kelan", 
-        link: "#",
-        description: "Pantai Kelan is a beautiful and clean beachfront area in Bali, part of the Jimbaran Bay area, known for its scenic views, white sand, and spectacular sunsets. While it offers a tranquil beach experience, it is home to several seafood restaurants, providing fresh seafood and a beachfront dining setting."
+        name: "Bawang Merah Beachfront Restaurant", 
+        link: "https://www.tripadvisor.co.id/Restaurant_Review-g297696-d2366926-Reviews-Bawang_Merah_Beachfront_Restaurant-Jimbaran_South_Kuta_Bali.html",
+        description: "Bawang Merah Beachfront Restaurant captivates diners with its stunning oceanfront setting, where sunset views and cultural shows enhance the dining experience."
       }
     ]
   },
@@ -234,11 +234,11 @@ export const baliMustTry = [
     ],
     items: [
       { name: "Nasi Ayam Kedewatan Ibu Mangku", 
-        link: "#",
+        link: "https://share.google/OqyxabpIHP9iR8vxf",
         description: "Nasi Ayam Kedewatan Ibu Mangku is a renowned Balinese restaurant famous for its traditional Nasi Ayam (chicken rice) dish, served with a variety of flavorful side dishes and sambal, offering an authentic taste of Balinese cuisine in a charming setting."},
-      { name: "Nasi Pesed Bu Andika",
-        link: "#",
-        description: "Nasi Pedes Bu Andika is a popular eatery in Bali known for its spicy Nasi Pedes (spicy rice) dish, which features steamed rice served with a variety of flavorful side dishes and a generous amount of spicy sambal, catering to those who love bold and fiery flavors."
+      { name: "Nasi Pedas Bu Andika",
+        link: "https://www.tripadvisor.co.id/Restaurant_Review-g297697-d3494411-Reviews-Nasi_Pedas_Ibu_Andika-Kuta_Kuta_District_Bali.html",
+        description: "Nasi Pedas Bu Andika is a popular eatery in Bali known for its spicy Nasi Pedas (spicy rice) dish, which features steamed rice served with a variety of flavorful side dishes and a generous amount of spicy sambal, catering to those who love bold and fiery flavors."
       }
     ]
   },
@@ -250,13 +250,13 @@ export const baliMustTry = [
     ],
     items: [
       { name: "Guling Sam - Sam Merekak", 
-        link: "#",
+        link: "https://www.tripadvisor.co.id/Restaurant_Review-g1025508-d25307041-Reviews-Guling_Samsam_Merekak-Mengwi_Bali.html",
         description: "Guling Sam-Sam Merekak is a popular spot in Bali for authentic Babi Guling (suckling pig), known for its flavorful, crispy-skinned roast pork served with traditional Balinese sides, offering a true taste of local culinary heritage."
-       },
-      { name: "Karya Rebo", link: "#",
+      },
+      { name: "Karya Rebo", link: "https://www.tripadvisor.co.id/Restaurant_Review-g297696-d6844646-Reviews-Babi_Guling_Karya_Rebo-Jimbaran_South_Kuta_Bali.html",
         description: "Karya Rebo is a well-known restaurant in Bali specializing in Babi Guling, offering a delicious and authentic Balinese dining experience with its perfectly roasted suckling pig and traditional accompaniments."
       },
-      { name: "Pak Malen", link: "#",
+      { name: "Pak Malen", link: "https://www.tripadvisor.co.id/Restaurant_Review-g469404-d2629908-Reviews-Warung_Babi_Guling_Pak_Malen-Seminyak_Kuta_District_Bali.html",
         description: "Pak Malen is a famous eatery in Bali renowned for its Babi Guling, serving tender and flavorful roast pork with a variety of traditional Balinese side dishes, making it a must-visit for food lovers."
       }
     ]
@@ -268,12 +268,12 @@ export const baliMustTry = [
       { src: "/musttry/japanese.jpg", alt: "Japanese Restaurant" }    
     ],
     items: [
-      { name: "Shi Shi", 
-        link: "#",
-        description: "Shi Shi is a popular Japanese restaurant in Bali known for its authentic sushi, sashimi, and other traditional dishes, offering a cozy ambiance and fresh ingredients that provide a genuine taste of Japan."
+      { name: "Tenkai Japanese Nikkei Restaurant @ Padma Resort", 
+        link: "https://www.padmahotels.com/padma-resort-legian/dining/tenkai-japanese-nikkei-restaurant/",
+        description: "Tenkai Japanese Nikkei Restaurant @ Padma Resort is a popular Japanese restaurant in Bali known for its authentic sushi, sashimi, and other traditional dishes, offering a cozy ambiance and fresh ingredients that provide a genuine taste of Japan."
       },
       { name: "Philadelphia Sushi", 
-        link: "#",
+        link: "https://philadelphiabali.com/",
         description: "Philadelphia Sushi is a well-known Japanese restaurant in Bali, famous for its creative sushi rolls and fresh sashimi, providing a delightful dining experience for sushi lovers."
       }
     ]
@@ -285,13 +285,13 @@ export const baliMustTry = [
       { src: "/musttry/stuja.jpeg", alt: "Bali Coffee" }
     ],
     items: [
-      { name: "Revolver", link: "#",
+      { name: "Revolver", link: "https://revolverbali.com/",
         description: "Revolver is a trendy coffee shop in Bali known for its expertly brewed coffee and stylish interior, making it a popular spot for both locals and tourists."
       },
-      { name: "Stuja di Pantai", link: "#",
+      { name: "Stuja di Pantai", link: "https://stuja.id/",
         description: "Stuja di Pantai is a beachfront café in Bali offering a relaxed atmosphere and a variety of coffee drinks, perfect for enjoying the ocean view."
       },
-      { name: "Gigi Susu", link: "#",
+      { name: "Gigi Susu", link: "https://www.tripadvisor.co.id/Restaurant_Review-g311298-d28121252-Reviews-Gigi_Susu-Canggu_North_Kuta_Bali.html",
         description: "Gigi Susu is a charming coffee shop in Bali known for its unique drinks and cozy ambiance, providing a great spot for coffee lovers to unwind."
       }
     ]
@@ -304,11 +304,11 @@ export const baliMustTry = [
     ],
     items: [
       { name: "Taman Air",
-        link: "#",
+        link: "https://www.tripadvisor.co.id/Attraction_Review-g297697-d3308119-Reviews-Taman_Air_Spa_Self_Pampering-Kuta_Kuta_District_Bali.html",
         description: "Taman Air is a luxurious spa in Bali offering traditional Balinese treatments and modern wellness therapies in a tranquil setting, perfect for relaxation and rejuvenation."
       },
       { name: "Tea Tree", 
-        link: "#",
+        link: "https://www.tripadvisor.co.id/Attraction_Review-g297697-d9874043-Reviews-Tea_Tree_Spa_Baruna_Bali-Kuta_Kuta_District_Bali.html",
         description: "Tea Tree is a popular spa in Bali known for its natural and organic treatments, providing a serene environment for relaxation and rejuvenation."
       }
     ]
@@ -320,18 +320,15 @@ export const baliMustTry = [
       { src: "/musttry/beachclub.jpg", alt: "Bali Beach Club" }
     ],
     items: [
-      { name: "La Planca", link: "#",
-        description: "La Planca is a popular beach club in Bali known for its stunning ocean views, delicious food, and vibrant atmosphere, making it a perfect spot for relaxation and fun."
+      { name: "Atlas Beach Club", link: "https://atlasbeachfest.com/beach-club",
+        description: "Spread across 2.9 hectares of coastal paradise, Atlas is the biggest beach club in the world. Providing an immersive island experience and delicate service - all while offering world-class entertainment and events, as well as daily authentic cultural performances. Diversity thrives in every corner by consistently celebrating the local and global traditions."
       },
-      { name: "Potato Head", link: "#",
-        description: "Potato Head is a renowned beach club in Bali, famous for its unique architecture, vibrant atmosphere, and diverse culinary offerings, making it a must-visit destination for both locals and tourists."
+      { name: "Finns Beach Club", link: "https://finnsbeachclub.com/",
+        description: "Finns Beach Club is a premier adults-only beach club located in Canggu, Bali, known for its multiple pools, bars, restaurants, and daily entertainment, including DJ sets and live music. Situated on Berawa Beach, the venue offers oceanfront views, with food, drinks, and non-stop entertainment from day to night."
       },
-      { name: "Finns Beach Club", link: "#",
-        description: "Finns Beach Club is a luxurious beachfront venue in Bali, offering stunning ocean views, multiple pools, and a variety of dining options, making it an ideal spot for relaxation and entertainment."
-      },
-      { name: "Atlantis Beach Club", link: "#",
-        description: "Atlantis Beach Club is a vibrant beach club in Bali, known for its lively atmosphere, beachfront location, and diverse menu, making it a great place to enjoy the sun and sea."
-      }
+      { name: "La Planca", link: "https://laplancha-bali.com/",
+        description: "Being the first beach bar of Chiringuito style in Bali with Spanish vintage craft, colourful bean bags and bright traditional Balinese umbrellas."
+      }     
     ]
   },
   {
@@ -341,13 +338,13 @@ export const baliMustTry = [
       { src: "/musttry/kecak.jpg", alt: "Bali Fun Activity" }    
     ],
     items: [
-      { name: "Water Boom", link: "#",
-        description: "Water Boom is a popular water park in Bali, offering a variety of thrilling slides and attractions for a fun-filled day."
+      { name: "Water Boom", link: "https://www.waterbom-bali.com/",
+        description: "First opened on the island of Bali almost 32 years ago, in 1993, Waterbom Bali is a boutique, botanical waterpark experience, nestled in the heart of Kuta. The park was built with the aim to create a space that provides visitors a memorable and fun experience, while also respecting the natural world around us. Thus, Waterbom Bali was consciously developed to complement the existing environment, with over 50% of the area’s local greenery being conserved, and all the slides and features of the park built around the existing flora and fauna, rather than over it."
       },
-      { name: "Melukat", link: "#",
-        description: "Melukat is a traditional Balinese purification ceremony, providing a unique cultural experience for visitors."
+      { name: "Melukat", link: "https://palm-living.com/melukat-ritual-for-cleaning-and-purifying-our-body-mind-and-soul/",
+        description: "Melukat is a traditional Balinese Ritual for cleaning and purifying our body, mind, and soul. This purification ceremony provides a unique cultural experience for visitors."
       },
-      { name: "Pertunjukan Tari Kecak", link: "#",
+      { name: "Pertunjukan Tari Kecak", link: "https://uluwatukecak.com/",
         description: "Pertunjukan Tari Kecak is a captivating Balinese dance performance, showcasing the island's rich cultural heritage."
       }
     ]
@@ -359,10 +356,10 @@ export const baliMustTry = [
       { src: "/musttry/shopping.jpg", alt: "Bali Shopping" }    
     ],
     items: [
-      { name: "The Keranjang", link: "#",
+      { name: "The Keranjang", link: "https://www.tripadvisor.co.id/Attraction_Review-g297697-d17663370-Reviews-The_Keranjang_Bali-Kuta_Kuta_District_Bali.html",
         description: "The Keranjang is a unique shopping destination in Bali, offering a curated selection of local crafts, fashion, and homeware."
       },
-      { name: "Krisna", link: "#",
+      { name: "Krisna", link: "https://www.tripadvisor.co.id/Attraction_Review-g297694-d6589584-Reviews-Krisna_Bali-Denpasar_Bali.html",
         description: "Krisna is a popular shopping spot in Bali, known for its wide range of affordable souvenirs, clothing, and Balinese handicrafts."
       }
     ]
