@@ -25,14 +25,7 @@ export default function LocationPage() {
   };
 
   return (
-    <div
-      className="min-h-screen flex flex-col"
-      style={{
-        background:
-          "linear-gradient(to bottom, var(--color-navy-dark) 0%, var(--color-navy) 40vh, var(--color-navy) 100%)",
-        color: "var(--color-lightgrey)",
-      }}
-    >
+    <>
       <Navbar />
       <div className="container mx-auto px-4 flex-1 mt-16 sm:mt-20 md:mt-20">
         <section className="max-w-5xl mx-auto py-8 px-4">
@@ -46,7 +39,7 @@ export default function LocationPage() {
           {/* Map and Photos Section */}
           <div className="mb-12 grid grid-cols-1 lg:grid-cols-3 gap-4">
             {/* Map */}
-            <div className="lg:col-span-2 h-[300px] sm:h-[400px]">
+            <div className="lg:col-span-2 h-[30px] sm:h-[420px]">
               <iframe
                 src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3943.791309749572!2d115.16520537472309!3d-8.71135769133782!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2dd246c1b2997c97%3A0x7e36cd3ef6793772!2sThe%20Stones%20Hotel%20Legian!5e0!3m2!1sid!2sid!4v1757000867033!5m2!1sid!2sid"
                 width="100%"
@@ -60,7 +53,7 @@ export default function LocationPage() {
             </div>
 
             {/* Photos + Caption */}
-            <div className="flex flex-col h-full">
+            <div className="flex flex-col h-full p-6 rounded-xl" style={{backgroundColor: "rgba(7, 13, 45, 0.5)"}}>
               {/* Desktop photo grid */}
               <div className="hidden lg:grid grid-cols-2 grid-rows-2 gap-2 flex-grow">
                 <div
@@ -329,6 +322,6 @@ export default function LocationPage() {
         </section>
       </div>
       <Footer />
-    </div>
+    </>
   );
 }

@@ -137,7 +137,7 @@ export default function RegisterPage() {
   };
 
   return (
-  <div className="min-h-screen flex flex-col" style={{background: "linear-gradient(to bottom, var(--color-navy-dark) 0%, var(--color-navy) 40vh, var(--color-navy) 100%)", color: "var(--color-lightgrey)"}}>
+  <>
       <Navbar />
       <div className="container mx-auto px-4 flex-1 mt-16 sm:mt-20 md:mt-20">
         <section className="max-w-4xl mx-auto py-8 px-4">
@@ -151,7 +151,7 @@ export default function RegisterPage() {
                 <p className="text-base leading-relaxed mb-4" style={{color: "var(--color-lightgrey)"}}>
                   A full day of empowerment, inspiration, and breakthrough moments.
                 </p>
-                <div className="border px-4 py-3 rounded-lg inline-block" style={{borderColor: "var(--color-gold)"}}>
+                <div className="border px-4 py-3 rounded-lg inline-block" style={{backgroundColor: "rgba(7, 13, 45, 0.5)", borderColor: "var(--color-gold)"}}>
                   {pricingInfo ? (
                     <>
                       <p className="text-xl font-bold" style={{color: "var(--color-gold)"}}>
@@ -199,7 +199,7 @@ export default function RegisterPage() {
             </div>
           ) : (
             /* Form Container */
-            <div className="p-8 rounded-lg border" style={{backgroundColor: "var(--color-white-transparent)", borderColor: "var(--color-gold)"}}>
+            <div className="p-8 rounded-lg border" style={{backgroundColor: "rgba(7, 13, 45, 0.5)", borderColor: "var(--color-gold)"}}>
               {error && (
                 <div className="mb-6 p-4 bg-red-500 bg-opacity-20 border border-red-500 rounded-lg">
                   <p className="text-red-400 text-center">{error}</p>
@@ -552,6 +552,6 @@ export default function RegisterPage() {
         </section>
       </div>
       <Footer />
-    </div>
+    </>
   );
 }

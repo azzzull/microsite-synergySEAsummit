@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Montserrat } from "next/font/google";
 import "./globals.css";
 import { RegisterFloatingButton } from "@/components/RegisterFloatingButton";
+import { PageLayout } from "@/components/PageLayout";
 
 const montserrat = Montserrat({
   subsets: ["latin"],
@@ -25,8 +26,10 @@ export default function RootLayout({
       <body
         className={`${montserrat.variable} antialiased font-sans`}
       >
-        {children}
-        <RegisterFloatingButton />
+        <PageLayout>
+          {children}
+          <RegisterFloatingButton />
+        </PageLayout>
       </body>
     </html>
   );
