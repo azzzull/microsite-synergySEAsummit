@@ -6,8 +6,9 @@ export function middleware(req: NextRequest) {
     '/api/admin/login',
     '/api/admin/set-cookie',
     '/api/admin/logout',
-    '/api/admin/pricing',
-    '/api/admin/vouchers',
+  '/api/admin/pricing',
+  '/api/admin/vouchers',
+  '/api/payment',
   ];
   if (
     path.startsWith('/api/admin') &&
