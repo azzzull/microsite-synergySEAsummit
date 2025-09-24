@@ -6,10 +6,14 @@ export function middleware(req: NextRequest) {
     '/api/admin/login',
     '/api/admin/set-cookie',
     '/api/admin/logout',
-  '/api/admin/pricing',
-  '/api/admin/vouchers',
-  '/api/payment',
+    '/api/admin/pricing',
+    '/api/admin/vouchers',
   ];
+  
+  // Allow all /api/payment endpoints (payment, callback, return)
+  if (path.startsWith('/api/payment')) {
+    return NextResponse.next();
+  }
   if (
     path.startsWith('/api/admin') &&
     !publicAdminEndpoints.includes(path)
