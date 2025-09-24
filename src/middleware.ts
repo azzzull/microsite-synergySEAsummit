@@ -1,10 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { authenticateRequest } from '@/lib/auth';
-
-// Middleware to protect all /api/admin/* endpoints with JWT verification, except login/logout/set-cookie
+// Middleware to protect all /api/admin/* endpoints: only check for presence of admin_token cookie (Edge compatible)
 export function middleware(req: NextRequest) {
   const path = req.nextUrl.pathname;
-  // List of admin endpoints that should NOT be protected
   const publicAdminEndpoints = [
     '/api/admin/login',
     '/api/admin/set-cookie',
@@ -16,8 +13,8 @@ export function middleware(req: NextRequest) {
     path.startsWith('/api/admin') &&
     !publicAdminEndpoints.includes(path)
   ) {
-    const auth = authenticateRequest(req);
-    if (!auth || auth.role !== 'admin') {
+    const hasToken = !!req.cookies.get('admin_token');
+    if (!hasToken) {
       return NextResponse.json(
         { error: 'Unauthorized: Admin access required' },
         { status: 401 }
