@@ -49,8 +49,8 @@ export const pinLevelImages: Record<string, string> = {
   "Team Director": "/pins/team-director.png",
   "Team Manager": "/pins/team-manager.png",
   "Team Leader": "/pins/team-leader.png",
-  "Silver": "/pins/recognition-silver.png",
-  "Gold": "/pins/recognition-gold.png"
+  "Gold": "/pins/recognition-gold.png",
+  "Silver": "/pins/recognition-silver.png"
 };
 
 export const hallOfFame: HallOfFameMember[] = [
@@ -80,7 +80,7 @@ export const hallOfFame: HallOfFameMember[] = [
   },
   {
     id: "961370",
-    name: "Ni Nyoman Pariani & I Nyoman Soma Legawa",
+    name: "Ni Nyoman Pariani &\nI Nyoman Soma Legawa",
     photo: "/person/ninyoman.png",
     pinLevel: "Presidential Executive",
     pinImage: pinLevelImages["Presidential Executive"],
@@ -95,15 +95,6 @@ export const hallOfFame: HallOfFameMember[] = [
     country: "Indonesia"
   },
   {
-    id: "966592",
-    name: "Erfiansyah",
-    photo: "/siluete.png",
-    pinLevel: "Emerald Executive",
-    pinImage: pinLevelImages["Emerald Executive"],
-    country: "Indonesia"
-    // recognition: "Recognition"
-  },
-  {
     id: "986384",
     name: "I Wayan Pardika Rusiama",
     photo: "/person/iwayan.png",
@@ -114,7 +105,7 @@ export const hallOfFame: HallOfFameMember[] = [
   },
   {
     id: "788016",
-    name: "M. Riza Arif Budiman / Diah Febrina Satriani",
+    name: "M. Riza Arif Budiman & Diah Febrina Satriani",
     photo: "/person/riza.png",
     pinLevel: "Emerald Executive",
     pinImage: pinLevelImages["Emerald Executive"],
@@ -158,7 +149,7 @@ export const hallOfFame: HallOfFameMember[] = [
   },
   {
     id: "818635",
-    name: "Lodi Supangat / Fitria Aprianti",
+    name: "Lodi Supangat & Fitria Aprianti",
     photo: "/person/lodi_supangat_fitria_aprianti.png",
     pinLevel: "Pearl Executive",
     pinImage: pinLevelImages["Pearl Executive"],
@@ -174,8 +165,8 @@ export const hallOfFame: HallOfFameMember[] = [
   },
   {
     id: "1635510",
-    name: "Ridwan S / Nurzaita",
-    photo: "/siluete.png",
+    name: "Ridwan S & Nurzaita",
+    photo: "/person/ridwan.png",
     pinLevel: "Pearl Executive",
     pinImage: pinLevelImages["Pearl Executive"],
     country: "Indonesia",
@@ -190,7 +181,7 @@ export const hallOfFame: HallOfFameMember[] = [
   },
   {
     id: "1006208",
-    name: "Erpin Noor, S.Hut / Miniarti",
+    name: "Erpin Noor, S.Hut & Miniarti",
     photo: "/person/erpin_noor_miniarti.png",
     pinLevel: "Team Elite",
     pinImage: pinLevelImages["Team Elite"],
@@ -198,7 +189,7 @@ export const hallOfFame: HallOfFameMember[] = [
   },
   {
     id: "1519642",
-    name: "Hj Mia Nurmina Heriwati / Sandra D.E Kaunang",
+    name: "Hj Mia Nurmina Heriwati & Sandra D.E Kaunang",
     photo: "/person/hj_mia_nurmina_heriwati_sandra_de_kaunang.png",
     pinLevel: "Team Elite",
     pinImage: pinLevelImages["Team Elite"],
@@ -206,8 +197,8 @@ export const hallOfFame: HallOfFameMember[] = [
   },
   {
     id: "939540",
-    name: "Ir. Arie Dewanto / M. Rafi Rashad Budiman",
-    photo: "/siluete.png",
+    name: "Ir. Arie Dewanto & M. Rafi Rashad Budiman",
+    photo: "/pins/team-elite.png",
     pinLevel: "Team Elite",
     pinImage: pinLevelImages["Team Elite"],
     country: "Indonesia",
@@ -222,15 +213,15 @@ export const hallOfFame: HallOfFameMember[] = [
   },
   {
     id: "1129600",
-    name: "Miske Sampaleng / Richardus Dapa Warga",
-    photo: "/siluete.png",
+    name: "Miske Sampaleng & Richardus Dapa Warga",
+    photo: "/pins/team-elite.png",
     pinLevel: "Team Elite",
     pinImage: pinLevelImages["Team Elite"],
     country: "Indonesia",
   },
   {
     id: "1499773",
-    name: "Ms Luh Lila Kertiasih / Aa Gde Rai Suriatmaja",
+    name: "Ms Luh Lila Kertiasih & Aa Gde Rai Suriatmaja",
     photo: "/person/ms_luh_lila_kertiasih_aa_gde_rai_suriatmaja.png",
     pinLevel: "Team Elite",
     pinImage: pinLevelImages["Team Elite"],
@@ -296,7 +287,7 @@ export const hallOfFame: HallOfFameMember[] = [
   {
     id: "1443080",
     name: "Lee Fong Keen",
-    photo: "/siluete.png",
+    photo: "/pins/team-director.png",
     pinLevel: "Team Director",
     pinImage: pinLevelImages["Team Director"],
     country: "Malaysia",
@@ -311,7 +302,7 @@ export const hallOfFame: HallOfFameMember[] = [
   },
   {
     id: "839083",
-    name: "M. Umar Azis / Rr. Erning Yudhawati",
+    name: "M. Umar Azis & Rr. Erning Yudhawati",
     photo: "/person/m_umar_azis_rr_erning_yudhawati.png",
     pinLevel: "Team Director",
     pinImage: pinLevelImages["Team Director"],
@@ -320,14 +311,14 @@ export const hallOfFame: HallOfFameMember[] = [
   {
     id: "1304431",
     name: "Murnita",
-    photo: "/siluete.png",
+    photo: "/person/murnita.png",
     pinLevel: "Team Director",
     pinImage: pinLevelImages["Team Director"],
     country: "Indonesia",
   },
   {
     id: "886610",
-    name: "N.S Kaithania / Djoko Martopo",
+    name: "N.S Kaithania & Djoko Martopo",
     photo: "/person/n_s_kaithania_djoko_martopo.png",
     pinLevel: "Team Director",
     pinImage: pinLevelImages["Team Director"],
@@ -369,14 +360,14 @@ export const hallOfFame: HallOfFameMember[] = [
   {
     id: "271993",
     name: "Rosnani",
-    photo: "/siluete.png",
+    photo: "/pins/team-director.png",
     pinLevel: "Team Director",
     pinImage: pinLevelImages["Team Director"],
     country: "Indonesia",
   },
   {
     id: "2010349",
-    name: "Samroni / Isna Helti",
+    name: "Samroni & Isna Helti",
     photo: "/person/samroni_isna_helti.png",
     pinLevel: "Team Director",
     pinImage: pinLevelImages["Team Director"],
@@ -400,7 +391,7 @@ export const hallOfFame: HallOfFameMember[] = [
   },
   {
     id: "1127229",
-    name: "Supardi / Fajar Eky Maryatie",
+    name: "Supardi & Fajar Eky Maryatie",
     photo: "/person/supardi_fajar_eky_maryatie.png",
     pinLevel: "Team Director",
     pinImage: pinLevelImages["Team Director"],
@@ -427,7 +418,7 @@ export const hallOfFame: HallOfFameMember[] = [
   {
     id: "1508171",
     name: "Yulita Dapa Wunga",
-    photo: "/siluete.png",
+    photo: "/pins/team-director.png",
     pinLevel: "Team Director",
     pinImage: pinLevelImages["Team Director"],
     country: "Indonesia",
@@ -443,14 +434,14 @@ export const hallOfFame: HallOfFameMember[] = [
   {
     id: "1771280",
     name: "Abdul Hamid",
-    photo: "/siluete.png",
+    photo: "/pins/team-manager.png",
     pinLevel: "Team Manager",
     pinImage: pinLevelImages["Team Manager"],
     country: "Indonesia",
   },
   {
     id: "1092775",
-    name: "Agus Lidianto Kostaram / Novy Herlin Setiawati",
+    name: "Agus Lidianto Kostaram & Novy Herlin Setiawati",
     photo: "/person/agus_lidianto_kostaram_novy_herlin_setiawati.png",
     pinLevel: "Team Manager",
     pinImage: pinLevelImages["Team Manager"],
@@ -517,7 +508,7 @@ export const hallOfFame: HallOfFameMember[] = [
   {
     id: "1547074",
     name: "Enri Rasjidin",
-    photo: "/siluete.png",
+    photo: "/pins/team-manager.png",
     pinLevel: "Team Manager",
     pinImage: pinLevelImages["Team Manager"],
     country: "Indonesia",
@@ -525,7 +516,7 @@ export const hallOfFame: HallOfFameMember[] = [
   {
     id: "1536868",
     name: "I Ketut Ada Astawa",
-    photo: "/siluete.png",
+    photo: "/person/i_ketut_ada_astawa.png",
     pinLevel: "Team Manager",
     pinImage: pinLevelImages["Team Manager"],
     country: "Indonesia",
@@ -565,7 +556,7 @@ export const hallOfFame: HallOfFameMember[] = [
   {
     id: "1224741",
     name: "Lenny Makai",
-    photo: "/siluete.png",
+    photo: "/pins/team-manager.png",
     pinLevel: "Team Manager",
     pinImage: pinLevelImages["Team Manager"],
     country: "Indonesia",
@@ -588,7 +579,7 @@ export const hallOfFame: HallOfFameMember[] = [
   },
   {
     id: "1937125",
-    name: "Mayza Dewayani / T. Denie T.",
+    name: "Mayza Dewayani & T. Denie T.",
     photo: "/person/mayza_dewayani_t_denie_t.png",
     pinLevel: "Team Manager",
     pinImage: pinLevelImages["Team Manager"],
@@ -687,8 +678,8 @@ export const hallOfFame: HallOfFameMember[] = [
   },
   {
     id: "1291295",
-    name: "Putu Ary Santosa / Sayu Made Sukerti",
-    photo: "/siluete.png",
+    name: "Putu Ary Santosa & Sayu Made Sukerti",
+    photo: "/pins/team-manager.png",
     pinLevel: "Team Manager",
     pinImage: pinLevelImages["Team Manager"],
     country: "Indonesia",
@@ -704,7 +695,7 @@ export const hallOfFame: HallOfFameMember[] = [
   {
     id: "2027616",
     name: "Safaruddin",
-    photo: "/siluete.png",
+    photo: "/pins/team-manager.png",
     pinLevel: "Team Manager",
     pinImage: pinLevelImages["Team Manager"],
     country: "Indonesia",
@@ -721,7 +712,7 @@ export const hallOfFame: HallOfFameMember[] = [
   {
     id: "2396937",
     name: "Soe Maung",
-    photo: "/siluete.png",
+    photo: "/pins/team-manager.png",
     pinLevel: "Team Manager",
     pinImage: pinLevelImages["Team Manager"],
     country: "Thailand",
@@ -763,7 +754,7 @@ export const hallOfFame: HallOfFameMember[] = [
   {
     id: "1512328",
     name: "Tanty Silviyanti / L. Azhabuddin T",
-    photo: "/siluete.png",
+    photo: "/pins/team-manager.png",
     pinLevel: "Team Manager",
     pinImage: pinLevelImages["Team Manager"],
     country: "Indonesia",
@@ -811,7 +802,7 @@ export const hallOfFame: HallOfFameMember[] = [
   {
     id: "1935045",
     name: "Ade Sasmito Agung",
-    photo: "/siluete.png",
+    photo: "/pins/team-leader.png",
     pinLevel: "Team Leader",
     pinImage: pinLevelImages["Team Leader"],
     country: "Indonesia",
@@ -908,8 +899,8 @@ export const hallOfFame: HallOfFameMember[] = [
   },
   {
     id: "1338766",
-    name: "I Putu Brata Puspa / Ni Ketut Sukarmi",
-    photo: "/siluete.png",
+    name: "I Putu Brata Puspa & Ni Ketut Sukarmi",
+    photo: "/pins/team-leader.png",
     pinLevel: "Team Leader",
     pinImage: pinLevelImages["Team Leader"],
     country: "Indonesia",
@@ -1000,7 +991,7 @@ export const hallOfFame: HallOfFameMember[] = [
   {
     id: "100012259",
     name: "Kyaw Lin Aung",
-    photo: "/siluete.png",
+    photo: "/pins/team-leader.png",
     pinLevel: "Team Leader",
     pinImage: pinLevelImages["Team Leader"],
     country: "Thailand",
@@ -1016,14 +1007,14 @@ export const hallOfFame: HallOfFameMember[] = [
   {
     id: "2220684",
     name: "Lim Chun Ean",
-    photo: "/siluete.png",
+    photo: "/pins/team-leader.png",
     pinLevel: "Team Leader",
     pinImage: pinLevelImages["Team Leader"],
     country: "Malaysia",
   },
   {
     id: "2275826",
-    name: "Lutfil Khakim / Firdausy Musa",
+    name: "Lutfil Khakim & Firdausy Musa",
     photo: "/person/lutfil_khakim_firdausy_musa.png",
     pinLevel: "Team Leader",
     pinImage: pinLevelImages["Team Leader"],
@@ -1039,7 +1030,7 @@ export const hallOfFame: HallOfFameMember[] = [
   },
   {
     id: "1924402",
-    name: "Marselo / Vici Rama Melia",
+    name: "Marselo & Vici Rama Melia",
     photo: "/person/marselo_vici_rama_melia.png",
     pinLevel: "Team Leader",
     pinImage: pinLevelImages["Team Leader"],
@@ -1065,7 +1056,7 @@ export const hallOfFame: HallOfFameMember[] = [
   {
     id: "100013121",
     name: "Nang Myint Myint Aye",
-    photo: "/siluete.png",
+    photo: "/pins/team-leader.png",
     pinLevel: "Team Leader",
     pinImage: pinLevelImages["Team Leader"],
     country: "Thailand",
@@ -1081,7 +1072,7 @@ export const hallOfFame: HallOfFameMember[] = [
   },
   {
     id: "2054152",
-    name: "Narumol Khongjaroenthin",
+    name: "Narumol Khongjaroenthin & Thitima  Phanjumpa",
     photo: "/person/narumol_khongjaroenthin.png",
     pinLevel: "Team Leader",
     pinImage: pinLevelImages["Team Leader"],
@@ -1090,15 +1081,15 @@ export const hallOfFame: HallOfFameMember[] = [
   {
     id: "100013329",
     name: "Nay Win Naing",
-    photo: "/siluete.png",
+    photo: "/pins/team-leader.png",
     pinLevel: "Team Leader",
     pinImage: pinLevelImages["Team Leader"],
     country: "Thailand",
   },
   {
     id: "1006314",
-    name: "Ni Luh Intan Lestary / I Made Dugdug Arcana",
-    photo: "/siluete.png",
+    name: "Ni Luh Intan Lestary &\nI Made Dugdug Arcana",
+    photo: "/pins/team-leader.png",
     pinLevel: "Team Leader",
     pinImage: pinLevelImages["Team Leader"],
     country: "Indonesia",
@@ -1106,14 +1097,14 @@ export const hallOfFame: HallOfFameMember[] = [
   {
     id: "1989968",
     name: "Ni Nyoman Suartini",
-    photo: "/siluete.png",
+    photo: "/person/ni_nyoman_suartini.png",
     pinLevel: "Team Leader",
     pinImage: pinLevelImages["Team Leader"],
     country: "Indonesia",
   },
   {
     id: "1888724",
-    name: "Nira Sulianti / Biran",
+    name: "Nira Sulianti & Biran",
     photo: "/person/nira_sulianti_biran.png",
     pinLevel: "Team Leader",
     pinImage: pinLevelImages["Team Leader"],
@@ -1122,7 +1113,7 @@ export const hallOfFame: HallOfFameMember[] = [
   {
     id: "2091512",
     name: "Nurnas Rumadan",
-    photo: "/siluete.png",
+    photo: "/pins/team-leader.png",
     pinLevel: "Team Leader",
     pinImage: pinLevelImages["Team Leader"],
     country: "Indonesia",
@@ -1170,7 +1161,7 @@ export const hallOfFame: HallOfFameMember[] = [
   {
     id: "100012201",
     name: "Sar Hpaw Lay @ Aye Aye Tin",
-    photo: "/siluete.png",
+    photo: "/pins/team-leader.png",
     pinLevel: "Team Leader",
     pinImage: pinLevelImages["Team Leader"],
     country: "Thailand",
@@ -1195,7 +1186,7 @@ export const hallOfFame: HallOfFameMember[] = [
   {
     id: "2396943",
     name: "Soe Win Myint",
-    photo: "/siluete.png",
+    photo: "/pins/team-leader.png",
     pinLevel: "Team Leader",
     pinImage: pinLevelImages["Team Leader"],
     country: "Thailand",
@@ -1244,7 +1235,7 @@ export const hallOfFame: HallOfFameMember[] = [
   {
     id: "1086847",
     name: "Tuty Sumiyati",
-    photo: "/siluete.png",
+    photo: "/pins/team-leader.png",
     pinLevel: "Team Leader",
     pinImage: pinLevelImages["Team Leader"],
     country: "Indonesia",
@@ -1284,7 +1275,7 @@ export const hallOfFame: HallOfFameMember[] = [
   {
     id: "2029907",
     name: "Widia Saputri",
-    photo: "/siluete.png",
+    photo: "/pins/team-leader.png",
     pinLevel: "Team Leader",
     pinImage: pinLevelImages["Team Leader"],
     country: "Indonesia",
@@ -1332,7 +1323,7 @@ export const hallOfFame: HallOfFameMember[] = [
   {
     id: "2462707",
     name: "Koh Gek Peng",
-    photo: "/siluete.png",
+    photo: "/pins/recognition-silver.png",
     pinLevel: "Silver",
     pinImage: pinLevelImages["Silver"],
     country: "Malaysia",
@@ -1341,7 +1332,7 @@ export const hallOfFame: HallOfFameMember[] = [
   {
     id: "2492492",
     name: "Chin Poay Ling",
-    photo: "/siluete.png",
+    photo: "/pins/recognition-silver.png",
     pinLevel: "Silver",
     pinImage: pinLevelImages["Silver"],
     country: "Malaysia",
@@ -1350,7 +1341,7 @@ export const hallOfFame: HallOfFameMember[] = [
   {
     id: "2484939",
     name: "Lau Wei Peng",
-    photo: "/siluete.png",
+    photo: "/pins/recognition-silver.png",
     pinLevel: "Silver",
     pinImage: pinLevelImages["Silver"],
     country: "Malaysia",
@@ -1358,8 +1349,8 @@ export const hallOfFame: HallOfFameMember[] = [
   },
   {
     id: "2420790",
-    name: "Ratih Sugihharti, SE / Erry S. Wijaya",
-    photo: "/siluete.png",
+    name: "Ratih Sugihharti, SE & Erry S. Wijaya",
+    photo: "/pins/recognition-silver.png",
     pinLevel: "Silver",
     pinImage: pinLevelImages["Silver"],
     country: "Indonesia",
@@ -1368,7 +1359,7 @@ export const hallOfFame: HallOfFameMember[] = [
   {
     id: "2504301",
     name: "Tjong Siok Chin",
-    photo: "/siluete.png",
+    photo: "/pins/recognition-silver.png",
     pinLevel: "Silver",
     pinImage: pinLevelImages["Silver"],
     country: "Indonesia",
@@ -1377,7 +1368,7 @@ export const hallOfFame: HallOfFameMember[] = [
   {
     id: "2378905",
     name: "Nathan M.P. Sembiring",
-    photo: "/siluete.png",
+    photo: "/pins/recognition-silver.png",
     pinLevel: "Silver",
     pinImage: pinLevelImages["Silver"],
     country: "Indonesia",
@@ -1386,7 +1377,7 @@ export const hallOfFame: HallOfFameMember[] = [
   {
     id: "2294069",
     name: "Balu Nadarajan",
-    photo: "/siluete.png",
+    photo: "/pins/recognition-gold.png",
     pinLevel: "Gold",
     pinImage: pinLevelImages["Gold"],
     country: "Malaysia",

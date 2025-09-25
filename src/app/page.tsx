@@ -141,6 +141,52 @@ export default function HomePage() {
             </div>
           </section>
 
+          {/* Dress Code Section */}
+          <section className="max-w-6xl mx-auto py-8 px-4">
+            <h2 className="text-2xl font-bold mb-8 text-center" style={{color: "var(--color-lightgrey)"}}>Dress Code</h2>
+            
+            {/* VIP Dress Code */}
+            <div className="mb-12">
+              <h3 className="text-xl font-semibold mb-4 text-center" style={{color: "var(--color-gold)"}}>Dress Code VIP : Navy-Gold with Balinese Accessories</h3>
+              
+              <div className="flex flex-col sm:flex-row justify-center gap-6 sm:gap-8">
+                <div className="flex justify-center">
+                  <img 
+                    src="/dc-vip1.jpeg" 
+                    alt="VIP Dress Code 1" 
+                    className="rounded-xl shadow-lg object-cover w-[240px] h-[360px] sm:w-[280px] sm:h-[420px]"
+                  />
+                </div>
+                <div className="flex justify-center">
+                  <img 
+                    src="/dc-vip2.jpeg" 
+                    alt="VIP Dress Code 2" 
+                    className="rounded-xl shadow-lg object-cover w-[240px] h-[360px] sm:w-[280px] sm:h-[420px]"
+                  />
+                </div>
+              </div>
+              <p className="text-center mt-6 mb-6 max-w-2xl mx-auto text-sm md:text-base" style={{color: "var(--color-lightgrey)"}}>
+                Speakers and the General Manager (GM) will be distinguished as VIP's by wearing Balinese accessories provided by Committee
+                </p>
+            </div>
+
+            {/* Participant Dress Code */}
+            <div>
+              <h3 className="text-xl font-semibold mb-6 text-center" style={{color: "var(--color-gold)"}}>Dress Code Participant : Business Formal Navy-Gold</h3>
+              <div className="flex flex-wrap justify-center gap-3 sm:gap-4">
+                {[1, 2, 3, 4, 5].map((num) => (
+                  <div key={num} className="flex justify-center">
+                    <img 
+                      src={`/dc-participant${num}.jpeg`} 
+                      alt={`Participant Dress Code ${num}`} 
+                      className="rounded-lg shadow-md object-cover w-[140px] h-[210px] sm:w-[160px] sm:h-[240px] md:w-[180px] md:h-[270px]"
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+
           {/* Speakers Section */}
           <section className="max-w-5xl mx-auto py-8 px-4">
             <h2 className="text-2xl font-bold mb-6 text-center" style={{color: "var(--color-lightgrey)"}}>Speakers</h2>

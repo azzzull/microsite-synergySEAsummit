@@ -29,6 +29,6 @@ export const pinLevelOrder: PinLevel[] = [
   "Team Director",
   "Team Manager",
   "Team Leader",
-  "Silver",
-  "Gold"
+  "Gold",
+  "Silver"
 ];
