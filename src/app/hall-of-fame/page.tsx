@@ -66,6 +66,47 @@ export default function HallOfFamePage() {
                     // Check if photo is a pin image (for members without personal photos)
                     const isUsingPinAsPhoto = member.photo.startsWith('/pins/') || member.photo.includes('/pins/');
                     
+                    // Special rendering for Gold and Silver levels
+                    if (level === "Gold" || level === "Silver") {
+                      return (
+                        <Card
+                          key={member.id}
+                          className="flex flex-col  justify-center bg-[var(--color-lightgrey)] p-4 rounded-xl w-[320px] sm:w-[280px] md:w-[280px] min-h-[110px]"
+                        >
+                          {/* Pin Badge and Member Info - Side by side */}
+                          <div className="flex items-center justify-center -ml-2">
+                            <img
+                              src={member.pinImage}
+                              alt={`${member.pinLevel} Pin`}
+                              className="w-20 h-20 object-contain flex-shrink-0"
+                            />
+                            <div className="text-start flex-1">
+                              <h3
+                                className="font-bold text-base md:text-base whitespace-pre-line mb-2"
+                                style={{ color: "var(--color-lightgrey)" }}
+                              >
+                                {member.name}
+                              </h3>
+                              <p className="text-sm md:text-base mb-2" style={{ color: "var(--color-gold)" }}>
+                                {member.country}
+                              </p>
+                              {member.recognition && (
+                                <div
+                                  className="px-3 py-1 rounded-lg text-sm font-medium inline-block"
+                                  style={{
+                                    background: "var(--color-gold)",
+                                    color: "var(--color-navy)",
+                                  }}
+                                >
+                                  {member.recognition}
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        </Card>
+                      );
+                    }
+                    
                     return (
                       <Card
                         key={member.id}

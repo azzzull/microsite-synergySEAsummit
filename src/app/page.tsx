@@ -111,11 +111,14 @@ export default function HomePage() {
                 </thead>
                 <tbody>
                   <tr style={{backgroundColor: "var(--color-navy)"}}>
-                    <td className="px-6 py-4 border-b border-gray-600 font-semibold" style={{color: "var(--color-gold)"}}>
+                    <td className="px-6 py-4 border-b border-gray-600 font-semibold align-top" style={{color: "var(--color-gold)"}}>
                       11:00 - 12:30
                     </td>
                     <td className="px-6 py-4 border-b border-gray-600" style={{color: "var(--color-lightgrey)"}}>
-                      Registration & Booth Activity + Coffee Break + Lunch
+                      <ul className="space-y-1">
+                        <li>• Registration & Booth Activity</li>
+                        <li>• Coffee Break & Lunch</li>
+                      </ul>
                     </td>
                   </tr>
                   <tr style={{backgroundColor: "var(--color-navy-dark)"}}>
@@ -124,15 +127,11 @@ export default function HomePage() {
                     </td>
                     <td className="px-6 py-4 border-b border-gray-600" style={{color: "var(--color-lightgrey)"}}>
                       <ul className="space-y-1">
-                        <li>• Opening</li>
-                        <li>• VIP Speech 1</li>
-                        <li>• VIP Speech 2</li>
-                        <li>• Worldwide Leaders Speech 1</li>
-                        <li>• NSP Update</li>
+                        <li>• Opening Parade</li>
+                        <li>• VIP Speech</li>
+                        <li>• Leaders Speech</li>
                         <li>• Recognition</li>
                         <li>• Special Sharing</li>
-                        <li>• Worldwide Leaders Speech 2</li>
-                        <li>• Closing Performance</li>
                       </ul>
                     </td>
                   </tr>
@@ -144,61 +143,101 @@ export default function HomePage() {
           {/* Dress Code Section */}
           <section className="max-w-6xl mx-auto py-8 px-4">
             <h2 className="text-2xl font-bold mb-8 text-center" style={{color: "var(--color-lightgrey)"}}>Dress Code</h2>
-            
-            {/* VIP Dress Code */}
-            <div className="mb-12">
-              <h3 className="text-xl font-semibold mb-4 text-center" style={{color: "var(--color-gold)"}}>Dress Code VIP : Navy-Gold with Balinese Accessories</h3>
-              
-              <div className="flex flex-col sm:flex-row justify-center gap-6 sm:gap-8">
-                <div className="flex justify-center">
-                  <img 
-                    src="/dc-vip1.jpeg" 
-                    alt="VIP Dress Code 1" 
-                    className="rounded-xl shadow-lg object-cover w-[240px] h-[360px] sm:w-[280px] sm:h-[420px]"
-                  />
-                </div>
-                <div className="flex justify-center">
-                  <img 
-                    src="/dc-vip2.jpeg" 
-                    alt="VIP Dress Code 2" 
-                    className="rounded-xl shadow-lg object-cover w-[240px] h-[360px] sm:w-[280px] sm:h-[420px]"
-                  />
-                </div>
-              </div>
-              <p className="text-center mt-6 mb-6 max-w-2xl mx-auto text-sm md:text-base" style={{color: "var(--color-lightgrey)"}}>
-                Speakers and the General Manager (GM) will be distinguished as VIP's by wearing Balinese accessories provided by Committee
-                </p>
-            </div>
-
-            {/* Participant Dress Code */}
             <div>
               <h3 className="text-xl font-semibold mb-6 text-center" style={{color: "var(--color-gold)"}}>Dress Code Participant : Business Formal Navy-Gold</h3>
-              <div className="flex flex-wrap justify-center gap-3 sm:gap-4">
-                {[1, 2, 3, 4, 5].map((num) => (
-                  <div key={num} className="flex justify-center">
-                    <img 
-                      src={`/dc-participant${num}.jpeg`} 
-                      alt={`Participant Dress Code ${num}`} 
-                      className="rounded-lg shadow-md object-cover w-[140px] h-[210px] sm:w-[160px] sm:h-[240px] md:w-[180px] md:h-[270px]"
-                    />
-                  </div>
-                ))}
+              <div className="flex justify-center">
+                <img
+                  src="/dresscode.png"
+                  alt="Dress Code"
+                  className="rounded-lg object-contain w-[220px] sm:w-[260px] md:w-[400px]"
+                />
               </div>
             </div>
           </section>
 
           {/* Speakers Section */}
-          <section className="max-w-5xl mx-auto py-8 px-4">
+          <section className="max-w-7xl mx-auto py-8 px-4">
             <h2 className="text-2xl font-bold mb-6 text-center" style={{color: "var(--color-lightgrey)"}}>Speakers</h2>
-            <div className="flex flex-wrap justify-center gap-6">
-              {[...Array(4)].map((_, idx) => (
-                <Card key={idx} className="flex flex-col items-center bg-[var(--color-lightgrey)] p-4 rounded-xl w-[320px] sm:w-[280px] md:w-[240px]">
-                  <img src="/siluete.png" alt="Special guest" className="w-55 h-auto rounded-lg object-cover mb-3" />
-                  <div className="font-bold text-base md:text-lg mb-1 text-center" style={{color: "var(--color-lightgrey)"}}>Special guest</div>
-                  <div className="text-sm md:text-base" style={{color: "var(--color-gold)"}}>???</div>
-                </Card>
-              ))}
-            </div>
+            
+                {/* Always show 2 speakers above 3 GMs, regardless of array order */}
+                <div className="flex flex-wrap justify-center gap-6 mb-8">
+                  {speakers
+                    .filter(speaker => speaker.title === "Speaker")
+                    .slice(0, 2)
+                    .map((speaker, idx) => (
+                      <Card key={idx} className="flex flex-col items-center bg-[var(--color-lightgrey)] p-6 rounded-xl w-[400px] sm:w-[380px] md:w-[380px] presidential-executive-card">
+                        {/* Photo Container */}
+                        <div className="relative w-[280px] h-[280px] mb-4">
+                          <img
+                            src={speaker.photo}
+                            alt={speaker.name}
+                            className="w-full h-full rounded-lg object-cover"
+                          />
+                        </div>
+                        {/* Speaker Info */}
+                        <div className="text-center">
+                          <h3
+                            className="font-bold text-xl md:text-2xl mb-1"
+                            style={{ color: "var(--color-lightgrey)" }}
+                          >
+                            {speaker.name}
+                          </h3>
+                          <p className="text-base md:text-lg mb-2" style={{ color: "var(--color-gold)" }}>
+                            {speaker.title}
+                          </p>
+                          {speaker.country && (
+                            <p className="text-lg md:text-xl font-semibold" style={{ color: "var(--color-gold)" }}>
+                              {speaker.country}
+                            </p>
+                          )}
+                        </div>
+                      </Card>
+                    ))}
+                </div>
+
+                {/* GM Section: always show 3 GMs below speakers */}
+                <div className="pt-6">
+                  <div className="flex items-center justify-center gap-2 mb-6">
+                    <h3 className="text-lg font-semibold" style={{color: "var(--color-gold)"}}>General Managers</h3>
+                    <span className="text-sm px-2 py-1 bg-[var(--color-gold)] text-[var(--color-navy)] rounded-full font-medium">
+                      +3 GM
+                    </span>
+                  </div>
+                  <div className="flex flex-wrap justify-center gap-6">
+                    {speakers
+                      .filter(speaker => speaker.title === "General Manager")
+                      .slice(0, 3)
+                      .map((speaker, idx) => (
+                        <Card key={idx} className="flex flex-col items-center bg-[var(--color-lightgrey)] p-6 rounded-xl w-[400px] sm:w-[380px] md:w-[380px] presidential-executive-card">
+                          {/* Photo Container */}
+                          <div className="relative w-[280px] h-[280px] mb-4">
+                            <img
+                              src={speaker.photo}
+                              alt={speaker.name}
+                              className="w-full h-full rounded-lg object-cover"
+                            />
+                          </div>
+                          {/* Speaker Info */}
+                          <div className="text-center">
+                            <h3
+                              className="font-bold text-xl md:text-2xl mb-1"
+                              style={{ color: "var(--color-lightgrey)" }}
+                            >
+                              {speaker.name}
+                            </h3>
+                            <p className="text-base md:text-lg mb-2" style={{ color: "var(--color-gold)" }}>
+                              {speaker.title}
+                            </p>
+                            {speaker.country && (
+                              <p className="text-lg md:text-xl font-semibold" style={{ color: "var(--color-gold)" }}>
+                                {speaker.country}
+                              </p>
+                            )}
+                          </div>
+                        </Card>
+                      ))}
+                  </div>
+                </div>
           </section>
         </div>
 

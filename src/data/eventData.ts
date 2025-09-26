@@ -2,24 +2,32 @@ import { desc } from "framer-motion/client";
 
 export const speakers = [
   {
-    name: "Special Guest",
-    title: "???",
-    photo: "/siluete.png"
+    name: "Andy Lau",
+    title: "General Manager",
+    photo: "/speakers/gm_andy_lau_malaysia.png",
+    country: "Malaysia"
   },
   {
-    name: "Special Guest",
-    title: "???",
-    photo: "/siluete.png"
+    name: "Reza Darwis",
+    title: "General Manager", 
+    photo: "/speakers/gm_reza_darwis_indonesia.png",
+    country: "Indonesia"
   },
   {
-    name: "Special Guest",
-    title: "???",
-    photo: "/siluete.png"
+    name: "Thon Klaewvigkrum",
+    title: "General Manager",
+    photo: "/speakers/gm_thon_klaewvigkrum_thailand.png",
+    country: "Thailand"
   },
   {
-    name: "Special Guest",
-    title: "???",
-    photo: "/siluete.png"
+    name: "Takashi Oda",
+    title: "Speaker",
+    photo: "/speakers/takashi_oda.png"
+  },
+  {
+    name: "Yun Tae Hwang",
+    title: "Speaker",
+    photo: "/speakers/yun_tae_hwang.png"
   }
 ];
 
