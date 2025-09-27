@@ -142,14 +142,13 @@ export default function HomePage() {
 
           {/* Dress Code Section */}
           <section className="max-w-6xl mx-auto py-8 px-4">
-            <h2 className="text-2xl font-bold mb-8 text-center" style={{color: "var(--color-lightgrey)"}}>Dress Code</h2>
             <div>
               <h3 className="text-xl font-semibold mb-6 text-center" style={{color: "var(--color-gold)"}}>Dress Code Participant : Business Formal Navy-Gold</h3>
               <div className="flex justify-center">
                 <img
                   src="/dresscode.png"
                   alt="Dress Code"
-                  className="rounded-lg object-contain w-[220px] sm:w-[260px] md:w-[400px]"
+                  className="rounded-lg backdrop-brightness-80 p-4 object-contain w-[220px] sm:w-[260px] md:w-[450px]"
                 />
               </div>
             </div>
@@ -159,10 +158,10 @@ export default function HomePage() {
           <section className="max-w-7xl mx-auto py-8 px-4">
             <h2 className="text-2xl font-bold mb-6 text-center" style={{color: "var(--color-lightgrey)"}}>Speakers</h2>
             
-                {/* Always show 2 speakers above 3 GMs, regardless of array order */}
+                {/* Always show 2 speakers above 4 GMs, regardless of array order */}
                 <div className="flex flex-wrap justify-center gap-6 mb-8">
                   {speakers
-                    .filter(speaker => speaker.title === "Speaker")
+                    .filter(speaker => speaker.cat === "speaker")
                     .slice(0, 2)
                     .map((speaker, idx) => (
                       <Card key={idx} className="flex flex-col items-center bg-[var(--color-lightgrey)] p-6 rounded-xl w-[400px] sm:w-[380px] md:w-[380px] presidential-executive-card">
@@ -195,18 +194,15 @@ export default function HomePage() {
                     ))}
                 </div>
 
-                {/* GM Section: always show 3 GMs below speakers */}
+                {/* GM Section: always show 4 GMs below speakers */}
                 <div className="pt-6">
                   <div className="flex items-center justify-center gap-2 mb-6">
                     <h3 className="text-lg font-semibold" style={{color: "var(--color-gold)"}}>General Managers</h3>
-                    <span className="text-sm px-2 py-1 bg-[var(--color-gold)] text-[var(--color-navy)] rounded-full font-medium">
-                      +3 GM
-                    </span>
                   </div>
                   <div className="flex flex-wrap justify-center gap-6">
                     {speakers
-                      .filter(speaker => speaker.title === "General Manager")
-                      .slice(0, 3)
+                      .filter(speaker => speaker.cat === "gm")
+                      .slice(0, 4)
                       .map((speaker, idx) => (
                         <Card key={idx} className="flex flex-col items-center bg-[var(--color-lightgrey)] p-6 rounded-xl w-[400px] sm:w-[380px] md:w-[380px] presidential-executive-card">
                           {/* Photo Container */}

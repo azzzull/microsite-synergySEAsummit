@@ -2,33 +2,49 @@ import { desc } from "framer-motion/client";
 
 export const speakers = [
   {
-    name: "Andy Lau",
-    title: "General Manager",
-    photo: "/speakers/gm_andy_lau_malaysia.png",
-    country: "Malaysia"
-  },
-  {
-    name: "Reza Darwis",
-    title: "General Manager", 
-    photo: "/speakers/gm_reza_darwis_indonesia.png",
-    country: "Indonesia"
-  },
-  {
-    name: "Thon Klaewvigkrum",
-    title: "General Manager",
-    photo: "/speakers/gm_thon_klaewvigkrum_thailand.png",
-    country: "Thailand"
+    name: "Hwang Yun Tae",
+    title: "Legacy Presidential Executive",
+    photo: "/speakers/yun_tae_hwang.png",
+    country: " ",
+    cat: "speaker"
   },
   {
     name: "Takashi Oda",
-    title: "Speaker",
-    photo: "/speakers/takashi_oda.png"
+    title: "Triple Presidential Executive",
+    photo: "/speakers/takashi_oda.png",
+    country: " ",
+    cat: "speaker"
   },
   {
-    name: "Yun Tae Hwang",
-    title: "Speaker",
-    photo: "/speakers/yun_tae_hwang.png"
+    name: "Ben Magalei",
+    title: "Vice President Synergy Worldwide & President of Synergy",
+    photo: "/speakers/ben_magalei.png",
+    country: "Japan",
+    cat: "gm"
+  },
+  
+  {
+    name: "Reza Darwis",
+    title: "General Manager Synergy Worldwide",
+    photo: "/speakers/gm_reza_darwis_indonesia.png",
+    country: "Indonesia",
+    cat: "gm"
+  },
+  {
+    name: "Andy Lau",
+    title: "General Manager Synergy Worldwide",
+    photo: "/speakers/gm_andy_lau_malaysia.png",
+    country: "Malaysia",
+    cat: "gm"
+  },
+  {
+    name: "Thon Klaewvigkrum",
+    title: "General Manager Synergy Worldwide",
+    photo: "/speakers/gm_thon_klaewvigkrum_thailand.png",
+    country: "Thailand",
+    cat: "gm"
   }
+  
 ];
 
 export const agenda = [

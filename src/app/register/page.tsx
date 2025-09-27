@@ -18,6 +18,7 @@ export default function RegisterPage() {
     memberId: "",
     ticketQuantity: 1
   });
+  // Remove ticketLimitMsg state, not needed for auto display
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -511,6 +512,7 @@ export default function RegisterPage() {
                           backgroundColor: "var(--color-gold)",
                           color: "var(--color-navy)"
                         }}
+                        disabled={form.ticketQuantity <= 1}
                       >
                         -
                       </button>
@@ -523,16 +525,22 @@ export default function RegisterPage() {
                       </div>
                       <button
                         type="button"
-                        onClick={() => setForm({ ...form, ticketQuantity: form.ticketQuantity + 1 })}
-                        className="w-8 h-8 rounded-lg flex items-center justify-center font-bold text-lg transition-all duration-200 hover:opacity-80 cursor-pointer"
+                        onClick={() => setForm({ ...form, ticketQuantity: Math.min(2, form.ticketQuantity + 1) })}
+                        className="w-8 h-8 rounded-lg flex items-center justify-center font-bold text-lg transition-all duration-200 hover:opacity-80 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                         style={{
                           backgroundColor: "var(--color-gold)",
                           color: "var(--color-navy)"
                         }}
+                        disabled={form.ticketQuantity >= 2}
                       >
                         +
                       </button>
                     </div>
+                    {form.ticketQuantity === 2 && (
+                      <div className="text-xs mt-2" style={{ color: "var(--color-gold)" }}>
+                        *Each participant name can only purchase a maximum of 2 tickets with the same data
+                      </div>
+                    )}
                   </div>
                 </div>
 

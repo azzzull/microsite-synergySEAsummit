@@ -41,6 +41,7 @@ function formatDateDisplay(dateString: string): string {
 export default function ReviewOrderPage() {
   const [registrationData, setRegistrationData] = useState<RegistrationData | null>(null);
   const [ticketQuantity, setTicketQuantity] = useState(1);
+  // Remove ticketLimitMsg state, not needed for auto display
   const [voucherCode, setVoucherCode] = useState("");
   const [appliedVoucher, setAppliedVoucher] = useState<VoucherData | null>(null);
   const [voucherError, setVoucherError] = useState("");
@@ -84,13 +85,13 @@ export default function ReviewOrderPage() {
   const total = Math.max(subtotal - discountAmount, 0); // Ensure total is not less than 0
 
   const handleQuantityChange = (newQuantity: number) => {
-    if (newQuantity >= 1) {
-      setTicketQuantity(newQuantity);
-      if (registrationData) {
-        const updatedData = { ...registrationData, ticketQuantity: newQuantity };
-        setRegistrationData(updatedData);
-        sessionStorage.setItem('registrationData', JSON.stringify(updatedData));
-      }
+    if (newQuantity < 1) return;
+    if (newQuantity > 2) return;
+    setTicketQuantity(newQuantity);
+    if (registrationData) {
+      const updatedData = { ...registrationData, ticketQuantity: newQuantity };
+      setRegistrationData(updatedData);
+      sessionStorage.setItem('registrationData', JSON.stringify(updatedData));
     }
   };
 
@@ -275,7 +276,8 @@ export default function ReviewOrderPage() {
                   </div>
                   <button
                     onClick={() => handleQuantityChange(ticketQuantity + 1)}
-                    className="w-10 h-10 rounded-lg flex items-center justify-center font-bold text-lg transition-all duration-200 hover:opacity-80 hover:cursor-pointer"
+                    disabled={ticketQuantity >= 2}
+                    className="w-10 h-10 rounded-lg flex items-center justify-center font-bold text-lg transition-all duration-200 hover:opacity-80 hover:cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                     style={{
                       backgroundColor: "var(--color-gold)",
                       color: "var(--color-navy)"
@@ -284,6 +286,11 @@ export default function ReviewOrderPage() {
                     +
                   </button>
                 </div>
+                {ticketQuantity === 2 && (
+                  <div className="text-xs mt-2" style={{ color: "var(--color-gold)" }}>
+                    *Each participant name can only purchase a maximum of 2 tickets with the same data
+                  </div>
+                )}
               </div>
 
               <div className="mb-6">
