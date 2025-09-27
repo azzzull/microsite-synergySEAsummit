@@ -203,8 +203,7 @@ export default function LocationPage() {
 
               <div className="mt-4 pt-4 border-t border-gray-600">
                 <p className="text-center text-sm" style={{ color: "var(--color-lightgrey)" }}>
-                  <strong style={{ color: "var(--color-lightgrey)" }}>Event Date:</strong> November 8, 2025 |{" "}
-                  <strong style={{ color: "var(--color-lightgrey)" }}>Time:</strong> 12:30 - 17:00 WITA
+                  <strong style={{ color: "var(--color-lightgrey)" }}>Event Date:</strong> November 8, 2025
                 </p>
               </div>
             </Card>

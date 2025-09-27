@@ -112,7 +112,7 @@ export default function HomePage() {
                 <tbody>
                   <tr style={{backgroundColor: "var(--color-navy)"}}>
                     <td className="px-6 py-4 border-b border-gray-600 font-semibold align-top" style={{color: "var(--color-gold)"}}>
-                      11:00 - 12:30
+                      10:00 - 12:30
                     </td>
                     <td className="px-6 py-4 border-b border-gray-600" style={{color: "var(--color-lightgrey)"}}>
                       <ul className="space-y-1">
