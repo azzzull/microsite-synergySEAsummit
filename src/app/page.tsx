@@ -148,7 +148,7 @@ export default function HomePage() {
                 <img
                   src="/dresscode.png"
                   alt="Dress Code"
-                  className="rounded-lg backdrop-brightness-80 p-4 object-contain w-[220px] sm:w-[260px] md:w-[450px]"
+                  className="rounded-lg backdrop-brightness-80 p-4 object-contain w-[350px] sm:w-[380px] md:w-[450px]"
                 />
               </div>
             </div>
