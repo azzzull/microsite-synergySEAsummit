@@ -213,7 +213,7 @@ export default function HomePage() {
                 {/* GM Section: always show 4 GMs below speakers */}
                 <div className="pt-6">
                   <div className="flex items-center justify-center gap-2 mb-6">
-                    <h3 className="text-lg font-semibold" style={{color: "var(--color-gold)"}}>General Managers</h3>
+                    <h3 className="text-lg font-semibold" style={{color: "var(--color-gold)"}}>CORPORATE EXECUTIVE</h3>
                   </div>
                   {/* Ben Magalei single card on top */}
                   <div className="flex flex-wrap justify-center gap-6 mb-8">
