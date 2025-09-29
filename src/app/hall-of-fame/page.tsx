@@ -54,7 +54,13 @@ export default function HallOfFamePage() {
                 >
                   {level}
                 </h2>
-                <div className="flex flex-wrap justify-center gap-6">
+                <div
+                  className={
+                    level === "Presidential Executive"
+                      ? "grid grid-cols-1 sm:grid-cols-2 gap-6 w-full md:max-w-[820px] max-w-full mx-auto justify-items-center"
+                      : "flex flex-wrap justify-center gap-6"
+                  }
+                >
                   {membersByLevel[level].map((member) => {
                     // Special styling for Presidential Executive level
                     const isPresidentialExecutive = member.pinLevel === "Presidential Executive";
@@ -62,10 +68,8 @@ export default function HallOfFamePage() {
                     const photoSize = isPresidentialExecutive ? "w-[280px] h-[280px]" : "w-[200px] h-[200px]";
                     const pinBadgeSize = isPresidentialExecutive ? "w-24 h-24" : "w-20 h-20";
                     const pinBadgePosition = isPresidentialExecutive ? "-bottom-8 -right-5" : "-bottom-8 -right-5";
-                    
                     // Check if photo is a pin image (for members without personal photos)
                     const isUsingPinAsPhoto = member.photo.startsWith('/pins/') || member.photo.includes('/pins/');
-                    
                     // Special rendering for Gold and Silver levels
                     if (level === "Gold" || level === "Silver") {
                       return (
@@ -106,7 +110,6 @@ export default function HallOfFamePage() {
                         </Card>
                       );
                     }
-                    
                     return (
                       <Card
                         key={member.id}
@@ -137,14 +140,13 @@ export default function HallOfFamePage() {
                               className={`absolute bottom-1 -left-2 px-3 py-1 rounded-lg text-sm font-medium inline-block ${isPresidentialExecutive ? 'text-base px-4 py-2' : ''}`}
                               style={{
                                 background: "var(--color-gold)",
-                                color: "var(--color-navy)",
+                                color: "var(--color-navy)"
                               }}
                             >
                               {member.recognition}
                             </div>
                           )}
                         </div>
-                        
                         {/* Member Info */}
                         <div className="text-center">
                           <h3
