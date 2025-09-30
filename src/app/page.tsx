@@ -154,15 +154,15 @@ export default function HomePage() {
             </div>
           </section>
 
-          {/* Speakers Section */}
+          {/* Special Guest Section */}
           <section className="max-w-7xl mx-auto py-8 px-4">
-            <h2 className="text-2xl font-bold mb-6 text-center" style={{color: "var(--color-lightgrey)"}}>Speakers</h2>
-            {/* Only two speakers: Hwang Yun Tae & Takashi Oda */}
+            <h2 className="text-2xl font-bold mb-6 text-center" style={{color: "var(--color-lightgrey)"}}>Special Guest</h2>
+            {/* Ben Magalei & Takashi Oda as Special Guests */}
             <div className="flex flex-wrap justify-center gap-6 mb-8">
-              {speakers
-                .filter(speaker => speaker.cat === "speaker")
-                .slice(0, 2)
-                .map((speaker, idx) => (
+              {["Ben Magalei", "Takashi Oda"].map((name, idx) => {
+                const speaker = speakers.find(s => s.name === name);
+                if (!speaker) return null;
+                return (
                   <Card key={idx} className="flex flex-col items-center bg-[var(--color-lightgrey)] p-6 rounded-xl w-[400px] sm:w-[380px] md:w-[380px] presidential-executive-card">
                     {/* Photo Container */}
                     <div className="relative w-[280px] h-[280px] mb-4">
@@ -172,14 +172,7 @@ export default function HomePage() {
                           alt={speaker.name}
                           className="w-full h-full rounded-lg object-cover"
                         />
-                        {/* Pin overlay for Hwang Yun Tae and Takashi Oda */}
-                        {speaker.name === "Hwang Yun Tae" && (
-                          <img
-                            src="/pins/legacy-presidential.png"
-                            alt="Legacy Presidential Pin"
-                            className="absolute -bottom-8 -right-8 w-25 h-25 drop-shadow-lg"
-                          />
-                        )}
+                        {/* Only show pin for Takashi Oda */}
                         {speaker.name === "Takashi Oda" && (
                           <img
                             src="/pins/triple-presidential.png"
@@ -207,84 +200,45 @@ export default function HomePage() {
                       )}
                     </div>
                   </Card>
-                ))}
+                );
+              })}
             </div>
 
-                {/* GM Section: always show 4 GMs below speakers */}
-                <div className="pt-6">
-                  <div className="flex items-center justify-center gap-2 mb-6">
-                    <h3 className="text-lg font-semibold" style={{color: "var(--color-gold)"}}>CORPORATE EXECUTIVE</h3>
-                  </div>
-                  {/* Ben Magalei single card on top */}
-                  <div className="flex flex-wrap justify-center gap-6 mb-8">
-                    {speakers
-                      .filter(speaker => speaker.cat === "gm" && speaker.name === "Ben Magalei")
-                      .map((speaker, idx) => (
-                        <Card key={idx} className="flex flex-col items-center bg-[var(--color-lightgrey)] p-6 rounded-xl w-[400px] sm:w-[380px] md:w-[380px] presidential-executive-card">
-                          {/* Photo Container */}
-                          <div className="relative w-[280px] h-[280px] mb-4">
-                            <img
-                              src={speaker.photo}
-                              alt={speaker.name}
-                              className="w-full h-full rounded-lg object-cover"
-                            />
-                          </div>
-                          {/* Speaker Info */}
-                          <div className="text-center">
-                            <h3
-                              className="font-bold text-xl md:text-2xl mb-1"
-                              style={{ color: "var(--color-lightgrey)" }}
-                            >
-                              {speaker.name}
-                            </h3>
-                            <p className="text-base md:text-lg mb-2" style={{ color: "var(--color-gold)" }}>
-                              {speaker.title}
-                            </p>
-                            {speaker.country && (
-                              <p className="text-lg md:text-xl font-semibold" style={{ color: "var(--color-gold)" }}>
-                                {speaker.country}
-                              </p>
-                            )}
-                          </div>
-                        </Card>
-                      ))}
-                  </div>
-                  {/* 3 other GMs below Ben Magalei */}
-                  <div className="flex flex-wrap justify-center gap-6">
-                    {speakers
-                      .filter(speaker => speaker.cat === "gm" && speaker.name !== "Ben Magalei")
-                      .slice(0, 3)
-                      .map((speaker, idx) => (
-                        <Card key={idx} className="flex flex-col items-center bg-[var(--color-lightgrey)] p-6 rounded-xl w-[400px] sm:w-[380px] md:w-[380px] presidential-executive-card">
-                          {/* Photo Container */}
-                          <div className="relative w-[280px] h-[280px] mb-4">
-                            <img
-                              src={speaker.photo}
-                              alt={speaker.name}
-                              className="w-full h-full rounded-lg object-cover"
-                            />
-                          </div>
-                          {/* Speaker Info */}
-                          <div className="text-center">
-                            <h3
-                              className="font-bold text-xl md:text-2xl mb-1"
-                              style={{ color: "var(--color-lightgrey)" }}
-                            >
-                              {speaker.name}
-                            </h3>
-                            <p className="text-base md:text-lg mb-2" style={{ color: "var(--color-gold)" }}>
-                              {speaker.title}
-                            </p>
-                            {speaker.country && (
-                              <p className="text-lg md:text-xl font-semibold" style={{ color: "var(--color-gold)" }}>
-                                {speaker.country}
-                              </p>
-                            )}
-                          </div>
-                        </Card>
-                      ))}
-                  </div>
-                </div>
+            {/* GM Section: always show 4 GMs below Special Guests */}
+            <div className="flex flex-wrap justify-center gap-6">
+              {speakers
+                .filter(speaker => speaker.cat === "gm" && speaker.name !== "Ben Magalei")
+                .slice(0, 4)
+                .map((speaker, idx) => (
+                  <Card key={idx} className="flex flex-col items-center bg-[var(--color-lightgrey)] p-6 rounded-xl w-[400px] sm:w-[380px] md:w-[380px] presidential-executive-card">
+                    {/* Photo Container */}
+                    <div className="relative w-[280px] h-[280px] mb-4">
+                      <img
+                        src={speaker.photo}
+                        alt={speaker.name}
+                        className="w-full h-full rounded-lg object-cover"
+                      />
+                    </div>
+                    {/* Speaker Info */}
+                    <div className="text-center">
+                      <h3
+                        className="font-bold text-xl md:text-2xl mb-1"
+                        style={{ color: "var(--color-lightgrey)" }}
+                      >
+                        {speaker.name}
+                      </h3>
+                      <p className="text-base md:text-lg mb-2" style={{ color: "var(--color-gold)" }}>
+                        {speaker.title}
+                      </p>
+                      {speaker.country && (
+                        <p className="text-lg md:text-xl font-semibold" style={{ color: "var(--color-gold)" }}>
+                          {speaker.country}
+                        </p>
+                      )}
+                    </div>
+                  </Card>
+                ))}
+            </div>
           </section>
         </div>
 

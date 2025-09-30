@@ -8,6 +8,8 @@ export function middleware(req: NextRequest) {
     '/api/admin/logout',
     '/api/admin/pricing',
     '/api/admin/vouchers',
+    '/api/admin/registrations',
+    '/api/payment/callback',
   ];
   
   // Allow all /api/payment endpoints (payment, callback, return)

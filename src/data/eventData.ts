@@ -17,31 +17,27 @@ export const speakers = [
   },
   {
     name: "Ben Magalei",
-    title: "Vice President Synergy Worldwide & President of Synergy",
+    title: "Vice President Synergy Worldwide & President of Synergy Japan",
     photo: "/speakers/ben_magalei.png",
-    country: "Japan",
     cat: "gm"
   },
   
   {
     name: "Reza Darwis",
-    title: "General Manager Synergy Worldwide",
+    title: "General Manager Synergy Worldwide Indonesia",
     photo: "/speakers/gm_reza_darwis_indonesia.png",
-    country: "Indonesia",
     cat: "gm"
   },
   {
     name: "Andy Lau",
-    title: "General Manager Synergy Worldwide",
+    title: "General Manager Synergy Worldwide Malaysia",
     photo: "/speakers/gm_andy_lau_malaysia.png",
-    country: "Malaysia",
     cat: "gm"
   },
   {
     name: "Thon Klaewvigkrum",
-    title: "General Manager Synergy Worldwide",
+    title: "General Manager Synergy Worldwide Thailand",
     photo: "/speakers/gm_thon_klaewvigkrum_thailand.png",
-    country: "Thailand",
     cat: "gm"
   }
   

@@ -9,7 +9,7 @@ import { secureLog } from '@/lib/secureLogging';
 import { InputValidator } from '@/lib/validation';
 
 // Doku API Configuration
-const DOKU_BASE_URL = process.env.DOKU_BASE_URL || 'https://api-sandbox.doku.com';
+const DOKU_BASE_URL = process.env.DOKU_BASE_URL || 'https://api.doku.com';
 const CLIENT_ID = process.env.DOKU_CLIENT_ID || 'your_sandbox_client_id';
 const CLIENT_SECRET = process.env.DOKU_CLIENT_SECRET || 'your_sandbox_client_secret';
 const MERCHANT_CODE = process.env.DOKU_MERCHANT_CODE || 'your_merchant_code';

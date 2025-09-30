@@ -134,6 +134,24 @@ export default function ReviewOrderPage() {
   const handleProceedToPayment = async () => {
     if (!registrationData) return;
 
+    // Validate all required fields before proceeding
+    const requiredFields = [
+      'fullName',
+      'phone',
+      'email',
+      'dob',
+      'address',
+      'country',
+      'memberId',
+      'ticketQuantity'
+    ];
+    for (const field of requiredFields) {
+      if (!registrationData[field as keyof RegistrationData] || (field === 'dob' && registrationData.dob === null)) {
+        setError(`Missing or invalid field: ${field}. Please go back and complete your registration details.`);
+        return;
+      }
+    }
+
     setLoading(true);
     setError(null);
 

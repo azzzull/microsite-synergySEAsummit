@@ -274,7 +274,7 @@ export async function POST(request: NextRequest) {
               participantPhone: registration.phone,
               eventName: "Synergy SEA Summit 2025",
               eventDate: "November 8, 2025",
-              eventTime: "09:00 AM - 05:00 PM WITA",
+              eventTime: "10:00 AM - 05:00 PM WITA",
               eventLocation: "The Stones Hotel, Legian Bali",
               amount: totalAmount,
               qrCode: tickets[0].qrCode,
@@ -290,7 +290,7 @@ export async function POST(request: NextRequest) {
               participantPhone: registration.phone,
               eventName: "Synergy SEA Summit 2025",
               eventDate: "November 8, 2025",
-              eventTime: "09:00 AM - 05:00 PM WITA",
+              eventTime: "10:00 AM - 05:00 PM WITA",
               eventLocation: "The Stones Hotel, Legian Bali",
               totalAmount: totalAmount,
               transactionId: transaction?.original_request_id,
@@ -319,7 +319,7 @@ export async function POST(request: NextRequest) {
           
           // Auto redirect to success page after payment completion
           // Determine the correct base URL based on environment
-          let baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
+          let baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://synergyseasummit.co.id';
           
           // Use production URL if we're in production or if explicitly set
           if (process.env.NODE_ENV === 'production' || process.env.VERCEL_URL) {
