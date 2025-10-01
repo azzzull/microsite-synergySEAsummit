@@ -1,15 +1,20 @@
 // Timezone utility functions for Jakarta time (UTC+7)
 
-export function convertToJakartaTime(isoString: string): string {
-  if (!isoString) return 'N/A';
+export function convertToJakartaTime(isoString: string | null | undefined): string {
+  if (!isoString || isoString === 'null' || isoString === 'undefined') {
+    return 'N/A';
+  }
   
   try {
     const date = new Date(isoString);
     
-    // Convert to Jakarta timezone (UTC+7)
-    const jakartaTime = new Date(date.getTime() + (7 * 60 * 60 * 1000));
+    // Check if the date is valid
+    if (isNaN(date.getTime())) {
+      console.warn('Invalid date string:', isoString);
+      return 'Invalid Date';
+    }
     
-    // Format as readable Jakarta time
+    // Format as readable Jakarta time using timeZone option
     const options: Intl.DateTimeFormatOptions = {
       year: 'numeric',
       month: '2-digit',
@@ -23,16 +28,24 @@ export function convertToJakartaTime(isoString: string): string {
     
     return new Intl.DateTimeFormat('id-ID', options).format(date) + ' WIB';
   } catch (error) {
-    console.error('Error converting timezone:', error);
+    console.error('Error converting timezone for value:', isoString, error);
     return 'Invalid Date';
   }
 }
 
-export function formatJakartaDate(isoString: string): string {
-  if (!isoString) return 'N/A';
+export function formatJakartaDate(isoString: string | null | undefined): string {
+  if (!isoString || isoString === 'null' || isoString === 'undefined') {
+    return 'N/A';
+  }
   
   try {
     const date = new Date(isoString);
+    
+    // Check if the date is valid
+    if (isNaN(date.getTime())) {
+      console.warn('Invalid date string:', isoString);
+      return 'Invalid Date';
+    }
     
     const options: Intl.DateTimeFormatOptions = {
       year: 'numeric',
@@ -45,7 +58,7 @@ export function formatJakartaDate(isoString: string): string {
     
     return new Intl.DateTimeFormat('id-ID', options).format(date) + ' WIB';
   } catch (error) {
-    console.error('Error formatting Jakarta date:', error);
+    console.error('Error formatting Jakarta date for value:', isoString, error);
     return 'Invalid Date';
   }
 }

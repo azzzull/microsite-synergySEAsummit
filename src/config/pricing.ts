@@ -15,6 +15,10 @@ export const PRICING_CONFIG = {
   // Validation rules
   MIN_QUANTITY: 1,
   // No maximum quantity limit as requested
+  
+  // Event ticket limits
+  MAX_EVENT_TICKETS: parseInt(process.env.MAX_EVENT_TICKETS || '210'), // Total tickets available for the event
+  FALLBACK_PRICE: 250000, // Fallback price if database fails
 } as const;
 
 // Helper function to format price

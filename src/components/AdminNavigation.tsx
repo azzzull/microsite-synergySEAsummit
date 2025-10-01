@@ -30,6 +30,7 @@ export default function AdminNavigation() {
     { href: '/admin/dashboard', label: 'Dashboard' },
     { href: '/admin/pricing', label: 'Pricing' },
     { href: '/admin/vouchers', label: 'Vouchers' },
+    { href: '/admin/generate-ticket', label: 'Generate Ticket' },
   ];
 
   return (

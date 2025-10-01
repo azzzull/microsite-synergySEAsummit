@@ -46,6 +46,22 @@ export interface EmailConfirmationData {
   amount: number;
 }
 
+export interface EmailComplimentaryTicketData {
+  orderId: string;
+  participantName: string;
+  participantEmail: string;
+  ticketQuantity: number;
+  ticketType: string;
+  qrCodeDataURL: string;
+  eventDetails: {
+    name: string;
+    date: string;
+    time: string;
+    venue: string;
+    address: string;
+  };
+}
+
 interface EmailProvider {
   name: string;
   transporter: any;
@@ -196,7 +212,7 @@ class EmailService {
         <style>
             body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
             .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-            .header { background: linear-gradient(135deg, #04091c, #070d2d); color: white; padding: 30px 20px; text-align: center; }
+            .header { background: linear-gradient(135deg, #04091c, #070d2d); color: #eef4ff; padding: 30px 20px; text-align: center; }
             .ticket { border: 2px dashed #070d2d; margin: 20px 0; padding: 20px; background: #eef4ff; }
             .qr-section { text-align: center; margin: 20px 0; padding: 20px; background: white; }
             .footer { text-align: center; font-size: 12px; color: #666; margin-top: 30px; }
@@ -473,6 +489,121 @@ class EmailService {
     `;
   }
 
+  private generateComplimentaryTicketHTML(data: EmailComplimentaryTicketData): string {
+    return `
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="utf-8">
+        <title>Your Complimentary Synergy SEA Summit 2025 Ticket</title>
+        <style>
+            body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+            .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+            .header { background: linear-gradient(135deg, #04091c, #070d2d); color: white; padding: 30px 20px; text-align: center; }
+            .ticket { border: 2px dashed #070d2d; margin: 20px 0; padding: 20px; background: #eef4ff; }
+            .qr-section { text-align: center; margin: 20px 0; padding: 20px; background: white; }
+            .footer { text-align: center; font-size: 12px; color: #666; margin-top: 30px; }
+            .info-row { display: flex; justify-content: space-between; margin: 10px 0; }
+            .label { font-weight: bold; }
+            .value { color: #070d2d; }
+            .complimentary-badge { background: #ffc107; color: #070d2d; padding: 5px 15px; border-radius: 20px; font-weight: bold; display: inline-block; margin: 10px 0; }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="header">
+                <h1>🎫 Your Complimentary Ticket</h1>
+                <h2>Synergy SEA Summit 2025</h2>
+                <div class="complimentary-badge">✨ ${data.ticketType.toUpperCase()} ✨</div>
+            </div>
+            
+            <div style="padding: 20px;">
+                <p>Dear <strong>${data.participantName}</strong>,</p>
+                <p>Congratulations! You have been granted complimentary access to Synergy SEA Summit 2025. Your ticket is ready for the event.</p>
+                
+                <div class="ticket">
+                    <h3 style="color: #070d2d; margin-top: 0;">TICKET DETAILS</h3>
+                    <div class="info-row">
+                        <span class="label">Order ID:</span>
+                        <span class="value">${data.orderId}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">Participant:</span>
+                        <span class="value">${data.participantName}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">Email:</span>
+                        <span class="value">${data.participantEmail}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">Ticket Type:</span>
+                        <span class="value">${data.ticketType.toUpperCase()}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">Number of Tickets:</span>
+                        <span class="value">${data.ticketQuantity} ticket${data.ticketQuantity > 1 ? 's' : ''}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">Amount:</span>
+                        <span class="value" style="color: #4caf50; font-weight: bold;">COMPLIMENTARY (FREE)</span>
+                    </div>
+                </div>
+
+                <div class="ticket">
+                    <h3 style="color: #070d2d; margin-top: 0;">EVENT DETAILS</h3>
+                    <div class="info-row">
+                        <span class="label">Event:</span>
+                        <span class="value">${data.eventDetails.name}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">Date:</span>
+                        <span class="value">${data.eventDetails.date}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">Time:</span>
+                        <span class="value">${data.eventDetails.time}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">Venue:</span>
+                        <span class="value">${data.eventDetails.venue}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">Address:</span>
+                        <span class="value">${data.eventDetails.address}</span>
+                    </div>
+                </div>
+
+                <div class="qr-section">
+                    <h3 style="color: #070d2d;">QR CODE FOR ENTRANCE</h3>
+                    <img src="${data.qrCodeDataURL}" alt="QR Code" style="max-width: 200px;">
+                    <p><strong>Important:</strong> Please show this QR code at the event entrance for check-in.</p>
+                </div>
+
+                <div style="background: #e3f2fd; padding: 15px; border-radius: 5px; margin: 20px 0;">
+                    <h4 style="margin-top: 0; color: #1976d2;">Important Instructions:</h4>
+                    <ul>
+                        <li>Arrive 30 minutes before the event starts</li>
+                        <li>Bring a valid ID that matches your registration</li>
+                        <li>Save this email or screenshot the QR code</li>
+                        <li>This is a complimentary ticket - no payment required</li>
+                        <li>For inquiries, contact us at ${process.env.SUPPORT_EMAIL || 'synergyindonesiasales@gmail.com'}</li>
+                    </ul>
+                </div>
+
+                <p>We are honored to have you as our guest at the event!</p>
+                <p>Best regards,<br>Synergy SEA Summit 2025 Team</p>
+            </div>
+
+            <div class="footer">
+                <p>This is an automated email. Please do not reply to this message.</p>
+                <p>© 2025 Synergy SEA Summit. All rights reserved.</p>
+            </div>
+        </div>
+    </body>
+    </html>
+    `;
+  }
+
   async sendMultipleTickets(data: EmailMultipleTicketsData): Promise<{ success: boolean; messageId?: string; error?: string; provider?: string }> {
     try {
       // Prepare attachments for all QR codes
@@ -559,6 +690,38 @@ class EmailService {
       return result;
     } catch (error: any) {
       console.error('❌ Confirmation email error:', error);
+      return { success: false, error: error.message };
+    }
+  }
+
+  async sendComplimentaryTicket(data: EmailComplimentaryTicketData): Promise<{ success: boolean; messageId?: string; error?: string; provider?: string }> {
+    try {
+      const emailContent = {
+        from: process.env.SMTP_FROM || process.env.DEFAULT_FROM_EMAIL || 'synergyindonesiasales@gmail.com',
+        to: data.participantEmail,
+        subject: `🎫 Your Complimentary Synergy SEA Summit 2025 Ticket - ${data.orderId}`,
+        html: this.generateComplimentaryTicketHTML(data),
+        attachments: [
+          {
+            filename: `complimentary-ticket-${data.orderId}.png`,
+            path: data.qrCodeDataURL,
+            cid: 'qrcode'
+          }
+        ]
+      };
+
+      console.log('📧 Sending complimentary ticket email to:', data.participantEmail);
+      const result = await this.sendEmailWithFallback(emailContent);
+      
+      if (result.success) {
+        console.log(`✅ Complimentary ticket email sent via ${result.provider}:`, result.messageId);
+      } else {
+        console.error('❌ Complimentary ticket email failed:', result.error);
+      }
+      
+      return result;
+    } catch (error: any) {
+      console.error('❌ Complimentary ticket email error:', error);
       return { success: false, error: error.message };
     }
   }

@@ -301,12 +301,16 @@ export async function POST(request: NextRequest) {
 
           console.log("Email send result:", emailResult);
 
-          // Update all tickets status based on email success
-          const emailStatus = emailResult.success ? 'email_sent' : 'email_failed';
-          for (const ticket of tickets) {
-            await postgresDb.updateTicket(orderId, {
-              status: emailStatus
-            });
+          // Update all tickets status to email_sent if email was successful
+          if (emailResult.success) {
+            for (const ticket of tickets) {
+              try {
+                await postgresDb.updateTicketEmailSent(ticket.ticketId);
+                console.log(`✅ Email status updated for ticket: ${ticket.ticketId}`);
+              } catch (updateError) {
+                console.error(`⚠️ Failed to update email status for ticket ${ticket.ticketId}:`, updateError);
+              }
+            }
           }
 
           if (emailResult.success) {

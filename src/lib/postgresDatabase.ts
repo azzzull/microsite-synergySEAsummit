@@ -1,10 +1,10 @@
 // Railway PostgreSQL Database Layer using pg
 import { Pool, Client } from 'pg';
 import { secureLog, dbLog } from './secureLogging';
+import { convertToJakartaTime } from './timezone';
 
 // Database configuration
 const isProduction = process.env.NODE_ENV === 'production';
-import { getCurrentJakartaISO } from './timezone';
 
 // Create a connection pool for Railway PostgreSQL with robust configuration
 const pool = new Pool({
@@ -125,7 +125,7 @@ class PostgresDatabase {
           address, country, member_id, ticket_quantity, amount, status, 
           voucher_code, original_amount, discount_amount, created_at, updated_at
         )
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, 
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14,
                 timezone('Asia/Jakarta', now()), timezone('Asia/Jakarta', now()))
         RETURNING *;
       `;
@@ -139,7 +139,7 @@ class PostgresDatabase {
 
       const result = await this.executeQuery(queryText, params);
       const registration = result.rows[0];
-      console.log('📝 Registration created in Postgres with Jakarta timezone:', registration.id, registration.created_at);
+      console.log('📝 Registration created in Postgres:', registration.id, registration.created_at);
       
       return { 
         success: true, 
@@ -185,7 +185,7 @@ class PostgresDatabase {
 
       const result = await this.executeQuery(queryText, params);
       const payment = result.rows[0];
-      console.log('💳 Payment created in Postgres with Jakarta time:', payment.id, jakartaTimestamp);
+      console.log('💳 Payment created in Postgres:', payment.id, jakartaTimestamp);
       
       return { 
         success: true, 
@@ -444,9 +444,11 @@ class PostgresDatabase {
       
       const queryText = `
         INSERT INTO tickets (
-          order_id, ticket_code, qr_code, status
+          order_id, ticket_code, qr_code, status,
+          participant_name, participant_email, participant_phone,
+          event_name, event_date, event_location, email_sent
         )
-        VALUES ($1, $2, $3, $4)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
         RETURNING *;
       `;
 
@@ -454,13 +456,20 @@ class PostgresDatabase {
         data.orderId, 
         ticketCode, 
         data.qrCode || null, 
-        data.status || 'active'
+        data.status || 'active',
+        data.participantName || null,
+        data.participantEmail || null,
+        data.participantPhone || null,
+        data.eventName || null,
+        data.eventDate || null,
+        data.eventLocation || null,
+        data.emailSent || false
       ];
       
       const result = await this.executeQuery(queryText, params);
 
       const ticket = result.rows[0];
-      console.log('🎫 Ticket created in Postgres:', ticket.ticket_code);
+      console.log('🎫 Ticket created in Postgres:', ticket.ticket_code, 'for participant:', ticket.participant_name);
 
       return { 
         success: true, 
@@ -470,11 +479,45 @@ class PostgresDatabase {
           orderId: ticket.order_id,
           ticketCode: ticket.ticket_code,
           qrCode: ticket.qr_code,
+          participantName: ticket.participant_name,
+          participantEmail: ticket.participant_email,
+          participantPhone: ticket.participant_phone,
+          eventName: ticket.event_name,
+          eventDate: ticket.event_date,
+          eventLocation: ticket.event_location,
+          emailSent: ticket.email_sent,
           issuedAt: ticket.issued_at
         }
       };
     } catch (error) {
       console.error('❌ Error creating ticket:', error);
+      return { success: false, error: error instanceof Error ? error.message : "Unknown error" };
+    }
+  }
+
+  async updateTicketEmailSent(ticketCode: string) {
+    try {
+      const queryText = `
+        UPDATE tickets 
+        SET status = 'email_sent', 
+            email_sent = true,
+            email_sent_at = CURRENT_TIMESTAMP,
+            updated_at = CURRENT_TIMESTAMP
+        WHERE ticket_code = $1
+        RETURNING *;
+      `;
+      
+      const result = await this.executeQuery(queryText, [ticketCode]);
+      
+      if (result.rows.length > 0) {
+        console.log(`✅ Ticket status updated to email_sent: ${ticketCode}`);
+        return { success: true, ticket: result.rows[0] };
+      } else {
+        console.warn(`⚠️ Ticket not found: ${ticketCode}`);
+        return { success: false, error: "Ticket not found" };
+      }
+    } catch (error) {
+      console.error('❌ Error updating ticket status:', error);
       return { success: false, error: error instanceof Error ? error.message : "Unknown error" };
     }
   }
@@ -490,9 +533,20 @@ class PostgresDatabase {
           t.status,
           t.issued_at,
           t.updated_at,
-          r.full_name,
-          r.email,
-          r.phone,
+          t.participant_name,
+          t.participant_email,
+          t.participant_phone,
+          t.event_name,
+          t.event_date,
+          t.event_location,
+          t.email_sent,
+          t.email_sent_at,
+          (t.issued_at AT TIME ZONE 'UTC' AT TIME ZONE 'Asia/Jakarta') as jakarta_issued_at,
+          (t.updated_at AT TIME ZONE 'UTC' AT TIME ZONE 'Asia/Jakarta') as jakarta_updated_at,
+          -- Fallback to registration data if ticket data is null (backward compatibility)
+          COALESCE(t.participant_name, r.full_name) as full_name,
+          COALESCE(t.participant_email, r.email) as email,
+          COALESCE(t.participant_phone, r.phone) as phone,
           r.status as registration_status,
           p.amount,
           p.status as payment_status
@@ -509,20 +563,23 @@ class PostgresDatabase {
         ticketId: row.ticket_code || `TKT_${row.id}`,
         orderId: row.order_id,
         ticketCode: row.ticket_code,
-        participantName: row.full_name,
-        participantEmail: row.email,
-        participantPhone: row.phone,
-        eventName: 'Synergy SEA Summit 2025',
-        eventDate: '2025-11-08',
-        eventLocation: 'The Stones Hotel, Legian Bali',
+        participantName: row.full_name, // Uses COALESCE for backward compatibility
+        participantEmail: row.email,    // Uses COALESCE for backward compatibility
+        participantPhone: row.phone,    // Uses COALESCE for backward compatibility
+        eventName: row.event_name || 'Synergy SEA Summit 2025',
+        eventDate: row.event_date || '2025-11-08',
+        eventLocation: row.event_location || 'The Stones Hotel, Legian Bali',
         qrCode: row.qr_code,
-        emailSent: row.status === 'email_sent', // Use status to determine email sent
-        emailSentAt: row.status === 'email_sent' ? row.updated_at : null,
+        emailSent: row.email_sent || row.status === 'email_sent', // Use email_sent column or fallback to status
+        emailSentAt: row.email_sent_at || (row.status === 'email_sent' ? row.updated_at : null),
         status: row.status,
-        issuedAt: row.issued_at,
-        createdAt: row.issued_at,
-        updatedAt: row.updated_at,
-        // Additional info
+        // Use Jakarta timezone from database (same as registrations)
+        issuedAt: row.jakarta_issued_at || row.issued_at,
+        issuedAtRaw: row.issued_at,
+        createdAt: row.jakarta_issued_at || row.issued_at, // Use Jakarta time from DB
+        updatedAt: row.jakarta_updated_at || row.updated_at, // Use Jakarta time from DB
+        updatedAtRaw: row.updated_at,
+        // Additional info from registrations and payments
         fullName: row.full_name,
         email: row.email,
         amount: row.amount,
@@ -531,16 +588,6 @@ class PostgresDatabase {
       }));
 
       console.log('🎫 Retrieved tickets:', tickets.length);
-      if (tickets.length > 0) {
-        console.log('Sample ticket data:', {
-          ticketId: tickets[0].ticketId,
-          participantName: tickets[0].participantName,
-          participantEmail: tickets[0].participantEmail,
-          emailSent: tickets[0].emailSent,
-          createdAt: tickets[0].createdAt
-        });
-      }
-
       return { success: true, tickets };
     } catch (error) {
       console.error('❌ Error getting tickets:', error);
@@ -601,7 +648,14 @@ class PostgresDatabase {
           status = COALESCE($1, status),
           updated_at = CURRENT_TIMESTAMP
         WHERE order_id = $2
-        RETURNING *;
+        RETURNING 
+          id,
+          order_id,
+          ticket_code,
+          qr_code,
+          status,
+          issued_at,
+          updated_at;
       `;
 
       const params = [
@@ -620,19 +674,11 @@ class PostgresDatabase {
       return { 
         success: true, 
         ticket: {
-          ...ticket,
           id: `TKT_${ticket.id}`,
           orderId: ticket.order_id,
           ticketCode: ticket.ticket_code,
-          participantName: ticket.participant_name,
-          participantEmail: ticket.participant_email,
-          participantPhone: ticket.participant_phone,
-          eventName: ticket.event_name,
-          eventDate: ticket.event_date,
-          eventLocation: ticket.event_location,
           qrCode: ticket.qr_code,
-          emailSent: ticket.email_sent,
-          emailSentAt: ticket.email_sent_at,
+          status: ticket.status,
           issuedAt: ticket.issued_at,
           updatedAt: ticket.updated_at
         }

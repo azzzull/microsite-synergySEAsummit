@@ -18,10 +18,10 @@ export default function RegisterPage() {
     memberId: "",
     ticketQuantity: 1
   });
-  // Remove ticketLimitMsg state, not needed for auto display
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [ticketsSoldOut, setTicketsSoldOut] = useState(false);
   const [pricingInfo, setPricingInfo] = useState<{
     currentPrice: number;
     isEarlyBird: boolean;
@@ -33,6 +33,7 @@ export default function RegisterPage() {
 
   useEffect(() => {
     fetchPricingInfo();
+    checkTicketAvailability();
   }, []);
 
   const fetchPricingInfo = async () => {
@@ -52,6 +53,19 @@ export default function RegisterPage() {
       }
     } catch (error) {
       console.error('Error fetching pricing info:', error);
+    }
+  };
+
+  const checkTicketAvailability = async () => {
+    try {
+      const response = await fetch('/api/ticket-availability');
+      const data = await response.json();
+      
+      if (data.success) {
+        setTicketsSoldOut(!data.isAvailable);
+      }
+    } catch (error) {
+      console.error('Error checking ticket availability:', error);
     }
   };
 
@@ -197,6 +211,17 @@ export default function RegisterPage() {
           {success ? (
             <div className="text-center font-bold text-xl p-8 rounded-lg" style={{color: "var(--color-gold)", backgroundColor: "var(--color-white-transparent)"}}>
               Registration successful! Please check your email for payment instructions.
+            </div>
+          ) : ticketsSoldOut ? (
+            /* Sold Out Message */
+            <div className="p-8 rounded-lg border-2 border-red-500 bg-red-500/10 text-center">
+              <h2 className="text-3xl font-bold text-red-400 mb-4">🎫 Event Sold Out</h2>
+              <p className="text-lg text-red-300 mb-4">
+                We're sorry, but all tickets for Synergy SEA Summit 2025 have been sold out.
+              </p>
+              <p className="text-red-400">
+                Thank you for your interest! Follow our social media for updates on future events.
+              </p>
             </div>
           ) : (
             /* Form Container */

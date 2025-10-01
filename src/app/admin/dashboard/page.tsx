@@ -129,7 +129,7 @@ export default function AdminDashboardPage() {
 			'Discount Amount IDR': (reg.discountAmount || 0),
 			'Final Amount IDR': reg.amount || 0,
 			'Payment Status': reg.status || '',
-			'Created At Jakarta Time': convertToJakartaTime(reg.createdAt) || ''
+			'Created At Jakarta Time': reg.createdAt ? (typeof reg.createdAt === 'string' && reg.createdAt.includes('WIB') ? reg.createdAt : convertToJakartaTime(reg.createdAt)) : 'N/A'
 		}));
 	};
 
@@ -142,7 +142,7 @@ export default function AdminDashboardPage() {
 			'Transaction ID': payment.transactionId || '',
 			'Payment Method': payment.paymentMethod || 'DOKU',
 			'Paid At Jakarta Time': payment.paidAt ? convertToJakartaTime(payment.paidAt) : '',
-			'Created At Jakarta Time': convertToJakartaTime(payment.createdAt) || ''
+			'Created At Jakarta Time': payment.createdAt ? convertToJakartaTime(payment.createdAt) : 'N/A'
 		}));
 	};
 
@@ -160,8 +160,8 @@ export default function AdminDashboardPage() {
 			'Email Sent': ticket.emailSent ? 'Yes' : 'No',
 			'Email Sent At Jakarta Time': ticket.emailSentAt ? convertToJakartaTime(ticket.emailSentAt) : '',
 			'Ticket Status': ticket.status || 'Active',
-			'Created At Jakarta Time': convertToJakartaTime(ticket.createdAt ?? ticket.issuedAt ?? "") || '',
-			'Updated At Jakarta Time': ticket.updatedAt ? convertToJakartaTime(ticket.updatedAt) : ''
+			'Created At Jakarta Time': ticket.createdAt ? (typeof ticket.createdAt === 'string' && ticket.createdAt.includes('WIB') ? ticket.createdAt : convertToJakartaTime(ticket.createdAt)) : (ticket.issuedAt ? (typeof ticket.issuedAt === 'string' && ticket.issuedAt.includes('WIB') ? ticket.issuedAt : convertToJakartaTime(ticket.issuedAt)) : 'N/A'),
+			'Updated At Jakarta Time': ticket.updatedAt ? (typeof ticket.updatedAt === 'string' && ticket.updatedAt.includes('WIB') ? ticket.updatedAt : convertToJakartaTime(ticket.updatedAt)) : 'N/A'
 		}));
 	};
 
@@ -422,7 +422,7 @@ export default function AdminDashboardPage() {
 											</span>
 										</td>
 										<td className="px-6 py-4 text-sm text-gray-400">
-											{convertToJakartaTime(reg.createdAt)}
+											{reg.createdAt ? (typeof reg.createdAt === 'string' && reg.createdAt.includes('WIB') ? reg.createdAt : convertToJakartaTime(reg.createdAt)) : 'N/A'}
 										</td>
 									</tr>
 								))}
@@ -556,7 +556,9 @@ export default function AdminDashboardPage() {
 											</span>
 										</td>
 										<td className="px-6 py-4 text-sm text-gray-400">
-											{convertToJakartaTime(ticket.createdAt ?? ticket.issuedAt ?? "")}
+											{ticket.createdAt ? (typeof ticket.createdAt === 'string' && ticket.createdAt.includes('WIB') ? ticket.createdAt : convertToJakartaTime(ticket.createdAt)) : 
+											 ticket.issuedAt ? (typeof ticket.issuedAt === 'string' && ticket.issuedAt.includes('WIB') ? ticket.issuedAt : convertToJakartaTime(ticket.issuedAt)) : 
+											 'N/A'}
 										</td>
 									</tr>
 								))}

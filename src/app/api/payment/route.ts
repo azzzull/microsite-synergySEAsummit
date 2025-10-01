@@ -83,6 +83,34 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Check ticket availability against event limit
+    const totalSoldResult = await postgresDb.executeQuery(
+      'SELECT COALESCE(SUM(ticket_quantity), 0) as total_sold FROM registrations WHERE status = $1',
+      ['paid']
+    );
+    
+    const totalSold = parseInt(totalSoldResult.rows[0]?.total_sold || '0');
+    const maxTickets = PRICING_CONFIG.MAX_EVENT_TICKETS;
+    const remainingTickets = maxTickets - totalSold;
+    
+    console.log(`🎫 Ticket availability check: ${totalSold}/${maxTickets} sold, ${remainingTickets} remaining`);
+    console.log(`🛒 Requested quantity: ${quantity} tickets`);
+    
+    if (quantity > remainingTickets) {
+      return NextResponse.json(
+        { 
+          success: false, 
+          error: 'Not enough tickets available',
+          details: `Only ${remainingTickets} tickets remaining, but ${quantity} requested`,
+          totalSold,
+          maxTickets,
+          remainingTickets,
+          requestedQuantity: quantity
+        },
+        { status: 400 }
+      );
+    }
+
     // Calculate total amount based on quantity using dynamic pricing
     const ticketPrice = await pricingService.getCurrentPrice();
     let totalAmount = ticketPrice * quantity;
