@@ -16,7 +16,7 @@ export default function GenerateTicketPage() {
     country: "Indonesia",
     memberId: "",
     ticketQuantity: 1,
-    ticketType: "complimentary" // Default ke complimentary/gratis
+    ticketType: "vip" // Default ke VIP
   });
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -96,7 +96,17 @@ export default function GenerateTicketPage() {
         body: JSON.stringify(ticketData),
       });
 
+      console.log('🌐 HTTP Response Status:', response.status, response.statusText);
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('❌ HTTP Error Response:', errorText);
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+
       const result = await response.json();
+
+      console.log('🔍 API Response:', result);
 
       if (result.success) {
         setSuccess(true);
@@ -109,16 +119,18 @@ export default function GenerateTicketPage() {
           country: "Indonesia",
           memberId: "",
           ticketQuantity: 1,
-          ticketType: "complimentary"
+          ticketType: "vip"
         });
         setError(null);
       } else {
-        throw new Error(result.error || 'Failed to generate ticket');
+        console.error('❌ API Error Details:', result);
+        throw new Error(result.details || result.error || 'Failed to generate ticket');
       }
       
     } catch (error: any) {
-      console.error('Error:', error);
-      setError('Something went wrong. Please try again.');
+      console.error('💥 Frontend Error:', error);
+      console.error('💥 Error message:', error.message);
+      setError(error.message || 'Something went wrong. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -130,16 +142,16 @@ export default function GenerateTicketPage() {
         <div className="bg-white/10 backdrop-blur-md p-8 rounded-lg border border-white/20 text-center max-w-md mx-4">
           <div className="text-6xl mb-4">✅</div>
           <h2 className="text-2xl font-bold mb-4" style={{color: "var(--color-gold)"}}>
-            Ticket Generated Successfully!
+            VIP Ticket Generated Successfully!
           </h2>
           <p className="text-lg mb-6" style={{color: "var(--color-lightgrey)"}}>
-            E-ticket with QR code has been sent to the participant's email address.
+            VIP e-ticket with QR code has been sent to the participant's email address.
           </p>
           <Button 
             onClick={() => setSuccess(false)}
             className="bg-[var(--color-gold)] text-[var(--color-navy)] px-6 py-3 rounded-lg font-semibold hover:opacity-90"
           >
-            Generate Another Ticket
+            Generate Another VIP Ticket
           </Button>
         </div>
       </div>
@@ -154,10 +166,10 @@ export default function GenerateTicketPage() {
           {/* Header Section */}
           <div className="mb-8 text-center">
             <h1 className="text-4xl font-bold mb-4" style={{color: "var(--color-gold)"}}>
-              Generate Complimentary Ticket
+              Generate VIP Ticket
             </h1>
             <p className="text-lg" style={{color: "var(--color-lightgrey)"}}>
-              Admin panel to generate free tickets for Synergy SEA Summit 2025
+              Admin panel to generate VIP tickets for Synergy SEA Summit 2025
             </p>
           </div>
 
@@ -389,7 +401,7 @@ export default function GenerateTicketPage() {
                   </div>
                   {form.ticketQuantity >= 5 && (
                     <div className="text-xs mt-2" style={{ color: "var(--color-gold)" }}>
-                      *Maximum 5 complimentary tickets per participant
+                      *Maximum 5 VIP tickets per participant
                     </div>
                   )}
                 </div>
@@ -411,8 +423,7 @@ export default function GenerateTicketPage() {
                       color: "var(--color-navy)"
                     }} 
                   >
-                    <option value="complimentary">Complimentary (Free)</option>
-                    <option value="vip">VIP Complimentary</option>
+                    <option value="vip">VIP Access</option>
                     <option value="speaker">Speaker/Guest</option>
                     <option value="staff">Staff/Organizer</option>
                   </select>
@@ -426,7 +437,7 @@ export default function GenerateTicketPage() {
                   className="cursor-pointer text-md py-3 px-6 bg-[var(--color-gold)] border border-[var(--color-gold)] rounded-lg hover:bg-[var(--color-gold)]"
                   style={{color: "var(--color-navy)"}}
                 >
-                  {loading ? "Generating Ticket..." : "Generate Free Ticket & Send Email"}
+                  {loading ? "Generating VIP Ticket..." : "Generate VIP Ticket & Send Email"}
                 </Button>
               </div>
             </form>

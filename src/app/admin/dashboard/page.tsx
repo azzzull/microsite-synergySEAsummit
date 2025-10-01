@@ -48,6 +48,9 @@ interface Ticket {
 	status?: string;
 	fullName?: string;
 	email?: string;
+	ticketType?: string;
+	isComplimentary?: boolean;
+	isVip?: boolean;
 }
 
 export default function AdminDashboardPage() {
@@ -154,6 +157,9 @@ export default function AdminDashboardPage() {
 			'Participant Name': ticket.participantName || ticket.fullName || '',
 			'Participant Email': ticket.participantEmail || ticket.email || '',
 			'Participant Phone': ticket.participantPhone || '',
+			'Ticket Type': ticket.ticketType || 'Standard',
+			'Is Complimentary': ticket.isComplimentary ? 'Yes' : 'No',
+			'VIP Status': ticket.isVip ? 'VIP' : 'Regular',
 			'Event Name': ticket.eventName || 'Synergy SEA Summit 2025',
 			'Event Date': ticket.eventDate || '2025-11-08',
 			'Event Location': ticket.eventLocation || 'The Stones Hotel Legian Bali',
@@ -535,6 +541,7 @@ export default function AdminDashboardPage() {
 									<th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Order ID</th>
 									<th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Participant</th>
 									<th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Email</th>
+									<th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Type</th>
 									<th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Email Sent</th>
 									<th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Created</th>
 								</tr>
@@ -548,6 +555,26 @@ export default function AdminDashboardPage() {
 										<td className="px-6 py-4 text-sm">{ticket.orderId || 'N/A'}</td>
 										<td className="px-6 py-4 text-sm">{ticket.participantName || ticket.fullName || 'N/A'}</td>
 										<td className="px-6 py-4 text-sm">{ticket.participantEmail || ticket.email || 'N/A'}</td>
+										<td className="px-6 py-4 text-sm">
+											<div className="flex flex-col gap-1">
+												{ticket.isVip ? (
+													<span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-bold bg-gradient-to-r from-yellow-500 to-amber-600 text-black border border-yellow-400 shadow-lg">
+														<svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+															<path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+														</svg>
+														VIP
+													</span>
+												) : ticket.isComplimentary ? (
+													<span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-900 text-blue-300 border border-blue-700">
+														COMP
+													</span>
+												) : (
+													<span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-700 text-gray-300 border border-gray-600">
+														REGULAR
+													</span>
+												)}
+											</div>
+										</td>
 										<td className="px-6 py-4 text-sm">
 											<span className={`px-2 py-1 rounded text-xs ${
 												ticket.emailSent ? 'bg-green-900 text-green-300' : 'bg-red-900 text-red-300'

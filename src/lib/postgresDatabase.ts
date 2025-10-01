@@ -446,9 +446,10 @@ class PostgresDatabase {
         INSERT INTO tickets (
           order_id, ticket_code, qr_code, status,
           participant_name, participant_email, participant_phone,
-          event_name, event_date, event_location, email_sent
+          event_name, event_date, event_location, email_sent,
+          ticket_type, is_complimentary, is_vip
         )
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
         RETURNING *;
       `;
 
@@ -463,13 +464,16 @@ class PostgresDatabase {
         data.eventName || null,
         data.eventDate || null,
         data.eventLocation || null,
-        data.emailSent || false
+        data.emailSent || false,
+        data.ticketType || 'regular',
+        data.isComplimentary || false,
+        data.isVip || false
       ];
       
       const result = await this.executeQuery(queryText, params);
 
       const ticket = result.rows[0];
-      console.log('🎫 Ticket created in Postgres:', ticket.ticket_code, 'for participant:', ticket.participant_name);
+      console.log('🎫 Ticket created in Postgres:', ticket.ticket_code, 'for participant:', ticket.participant_name, 'VIP:', ticket.is_vip);
 
       return { 
         success: true, 
@@ -486,6 +490,9 @@ class PostgresDatabase {
           eventDate: ticket.event_date,
           eventLocation: ticket.event_location,
           emailSent: ticket.email_sent,
+          ticketType: ticket.ticket_type,
+          isComplimentary: ticket.is_complimentary,
+          isVip: ticket.is_vip,
           issuedAt: ticket.issued_at
         }
       };
@@ -541,6 +548,9 @@ class PostgresDatabase {
           t.event_location,
           t.email_sent,
           t.email_sent_at,
+          t.ticket_type,
+          t.is_complimentary,
+          t.is_vip,
           (t.issued_at AT TIME ZONE 'UTC' AT TIME ZONE 'Asia/Jakarta') as jakarta_issued_at,
           (t.updated_at AT TIME ZONE 'UTC' AT TIME ZONE 'Asia/Jakarta') as jakarta_updated_at,
           -- Fallback to registration data if ticket data is null (backward compatibility)
@@ -573,6 +583,10 @@ class PostgresDatabase {
         emailSent: row.email_sent || row.status === 'email_sent', // Use email_sent column or fallback to status
         emailSentAt: row.email_sent_at || (row.status === 'email_sent' ? row.updated_at : null),
         status: row.status,
+        // VIP-related fields
+        ticketType: row.ticket_type || 'standard',
+        isComplimentary: row.is_complimentary || false,
+        isVip: row.is_vip || false,
         // Use Jakarta timezone from database (same as registrations)
         issuedAt: row.jakarta_issued_at || row.issued_at,
         issuedAtRaw: row.issued_at,

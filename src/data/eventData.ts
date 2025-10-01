@@ -10,7 +10,7 @@ export const speakers = [
   },
   {
     name: "Takashi Oda",
-    title: "Triple Presidential Executive",
+    title: "Legacy Presidential Executive",
     photo: "/speakers/takashi_oda.png",
     country: " ",
     cat: "speaker"

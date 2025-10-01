@@ -17,6 +17,7 @@ export interface EmailTicketData {
   paidAt: string;
   ticketNumber?: number; // For multiple tickets (Ticket 1 of 3, etc.)
   totalTickets?: number; // Total number of tickets ordered
+  isVip?: boolean; // VIP ticket flag
 }
 
 export interface EmailMultipleTicketsData {
@@ -35,7 +36,9 @@ export interface EmailMultipleTicketsData {
     ticketId: string;
     qrCode: string;
     ticketNumber: number;
+    isVip?: boolean;
   }>;
+  isVip?: boolean; // VIP ticket flag for all tickets
 }
 
 export interface EmailConfirmationData {
@@ -203,18 +206,44 @@ class EmailService {
       ? `Ticket ${data.ticketNumber} of ${data.totalTickets}` 
       : 'Your Ticket';
     
+    const isVip = data.isVip || false;
+    const vipBadge = isVip ? `
+      <div style="display: inline-block; background: linear-gradient(135deg, #FFD700, #FFA500); color: #000; padding: 8px 16px; border-radius: 20px; font-weight: bold; margin: 10px 0; text-align: center; box-shadow: 0 4px 8px rgba(255, 215, 0, 0.3);">
+        ⭐ VIP ACCESS ⭐
+      </div>
+    ` : '';
+    
+    const headerStyle = isVip 
+      ? 'background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460); border: 2px solid #FFD700; box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);'
+      : 'background: linear-gradient(135deg, #04091c, #070d2d);';
+    
+    const ticketStyle = isVip
+      ? 'border: 2px dashed #FFD700; background: linear-gradient(to bottom, #fff9e6, #eef4ff); box-shadow: 0 4px 12px rgba(255, 215, 0, 0.2);'
+      : 'border: 2px dashed #070d2d; background: #eef4ff;';
+    
+    const vipPrivileges = isVip ? `
+      <div style="background: linear-gradient(135deg, #fff9e6, #fff3cd); border: 2px solid #FFD700; padding: 20px; margin: 20px 0; border-radius: 10px; box-shadow: 0 4px 12px rgba(255, 215, 0, 0.2);">
+        <h3 style="color: #B8860B; margin-top: 0; text-align: center;">🌟 VIP TICKET 🌟</h3>
+        <div style="text-align: center; padding: 20px;">
+          <p style="font-size: 18px; color: #B8860B; font-weight: bold; margin: 0;">
+            You have VIP access to Synergy SEA Summit 2025
+          </p>
+        </div>
+      </div>
+    ` : '';
+    
     return `
     <!DOCTYPE html>
     <html>
     <head>
         <meta charset="utf-8">
-        <title>Your Synergy SEA Summit 2025 Ticket</title>
+        <title>Your Synergy SEA Summit 2025 ${isVip ? 'VIP ' : ''}Ticket</title>
         <style>
             body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
             .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-            .header { background: linear-gradient(135deg, #04091c, #070d2d); color: #eef4ff; padding: 30px 20px; text-align: center; }
-            .ticket { border: 2px dashed #070d2d; margin: 20px 0; padding: 20px; background: #eef4ff; }
-            .qr-section { text-align: center; margin: 20px 0; padding: 20px; background: white; }
+            .header { ${headerStyle} color: #eef4ff; padding: 30px 20px; text-align: center; border-radius: 10px; }
+            .ticket { ${ticketStyle} margin: 20px 0; padding: 20px; border-radius: 10px; }
+            .qr-section { text-align: center; margin: 20px 0; padding: 20px; background: white; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
             .footer { text-align: center; font-size: 12px; color: #666; margin-top: 30px; }
             .info-row { display: flex; justify-content: space-between; margin: 10px 0; }
             .label { font-weight: bold; }
@@ -224,16 +253,19 @@ class EmailService {
     <body>
         <div class="container">
             <div class="header">
-                <h1>🎫 ${ticketInfo}</h1>
+                ${vipBadge}
+                <h1>🎫 ${isVip ? 'VIP ' : ''}${ticketInfo}</h1>
                 <h2>Synergy SEA Summit 2025</h2>
+                ${isVip ? '<p style="color: #FFD700; font-weight: bold; margin: 10px 0;">✨ Premium Experience Awaits ✨</p>' : ''}
             </div>
             
             <div style="padding: 20px;">
                 <p>Dear <strong>${data.participantName}</strong>,</p>
-                <p>Thank you for registering for Synergy SEA Summit 2025! Your payment has been confirmed and your ticket is ready.</p>
+                <p>Thank you for registering for Synergy SEA Summit 2025! Your payment has been confirmed and your ${isVip ? 'VIP ' : ''}ticket is ready.</p>
+                ${isVip ? '<p style="color: #B8860B; font-weight: bold;">🌟 You have VIP access to the summit. 🌟</p>' : ''}
                 
                 <div class="ticket">
-                    <h3 style="color: #070d2d; margin-top: 0;">TICKET DETAILS</h3>
+                    <h3 style="color: #070d2d; margin-top: 0;">${isVip ? '🌟 VIP ' : ''}TICKET DETAILS</h3>
                     <div class="info-row">
                         <span class="label">Ticket ID:</span>
                         <span class="value">${data.ticketId}</span>
@@ -254,6 +286,12 @@ class EmailService {
                         <span class="label">Phone:</span>
                         <span class="value">${data.participantPhone}</span>
                     </div>
+                    ${isVip ? `
+                    <div class="info-row" style="background: rgba(255, 215, 0, 0.1); padding: 10px; border-radius: 5px; margin: 10px 0;">
+                        <span class="label">Access Level:</span>
+                        <span class="value" style="color: #B8860B; font-weight: bold;">⭐ VIP PREMIUM ⭐</span>
+                    </div>
+                    ` : ''}
                     ${data.totalTickets && data.totalTickets > 1 ? `
                     <div class="info-row">
                         <span class="label">Ticket Number:</span>
@@ -286,14 +324,16 @@ class EmailService {
                     </div>
                 </div>
 
+                ${vipPrivileges}
+
                 <div class="qr-section">
-                    <h3 style="color: #070d2d;">QR CODE FOR ENTRANCE</h3>
+                    <h3 style="color: #070d2d;">${isVip ? '🌟 VIP ' : ''}QR CODE FOR ENTRANCE</h3>
                     <img src="${data.qrCode}" alt="QR Code" style="max-width: 200px;">
                     <p><strong>Important:</strong> Please show this QR code at the event entrance for check-in.</p>
                 </div>
 
-                <div style="background: #e3f2fd; padding: 15px; border-radius: 5px; margin: 20px 0;">
-                    <h4 style="margin-top: 0; color: #1976d2;">Important Instructions:</h4>
+                <div style="background: ${isVip ? 'linear-gradient(135deg, #fff9e6, #fff3cd); border: 2px solid #FFD700;' : '#e3f2fd;'} padding: 15px; border-radius: 5px; margin: 20px 0;">
+                    <h4 style="margin-top: 0; color: ${isVip ? '#B8860B' : '#1976d2'};">Important Instructions:</h4>
                     <ul>
                         <li>Arrive 30 minutes before the event starts</li>
                         <li>Bring a valid ID that matches your registration</li>
@@ -318,14 +358,47 @@ class EmailService {
   }
 
   private generateMultipleTicketsHTML(data: EmailMultipleTicketsData): string {
+    const isVip = data.isVip || false;
+    const headerStyle = isVip 
+      ? 'background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460); border: 2px solid #FFD700; box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);'
+      : 'background: linear-gradient(135deg, #04091c, #070d2d);';
+    
+    const ticketStyle = isVip
+      ? 'border: 2px dashed #FFD700; background: linear-gradient(to bottom, #fff9e6, #eef4ff); box-shadow: 0 4px 12px rgba(255, 215, 0, 0.2);'
+      : 'border: 2px dashed #070d2d; background: #eef4ff;';
+
+    const vipBadge = isVip ? `
+      <div style="display: inline-block; background: linear-gradient(135deg, #FFD700, #FFA500); color: #000; padding: 8px 16px; border-radius: 20px; font-weight: bold; margin: 10px 0; text-align: center; box-shadow: 0 4px 8px rgba(255, 215, 0, 0.3);">
+        ⭐ VIP ACCESS ⭐
+      </div>
+    ` : '';
+
+    const vipPrivileges = isVip ? `
+      <div style="background: linear-gradient(135deg, #fff9e6, #fff3cd); border: 2px solid #FFD700; padding: 20px; margin: 20px 0; border-radius: 10px; box-shadow: 0 4px 12px rgba(255, 215, 0, 0.2);">
+        <h3 style="color: #B8860B; margin-top: 0; text-align: center;">🌟 VIP TICKETS 🌟</h3>
+        <div style="text-align: center; padding: 20px;">
+          <p style="font-size: 18px; color: #B8860B; font-weight: bold; margin: 0;">
+            All ${data.tickets.length} tickets have VIP access to Synergy SEA Summit 2025
+          </p>
+        </div>
+      </div>
+    ` : '';
+
     const ticketsHTML = data.tickets.map(ticket => `
-      <div class="ticket">
-        <h3 style="color: #070d2d; margin-top: 0;">TICKET ${ticket.ticketNumber} OF ${data.tickets.length}</h3>
+      <div class="ticket" style="${ticketStyle}">
+        <h3 style="color: #070d2d; margin-top: 0;">${isVip ? '🌟 VIP ' : ''}TICKET ${ticket.ticketNumber} OF ${data.tickets.length}</h3>
         <div class="info-row">
           <span class="label">Ticket ID:</span>
           <span class="value">${ticket.ticketId}</span>
         </div>
-        <div class="qr-section" style="margin: 15px 0;">
+        ${isVip ? `
+        <div class="info-row" style="background: rgba(255, 215, 0, 0.1); padding: 10px; border-radius: 5px; margin: 10px 0;">
+          <span class="label">Access Level:</span>
+          <span class="value" style="color: #B8860B; font-weight: bold;">⭐ VIP PREMIUM ⭐</span>
+        </div>
+        ` : ''}
+        <div class="qr-section" style="margin: 15px 0; text-align: center; padding: 15px; background: white; border-radius: 5px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+          <h4 style="color: #070d2d; margin: 0 0 10px 0;">${isVip ? '🌟 VIP ' : ''}QR Code ${ticket.ticketNumber}</h4>
           <img src="${ticket.qrCode}" alt="QR Code ${ticket.ticketNumber}" style="max-width: 150px;">
         </div>
       </div>
@@ -336,33 +409,39 @@ class EmailService {
     <html>
     <head>
         <meta charset="utf-8">
-        <title>Your Synergy SEA Summit 2025 Tickets</title>
+        <title>Your Synergy SEA Summit 2025 ${isVip ? 'VIP ' : ''}Tickets</title>
         <style>
             body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
             .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-            .header { background: linear-gradient(135deg, #04091c, #070d2d); color: white; padding: 30px 20px; text-align: center; }
-            .ticket { border: 2px dashed #070d2d; margin: 20px 0; padding: 20px; background: #eef4ff; }
+            .header { ${headerStyle} color: #eef4ff; padding: 30px 20px; text-align: center; border-radius: 10px; }
+            .ticket { ${ticketStyle} margin: 20px 0; padding: 20px; border-radius: 10px; }
             .qr-section { text-align: center; margin: 15px 0; padding: 15px; background: white; border-radius: 5px; }
             .footer { text-align: center; font-size: 12px; color: #666; margin-top: 30px; }
             .info-row { display: flex; justify-content: space-between; margin: 10px 0; }
             .label { font-weight: bold; }
             .value { color: #070d2d; }
-            .summary-box { background: #e8f5e8; border: 2px solid #4caf50; padding: 20px; border-radius: 8px; margin: 20px 0; }
+            .summary-box { 
+              background: ${isVip ? 'linear-gradient(135deg, #fff9e6, #fff3cd); border: 2px solid #FFD700;' : '#e8f5e8; border: 2px solid #4caf50;'} 
+              padding: 20px; border-radius: 8px; margin: 20px 0; 
+            }
         </style>
     </head>
     <body>
         <div class="container">
             <div class="header">
-                <h1>🎫 Your ${data.tickets.length} Tickets</h1>
+                ${vipBadge}
+                <h1>🎫 Your ${data.tickets.length} ${isVip ? 'VIP ' : ''}Tickets</h1>
                 <h2>Synergy SEA Summit 2025</h2>
+                ${isVip ? '<p style="color: #FFD700; font-weight: bold; margin: 10px 0;">✨ Premium Experience Awaits ✨</p>' : ''}
             </div>
             
             <div style="padding: 20px;">
                 <p>Dear <strong>${data.participantName}</strong>,</p>
-                <p>Thank you for registering for Synergy SEA Summit 2025! Your payment has been confirmed and your ${data.tickets.length} tickets are ready.</p>
+                <p>Thank you for registering for Synergy SEA Summit 2025! Your payment has been confirmed and your ${data.tickets.length} ${isVip ? 'VIP ' : ''}tickets are ready.</p>
+                ${isVip ? '<p style="color: #B8860B; font-weight: bold;">🌟 All your tickets have VIP access to the summit. 🌟</p>' : ''}
                 
                 <div class="summary-box">
-                    <h3 style="color: #2e7d32; margin-top: 0;">ORDER SUMMARY</h3>
+                    <h3 style="color: ${isVip ? '#B8860B' : '#2e7d32'}; margin-top: 0;">${isVip ? '🌟 VIP ' : ''}ORDER SUMMARY</h3>
                     <div class="info-row">
                         <span class="label">Order ID:</span>
                         <span class="value">${data.orderId}</span>
@@ -381,15 +460,21 @@ class EmailService {
                     </div>
                     <div class="info-row">
                         <span class="label">Total Tickets:</span>
-                        <span class="value">${data.tickets.length} tickets</span>
+                        <span class="value">${data.tickets.length} ${isVip ? 'VIP ' : ''}tickets</span>
                     </div>
                     <div class="info-row">
                         <span class="label">Total Amount:</span>
                         <span class="value">Rp ${data.totalAmount.toLocaleString('id-ID')}</span>
                     </div>
+                    ${isVip ? `
+                    <div class="info-row" style="background: rgba(255, 215, 0, 0.1); padding: 10px; border-radius: 5px; margin: 10px 0;">
+                        <span class="label">Access Level:</span>
+                        <span class="value" style="color: #B8860B; font-weight: bold;">⭐ VIP PREMIUM (All Tickets) ⭐</span>
+                    </div>
+                    ` : ''}
                 </div>
 
-                <div class="ticket" style="background: #f5f5f5;">
+                <div class="ticket" style="background: ${isVip ? 'rgba(255, 215, 0, 0.05);' : '#f5f5f5;'} ${isVip ? 'border: 2px solid #FFD700;' : ''}">
                     <h3 style="color: #070d2d; margin-top: 0;">EVENT DETAILS</h3>
                     <div class="info-row">
                         <span class="label">Event:</span>
@@ -409,11 +494,13 @@ class EmailService {
                     </div>
                 </div>
 
-                <h2 style="color: #070d2d; text-align: center; margin: 30px 0;">YOUR TICKETS</h2>
+                ${vipPrivileges}
+
+                <h2 style="color: #070d2d; text-align: center; margin: 30px 0;">YOUR ${isVip ? 'VIP ' : ''}TICKETS</h2>
                 ${ticketsHTML}
 
-                <div style="background: #e3f2fd; padding: 15px; border-radius: 5px; margin: 20px 0;">
-                    <h4 style="margin-top: 0; color: #1976d2;">Important Instructions:</h4>
+                <div style="background: ${isVip ? 'linear-gradient(135deg, #fff9e6, #fff3cd); border: 2px solid #FFD700;' : '#e3f2fd;'} padding: 15px; border-radius: 5px; margin: 20px 0;">
+                    <h4 style="margin-top: 0; color: ${isVip ? '#B8860B' : '#1976d2'};">Important Instructions:</h4>
                     <ul>
                         <li>Each ticket has a unique QR code - bring all ${data.tickets.length} tickets to the event</li>
                         <li>Arrive 30 minutes before the event starts</li>
