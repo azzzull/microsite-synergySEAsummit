@@ -10,6 +10,7 @@ export function middleware(req: NextRequest) {
     '/api/admin/vouchers',
     '/api/admin/registrations',
     '/api/payment/callback',
+    '/api/admin/validate-ticket'
   ];
   
   // Allow all /api/payment endpoints (payment, callback, return)
