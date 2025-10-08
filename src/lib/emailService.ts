@@ -83,19 +83,31 @@ export class EmailService {
   }
 
   private initializeProviders() {
-    // Primary provider: Gmail
-    if (process.env.GMAIL_USER && process.env.GMAIL_APP_PASSWORD) {
+    console.log('🔧 Initializing email providers...');
+    
+    // Primary provider: Gmail (support both new and legacy variable names)
+    const gmailUser = process.env.GMAIL_USER || process.env.SMTP_USER;
+    const gmailPass = process.env.GMAIL_APP_PASSWORD || process.env.SMTP_PASS;
+    
+    console.log('📧 Checking Gmail configuration:');
+    console.log(`   - User: ${gmailUser ? '✅ Set' : '❌ Missing'}`);
+    console.log(`   - Pass: ${gmailPass ? '✅ Set' : '❌ Missing'}`);
+    
+    if (gmailUser && gmailPass) {
       this.providers.push({
         host: 'smtp.gmail.com',
         port: 587,
         secure: false,
         auth: {
-          user: process.env.GMAIL_USER,
-          pass: process.env.GMAIL_APP_PASSWORD
+          user: gmailUser,
+          pass: gmailPass
         },
-        from: `"Synergy SEA Summit 2025" <${process.env.GMAIL_USER}>`,
+        from: `"Synergy SEA Summit 2025" <${gmailUser}>`,
         replyTo: process.env.SUPPORT_EMAIL || 'synergyindonesiasales@gmail.com'
       });
+      console.log('✅ Gmail SMTP provider configured successfully');
+    } else {
+      console.log('❌ Gmail SMTP provider not configured (missing credentials)');
     }
 
     // Backup provider: SMTP2GO
@@ -111,6 +123,7 @@ export class EmailService {
         from: `"Synergy SEA Summit 2025" <${process.env.SUPPORT_EMAIL || 'synergyindonesiasales@gmail.com'}>`,
         replyTo: process.env.SUPPORT_EMAIL || 'synergyindonesiasales@gmail.com'
       });
+      console.log('✅ SMTP2GO provider configured');
     }
 
     // Backup provider: Outlook/Hotmail
@@ -126,17 +139,25 @@ export class EmailService {
         from: `"Synergy SEA Summit 2025" <${process.env.OUTLOOK_USER}>`,
         replyTo: process.env.SUPPORT_EMAIL || 'synergyindonesiasales@gmail.com'
       });
+      console.log('✅ Outlook SMTP provider configured');
     }
 
     if (this.providers.length === 0) {
-      console.warn('No email providers configured. Email functionality will not work.');
+      console.warn('⚠️  No email providers configured. Email functionality will not work.');
+      console.warn('📧 Required environment variables:');
+      console.warn('   - Gmail: GMAIL_USER, GMAIL_APP_PASSWORD');
+      console.warn('   - SMTP2GO: SMTP2GO_USERNAME, SMTP2GO_PASSWORD');
+      console.warn('   - Outlook: OUTLOOK_USER, OUTLOOK_PASSWORD');
     } else {
-      console.log(`Initialized ${this.providers.length} email provider(s)`);
+      console.log(`✅ Initialized ${this.providers.length} email provider(s)`);
     }
   }
 
   private async createTransporter(provider: EmailProvider) {
-    return nodemailer.createTransport({
+    console.log(`🔧 Creating transporter for ${provider.host}...`);
+    console.log(`   User: ${provider.auth.user}`);
+    
+    const transporterConfig: any = {
       host: provider.host,
       port: provider.port,
       secure: provider.secure || false,
@@ -144,12 +165,24 @@ export class EmailService {
       tls: {
         rejectUnauthorized: false
       }
-    });
+    };
+
+    // Gmail specific settings
+    if (provider.host === 'smtp.gmail.com') {
+      transporterConfig.service = 'gmail';
+      console.log('   Using Gmail service configuration');
+    }
+
+    const transporter = nodemailer.createTransport(transporterConfig);
+    console.log(`✅ Transporter created for ${provider.host}`);
+    return transporter;
   }
 
   private async sendEmailWithProvider(providerIndex: number, mailOptions: any): Promise<boolean> {
     try {
       const provider = this.providers[providerIndex];
+      console.log(`📤 Attempting to send email via ${provider.host} (${provider.auth.user})`);
+      
       const transporter = await this.createTransporter(provider);
       
       const enrichedMailOptions = {
@@ -158,16 +191,26 @@ export class EmailService {
         replyTo: provider.replyTo
       };
 
+      console.log(`📧 Sending email to: ${enrichedMailOptions.to}`);
+      console.log(`📧 Subject: ${enrichedMailOptions.subject}`);
+      
       const info = await transporter.sendMail(enrichedMailOptions);
-      console.log(`Email sent successfully via ${provider.host}:`, info.messageId);
+      console.log(`✅ Email sent successfully via ${provider.host}:`, info.messageId);
       return true;
     } catch (error) {
-      console.error(`Failed to send email via provider ${providerIndex}:`, error);
+      console.error(`❌ Failed to send email via provider ${providerIndex} (${this.providers[providerIndex]?.host}):`, error);
       return false;
     }
   }
 
   private async sendWithFallback(mailOptions: any): Promise<boolean> {
+    if (this.providers.length === 0) {
+      console.error('❌ No email providers configured. Cannot send email.');
+      console.error('📧 Would have sent email to:', mailOptions.to);
+      console.error('📧 Subject:', mailOptions.subject);
+      return false;
+    }
+
     for (let i = 0; i < this.providers.length; i++) {
       const providerIndex = (this.currentProviderIndex + i) % this.providers.length;
       const success = await this.sendEmailWithProvider(providerIndex, mailOptions);
