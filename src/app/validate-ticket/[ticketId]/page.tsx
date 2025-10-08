@@ -80,7 +80,7 @@ export default function ValidateTicketPage() {
               <label className="block text-sm font-medium text-gray-600 mb-2">
                 Ticket ID
               </label>
-              <div className="bg-gray-100 rounded-lg p-3 font-mono text-sm break-all">
+              <div className="bg-gray-100 rounded-lg p-3 font-mono text-sm break-all text-shadow-gray-900">
                 {ticketId || 'No ticket ID provided'}
               </div>
             </div>
@@ -119,13 +119,6 @@ export default function ValidateTicketPage() {
                     
                     {/* Ticket Details */}
                     <div className="space-y-3 text-left">
-                      <div className="flex justify-between items-center">
-                        <span className="text-gray-600 font-medium">Ticket ID:</span>
-                        <span className="text-gray-800 font-mono text-sm">
-                          {ticketId}
-                        </span>
-                      </div>
-                      
                       {validationResult.participantName && (
                         <div className="flex justify-between items-center">
                           <span className="text-gray-600 font-medium">Name:</span>
@@ -140,15 +133,6 @@ export default function ValidateTicketPage() {
                           <span className="text-gray-600 font-medium">Email:</span>
                           <span className="text-gray-800">
                             {validationResult.participantEmail}
-                          </span>
-                        </div>
-                      )}
-                      
-                      {validationResult.type && (
-                        <div className="flex justify-between items-center">
-                          <span className="text-gray-600 font-medium">Type:</span>
-                          <span className="text-gray-800 font-medium capitalize">
-                            {validationResult.type}
                           </span>
                         </div>
                       )}
