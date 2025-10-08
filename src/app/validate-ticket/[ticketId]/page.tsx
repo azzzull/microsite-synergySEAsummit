@@ -80,7 +80,7 @@ export default function ValidateTicketPage() {
               <label className="block text-sm font-medium text-gray-600 mb-2">
                 Ticket ID
               </label>
-              <div className="bg-gray-100 rounded-lg p-3 font-mono text-sm break-all text-shadow-gray-800">
+              <div className="bg-gray-100 rounded-lg p-3 font-mono text-sm break-all" style={{ color: '#1f2937' }}>
                 {ticketId || 'No ticket ID provided'}
               </div>
             </div>
