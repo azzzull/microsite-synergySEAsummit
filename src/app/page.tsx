@@ -175,9 +175,9 @@ export default function HomePage() {
                         {/* Only show pin for Takashi Oda */}
                         {speaker.name === "Takashi Oda" && (
                           <img
-                            src="/pins/triple-presidential.png"
-                            alt="Triple Presidential Pin"
-                            className="absolute -bottom-9 -right-4 w-28 h-28 drop-shadow-lg"
+                            src="/pins/legacy-presidential.png"
+                            alt="Legacy Presidential Pin"
+                            className="absolute -bottom-8 -right-4 w-30 h-30 drop-shadow-lg"
                           />
                         )}
                       </div>
