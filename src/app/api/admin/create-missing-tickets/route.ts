@@ -74,7 +74,7 @@ export async function POST(request: NextRequest) {
 
           // Send e-ticket email
           console.log(`Sending e-ticket email to: ${registration.email}`);
-          const emailResult = await emailService.sendTicket({
+          const emailResult = await emailService.sendTicketEmail({
             ticketId,
             orderId: registration.orderId,
             participantName: registration.fullName,
@@ -90,10 +90,10 @@ export async function POST(request: NextRequest) {
             paidAt: registration.updatedAt || new Date().toISOString()
           });
 
-          console.log(`Email result for ${registration.email}:`, emailResult.success ? 'SUCCESS' : 'FAILED');
+          console.log(`Email result for ${registration.email}:`, emailResult ? 'SUCCESS' : 'FAILED');
           
           // Update ticket status based on email result
-          if (emailResult.success) {
+          if (emailResult) {
             await postgresDb.updateTicket(registration.orderId, {
               status: 'email_sent'
             });

@@ -177,7 +177,7 @@ export async function POST(request: NextRequest) {
 
     if (quantity === 1) {
       // Send single ticket email
-      emailResult = await emailService.sendComplimentaryTicketEmail({
+      emailResult = await emailService.sendTicketEmail({
         ticketId: tickets[0].ticketId,
         orderId,
         participantName: fullName,
@@ -188,7 +188,9 @@ export async function POST(request: NextRequest) {
         eventTime: "10:00 AM - 05:00 PM WITA",
         eventLocation: "The Stones Hotel, Legian Bali",
         amount: 0, // Free
-        qrCode: tickets[0].qrCode
+        qrCode: tickets[0].qrCode,
+        transactionId: orderId,
+        paidAt: new Date().toISOString()
       });
     } else {
       // Send multiple tickets email

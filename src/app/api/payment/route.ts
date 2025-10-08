@@ -361,7 +361,7 @@ export async function POST(request: NextRequest) {
       console.log('💾 Registration and payment data stored in database');
 
       // Send payment confirmation email
-      await emailService.sendPaymentConfirmation({
+      await emailService.sendConfirmationEmail({
         orderId,
         participantName: fullName,
         participantEmail: email,

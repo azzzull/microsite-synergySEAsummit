@@ -14,18 +14,10 @@ export async function POST(request: NextRequest) {
 
     // Test email configuration
     console.log('🔍 Testing email configuration...');
-    const connectionTest = await emailService.testConnection();
+    // Note: testConnection method not available, proceeding with test email
     
-    if (!connectionTest) {
-      return NextResponse.json({
-        success: false,
-        error: 'Email service connection failed',
-        details: 'Check your SMTP configuration in environment variables'
-      }, { status: 500 });
-    }
-
     // Send test email
-    const testResult = await emailService.sendPaymentConfirmation({
+    const testResult = await emailService.sendConfirmationEmail({
       orderId: 'TEST-' + Date.now(),
       participantName: 'Test User',
       participantEmail: testEmail,
@@ -33,18 +25,17 @@ export async function POST(request: NextRequest) {
       amount: 250000
     });
 
-    if (testResult.success) {
+    if (testResult) {
       return NextResponse.json({
         success: true,
         message: 'Test email sent successfully!',
-        messageId: testResult.messageId,
-        provider: testResult.provider || 'Unknown'
+        provider: 'EmailService'
       }, { status: 200 });
     } else {
       return NextResponse.json({
         success: false,
         error: 'Failed to send test email',
-        details: testResult.error
+        details: 'Email service returned false'
       }, { status: 500 });
     }
 
