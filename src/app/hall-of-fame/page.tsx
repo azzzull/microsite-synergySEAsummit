@@ -48,12 +48,15 @@ export default function HallOfFamePage() {
           {pinLevelOrder.map((level) => (
             membersByLevel[level].length > 0 && (
               <div key={level} className="mb-12">
-                <h2
-                  className="text-2xl font-bold mb-6 text-center"
-                  style={{ color: "var(--color-gold)" }}
-                >
-                  {level}
-                </h2>
+                {/* Hide section title for Gold and Silver since they have titles inside containers */}
+                {level !== "Gold" && level !== "Silver" && (
+                  <h2
+                    className="text-2xl font-bold mb-6 text-center"
+                    style={{ color: "var(--color-gold)" }}
+                  >
+                    {level}
+                  </h2>
+                )}
                 <div
                   className={
                     level === "Presidential Executive"
@@ -75,10 +78,12 @@ export default function HallOfFamePage() {
                       // Return a single container for all members of this level
                       if (membersByLevel[level].indexOf(member) === 0) {
                         // Only render once for the first member of each level
+                        const levelTitle = level === "Silver" ? "New Silver Achievers 2025" : "New Gold Achiever 2025";
+                        
                         return (
                           <Card
                             key={`${level}-list`}
-                            className="relative bg-[var(--color-lightgrey)] p-6 rounded-xl w-full max-w-2xl mx-auto min-h-[200px]"
+                            className="relative bg-[var(--color-lightgrey)] p-6 rounded-xl w-full max-w-4xl mx-auto min-h-[200px]"
                           >
                             {/* Pin Badge at top-left corner */}
                             <div className="absolute top-4 left-4">
@@ -90,37 +95,23 @@ export default function HallOfFamePage() {
                             </div>
                             
                             {/* Members List */}
-                            <div className="ml-28 pt-2">
+                            <div className="pt-2">
                               <h3
-                                className="font-bold text-xl md:text-2xl mb-4"
-                                style={{ color: "var(--color-navy)" }}
+                                className="font-bold text-xl md:text-2xl mb-6 text-center"
+                                style={{ color: "var(--color-gold)" }}
                               >
-                                {level} Members
+                                {levelTitle}
                               </h3>
                               
-                              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                              <div className="text-center space-y-3">
                                 {membersByLevel[level].map((listMember, index) => (
-                                  <div key={listMember.id} className="flex flex-col">
-                                    <h4
-                                      className="font-semibold text-base md:text-lg whitespace-pre-line"
-                                      style={{ color: "var(--color-navy)" }}
+                                  <div key={listMember.id}>
+                                    <span
+                                      className="font-medium text-base md:text-lg"
+                                      style={{ color: "white" }}
                                     >
-                                      {listMember.name}
-                                    </h4>
-                                    <p className="text-sm md:text-base mb-1" style={{ color: "var(--color-gold)" }}>
-                                      {listMember.country}
-                                    </p>
-                                    {listMember.recognition && (
-                                      <div
-                                        className="px-2 py-1 rounded text-xs font-medium inline-block w-fit mb-2"
-                                        style={{
-                                          background: "var(--color-gold)",
-                                          color: "var(--color-navy)",
-                                        }}
-                                      >
-                                        {listMember.recognition}
-                                      </div>
-                                    )}
+                                      {listMember.name} - {listMember.country}
+                                    </span>
                                   </div>
                                 ))}
                               </div>
