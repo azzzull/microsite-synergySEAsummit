@@ -85,35 +85,38 @@ export default function HallOfFamePage() {
                             key={`${level}-list`}
                             className="relative bg-[var(--color-lightgrey)] p-6 rounded-xl w-full max-w-4xl mx-auto min-h-[200px]"
                           >
-                            {/* Pin Badge at top-left corner */}
-                            <div className="absolute top-4 left-4">
-                              <img
-                                src={membersByLevel[level][0].pinImage}
-                                alt={`${level} Pin`}
-                                className="w-20 h-20 object-contain"
-                              />
-                            </div>
-                            
-                            {/* Members List */}
-                            <div className="pt-2">
-                              <h3
-                                className="font-bold text-xl md:text-2xl mb-6 text-center"
-                                style={{ color: "var(--color-gold)" }}
-                              >
-                                {levelTitle}
-                              </h3>
+                            {/* Pin Badge - Responsive positioning */}
+                            <div className="flex flex-col items-center md:block">
+                              {/* Pin Badge - Above title on mobile, top-left on desktop */}
+                              <div className="md:absolute md:top-4 md:left-4 mb-4 md:mb-0">
+                                <img
+                                  src={membersByLevel[level][0].pinImage}
+                                  alt={`${level} Pin`}
+                                  className="w-16 h-16 md:w-20 md:h-20 object-contain"
+                                />
+                              </div>
                               
-                              <div className="text-center space-y-3">
-                                {membersByLevel[level].map((listMember, index) => (
-                                  <div key={listMember.id}>
-                                    <span
-                                      className="font-medium text-base md:text-lg"
-                                      style={{ color: "white" }}
-                                    >
-                                      {listMember.name} - {listMember.country}
-                                    </span>
-                                  </div>
-                                ))}
+                              {/* Members List */}
+                              <div className="w-full md:pt-2">
+                                <h3
+                                  className="font-bold text-xl md:text-2xl mb-6 text-center"
+                                  style={{ color: "var(--color-gold)" }}
+                                >
+                                  {levelTitle}
+                                </h3>
+                                
+                                <div className="text-center space-y-3">
+                                  {membersByLevel[level].map((listMember, index) => (
+                                    <div key={listMember.id}>
+                                      <span
+                                        className="font-medium text-base md:text-lg"
+                                        style={{ color: "white" }}
+                                      >
+                                        {listMember.name} - {listMember.country}
+                                      </span>
+                                    </div>
+                                  ))}
+                                </div>
                               </div>
                             </div>
                           </Card>
