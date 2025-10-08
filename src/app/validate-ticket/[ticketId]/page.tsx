@@ -22,7 +22,21 @@ export default function ValidateTicketPage() {
 
   useEffect(() => {
     if (ticketId) {
-      validateTicket(ticketId);
+      // Clean and validate ticketId format
+      const cleanTicketId = decodeURIComponent(ticketId).trim();
+      
+      if (cleanTicketId.length < 3) {
+        setError('Ticket ID too short');
+        setValidationResult({ valid: false, error: 'Invalid ticket ID format' });
+        setLoading(false);
+        return;
+      }
+      
+      validateTicket(cleanTicketId);
+    } else {
+      setError('No ticket ID provided');
+      setValidationResult({ valid: false, error: 'No ticket ID provided in URL' });
+      setLoading(false);
     }
   }, [ticketId]);
 
@@ -33,6 +47,11 @@ export default function ValidateTicketPage() {
       
       console.log('🔍 Validating ticket:', id);
       
+      // Additional client-side validation
+      if (!id || id.length < 3) {
+        throw new Error('Ticket ID is too short or invalid');
+      }
+      
       const response = await fetch(`/api/admin/validate-ticket`, {
         method: 'POST',
         headers: {
@@ -42,7 +61,13 @@ export default function ValidateTicketPage() {
       });
 
       if (!response.ok) {
-        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        if (response.status === 404) {
+          throw new Error('Ticket validation service not available');
+        } else if (response.status >= 500) {
+          throw new Error('Server error - please try again later');
+        } else {
+          throw new Error(`Validation failed: ${response.status}`);
+        }
       }
 
       const data: TicketValidationResponse = await response.json();
@@ -51,8 +76,12 @@ export default function ValidateTicketPage() {
       setValidationResult(data);
     } catch (err: any) {
       console.error('❌ Validation error:', err);
-      setError(err.message || 'Failed to validate ticket');
-      setValidationResult({ valid: false });
+      const errorMessage = err.message || 'Failed to validate ticket';
+      setError(errorMessage);
+      setValidationResult({ 
+        valid: false, 
+        error: errorMessage
+      });
     } finally {
       setLoading(false);
     }
