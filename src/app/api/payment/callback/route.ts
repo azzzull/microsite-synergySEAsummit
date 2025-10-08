@@ -266,7 +266,7 @@ export async function POST(request: NextRequest) {
 
           if (ticketQuantity === 1) {
             // Send single ticket email
-            emailResult = await emailService.sendTicket({
+            emailResult = await emailService.sendTicketEmail({
               ticketId: tickets[0].ticketId,
               orderId,
               participantName: registration.fullName,
@@ -283,7 +283,7 @@ export async function POST(request: NextRequest) {
             });
           } else {
             // Send multiple tickets email
-            emailResult = await emailService.sendMultipleTickets({
+            emailResult = await emailService.sendMultipleTicketsEmail({
               orderId,
               participantName: registration.fullName,
               participantEmail: registration.email,
@@ -292,7 +292,7 @@ export async function POST(request: NextRequest) {
               eventDate: "November 8, 2025",
               eventTime: "10:00 AM - 05:00 PM WITA",
               eventLocation: "The Stones Hotel, Legian Bali",
-              totalAmount: totalAmount,
+              amount: totalAmount,
               transactionId: transaction?.original_request_id,
               paidAt: transaction?.date || new Date().toISOString(),
               tickets: tickets
@@ -302,7 +302,7 @@ export async function POST(request: NextRequest) {
           console.log("Email send result:", emailResult);
 
           // Update all tickets status to email_sent if email was successful
-          if (emailResult.success) {
+          if (emailResult) {
             for (const ticket of tickets) {
               try {
                 await postgresDb.updateTicketEmailSent(ticket.ticketId);
@@ -313,10 +313,10 @@ export async function POST(request: NextRequest) {
             }
           }
 
-          if (emailResult.success) {
+          if (emailResult) {
             console.log(`E-tickets (${ticketQuantity}) sent successfully to:`, registration.email);
           } else {
-            console.error("Failed to send e-tickets email:", emailResult.error);
+            console.error("Failed to send e-tickets email");
           }
 
           console.log("Payment processed successfully for:", orderId);

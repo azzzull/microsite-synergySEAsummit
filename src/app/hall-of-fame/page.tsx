@@ -70,45 +70,66 @@ export default function HallOfFamePage() {
                     const pinBadgePosition = isPresidentialExecutive ? "-bottom-8 -right-5" : "-bottom-8 -right-5";
                     // Check if photo is a pin image (for members without personal photos)
                     const isUsingPinAsPhoto = member.photo.startsWith('/pins/') || member.photo.includes('/pins/');
-                    // Special rendering for Gold and Silver levels
+                    // Special rendering for Gold and Silver levels - Combined List
                     if (level === "Gold" || level === "Silver") {
-                      return (
-                        <Card
-                          key={member.id}
-                          className="flex flex-col  justify-center bg-[var(--color-lightgrey)] p-4 rounded-xl w-[320px] sm:w-[280px] md:w-[280px] min-h-[110px]"
-                        >
-                          {/* Pin Badge and Member Info - Side by side */}
-                          <div className="flex items-center justify-center -ml-2">
-                            <img
-                              src={member.pinImage}
-                              alt={`${member.pinLevel} Pin`}
-                              className="w-20 h-20 object-contain flex-shrink-0"
-                            />
-                            <div className="text-start flex-1">
-                              <h3
-                                className="font-bold text-base md:text-base whitespace-pre-line mb-2"
-                                style={{ color: "var(--color-lightgrey)" }}
-                              >
-                                {member.name}
-                              </h3>
-                              <p className="text-sm md:text-base mb-2" style={{ color: "var(--color-gold)" }}>
-                                {member.country}
-                              </p>
-                              {member.recognition && (
-                                <div
-                                  className="px-3 py-1 rounded-lg text-sm font-medium inline-block"
-                                  style={{
-                                    background: "var(--color-gold)",
-                                    color: "var(--color-navy)",
-                                  }}
-                                >
-                                  {member.recognition}
-                                </div>
-                              )}
+                      // Return a single container for all members of this level
+                      if (membersByLevel[level].indexOf(member) === 0) {
+                        // Only render once for the first member of each level
+                        return (
+                          <Card
+                            key={`${level}-list`}
+                            className="relative bg-[var(--color-lightgrey)] p-6 rounded-xl w-full max-w-2xl mx-auto min-h-[200px]"
+                          >
+                            {/* Pin Badge at top-left corner */}
+                            <div className="absolute top-4 left-4">
+                              <img
+                                src={membersByLevel[level][0].pinImage}
+                                alt={`${level} Pin`}
+                                className="w-20 h-20 object-contain"
+                              />
                             </div>
-                          </div>
-                        </Card>
-                      );
+                            
+                            {/* Members List */}
+                            <div className="ml-28 pt-2">
+                              <h3
+                                className="font-bold text-xl md:text-2xl mb-4"
+                                style={{ color: "var(--color-navy)" }}
+                              >
+                                {level} Members
+                              </h3>
+                              
+                              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                {membersByLevel[level].map((listMember, index) => (
+                                  <div key={listMember.id} className="flex flex-col">
+                                    <h4
+                                      className="font-semibold text-base md:text-lg whitespace-pre-line"
+                                      style={{ color: "var(--color-navy)" }}
+                                    >
+                                      {listMember.name}
+                                    </h4>
+                                    <p className="text-sm md:text-base mb-1" style={{ color: "var(--color-gold)" }}>
+                                      {listMember.country}
+                                    </p>
+                                    {listMember.recognition && (
+                                      <div
+                                        className="px-2 py-1 rounded text-xs font-medium inline-block w-fit mb-2"
+                                        style={{
+                                          background: "var(--color-gold)",
+                                          color: "var(--color-navy)",
+                                        }}
+                                      >
+                                        {listMember.recognition}
+                                      </div>
+                                    )}
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          </Card>
+                        );
+                      }
+                      // Return null for subsequent members since they're already included in the list
+                      return null;
                     }
                     return (
                       <Card
