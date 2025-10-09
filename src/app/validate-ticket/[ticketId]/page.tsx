@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect } from 'react';
-import { useParams, notFound } from 'next/navigation';
+import { useParams } from 'next/navigation';
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
 
@@ -19,6 +19,7 @@ export default function ValidateTicketPage() {
   const [validationResult, setValidationResult] = useState<TicketValidationResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isInvalidTicket, setIsInvalidTicket] = useState(false);
 
   useEffect(() => {
     if (ticketId) {
@@ -26,15 +27,17 @@ export default function ValidateTicketPage() {
       const cleanTicketId = decodeURIComponent(ticketId).trim();
       
       if (cleanTicketId.length < 3) {
-        // Redirect to not-found for invalid ticket format
-        notFound();
+        // Mark as invalid ticket for short IDs
+        setIsInvalidTicket(true);
+        setLoading(false);
         return;
       }
       
       validateTicket(cleanTicketId);
     } else {
-      // Redirect to not-found if no ticket ID
-      notFound();
+      // Mark as invalid if no ticket ID
+      setIsInvalidTicket(true);
+      setLoading(false);
     }
   }, [ticketId]);
 
@@ -47,7 +50,8 @@ export default function ValidateTicketPage() {
       
       // Additional client-side validation
       if (!id || id.length < 3) {
-        notFound();
+        setIsInvalidTicket(true);
+        setLoading(false);
         return;
       }
       
@@ -61,8 +65,9 @@ export default function ValidateTicketPage() {
 
       if (!response.ok) {
         if (response.status === 404) {
-          // Ticket not found in database - redirect to not-found
-          notFound();
+          // Ticket not found in database - mark as invalid
+          setIsInvalidTicket(true);
+          setLoading(false);
           return;
         } else if (response.status >= 500) {
           throw new Error('Server error - please try again later');
@@ -74,9 +79,10 @@ export default function ValidateTicketPage() {
       const data: TicketValidationResponse = await response.json();
       console.log('✅ Validation result:', data);
       
-      // If ticket is invalid, redirect to not-found
+      // If ticket is invalid, mark as invalid
       if (!data.valid) {
-        notFound();
+        setIsInvalidTicket(true);
+        setLoading(false);
         return;
       }
       
@@ -85,7 +91,7 @@ export default function ValidateTicketPage() {
       console.error('❌ Validation error:', err);
       
       // For network errors or other issues, show error message
-      // For invalid tickets, we redirect to not-found above
+      // For invalid tickets, we mark as invalid above
       const errorMessage = err.message || 'Failed to validate ticket';
       setError(errorMessage);
       setValidationResult({ 
@@ -123,6 +129,36 @@ export default function ValidateTicketPage() {
                 {ticketId || 'No ticket ID provided'}
               </div>
             </div>
+
+            {/* Invalid Ticket Display */}
+            {isInvalidTicket && !loading && (
+              <div className="text-center py-8">
+                <div className="text-red-600 font-bold text-xl mb-4">
+                  ❌ Ticket Invalid
+                </div>
+                
+                <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+                  <p className="text-red-800 text-sm mb-3">
+                    The ticket ID provided is invalid or not found.
+                  </p>
+                  <p className="text-red-600 text-xs">
+                    Please check your ticket ID and try again.
+                  </p>
+                </div>
+
+                {/* What to do next */}
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                  <h4 className="text-blue-800 font-semibold text-sm mb-2">
+                    What to do next:
+                  </h4>
+                  <ul className="text-blue-700 text-xs text-left space-y-1">
+                    <li>• Check your email for the correct ticket link</li>
+                    <li>• Verify the QR code is complete and readable</li>
+                    <li>• Contact support if the problem persists</li>
+                  </ul>
+                </div>
+              </div>
+            )}
 
             {/* Loading State */}
             {loading && (
