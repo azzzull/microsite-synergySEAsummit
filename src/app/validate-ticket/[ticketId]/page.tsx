@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'next/navigation';
+import { useParams, notFound } from 'next/navigation';
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
 
@@ -26,17 +26,15 @@ export default function ValidateTicketPage() {
       const cleanTicketId = decodeURIComponent(ticketId).trim();
       
       if (cleanTicketId.length < 3) {
-        setError('Ticket ID too short');
-        setValidationResult({ valid: false, error: 'Invalid ticket ID format' });
-        setLoading(false);
+        // Redirect to not-found for invalid ticket format
+        notFound();
         return;
       }
       
       validateTicket(cleanTicketId);
     } else {
-      setError('No ticket ID provided');
-      setValidationResult({ valid: false, error: 'No ticket ID provided in URL' });
-      setLoading(false);
+      // Redirect to not-found if no ticket ID
+      notFound();
     }
   }, [ticketId]);
 
@@ -49,7 +47,8 @@ export default function ValidateTicketPage() {
       
       // Additional client-side validation
       if (!id || id.length < 3) {
-        throw new Error('Ticket ID is too short or invalid');
+        notFound();
+        return;
       }
       
       const response = await fetch(`/api/admin/validate-ticket`, {
@@ -62,7 +61,9 @@ export default function ValidateTicketPage() {
 
       if (!response.ok) {
         if (response.status === 404) {
-          throw new Error('Ticket validation service not available');
+          // Ticket not found in database - redirect to not-found
+          notFound();
+          return;
         } else if (response.status >= 500) {
           throw new Error('Server error - please try again later');
         } else {
@@ -73,9 +74,18 @@ export default function ValidateTicketPage() {
       const data: TicketValidationResponse = await response.json();
       console.log('✅ Validation result:', data);
       
+      // If ticket is invalid, redirect to not-found
+      if (!data.valid) {
+        notFound();
+        return;
+      }
+      
       setValidationResult(data);
     } catch (err: any) {
       console.error('❌ Validation error:', err);
+      
+      // For network errors or other issues, show error message
+      // For invalid tickets, we redirect to not-found above
       const errorMessage = err.message || 'Failed to validate ticket';
       setError(errorMessage);
       setValidationResult({ 
@@ -124,97 +134,60 @@ export default function ValidateTicketPage() {
               </div>
             )}
 
-            {/* Error State */}
+            {/* Error State (Network/Server Issues) */}
             {error && !loading && (
               <div className="text-center py-8">
                 <div className="text-red-600 font-bold text-lg mb-2">
-                  ❌ Ticket Invalid
+                  ⚠️ Connection Error
                 </div>
-                <p className="text-red-500 text-sm">
-                  Error: {error}
+                <p className="text-red-500 text-sm mb-4">
+                  {error}
                 </p>
-              </div>
-            )}
-
-            {/* Validation Result */}
-            {validationResult && !loading && !error && (
-              <div className="text-center py-4">
-                {validationResult.valid ? (
-                  <div>
-                    {/* Valid Ticket */}
-                    <div className="text-green-600 font-bold text-xl mb-4">
-                      ✅ Ticket Valid
-                    </div>
-                    
-                    {/* Ticket Details */}
-                    <div className="space-y-3 text-left">
-                      {validationResult.participantName && (
-                        <div className="flex justify-between items-center">
-                          <span className="text-gray-600 font-medium">Name:</span>
-                          <span className="text-gray-800 font-semibold">
-                            {validationResult.participantName}
-                          </span>
-                        </div>
-                      )}
-                      
-                      {validationResult.participantEmail && (
-                        <div className="flex justify-between items-center">
-                          <span className="text-gray-600 font-medium">Email:</span>
-                          <span className="text-gray-800">
-                            {validationResult.participantEmail}
-                          </span>
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Success Badge */}
-                    <div className="mt-6 bg-green-50 border border-green-200 rounded-lg p-3">
-                      <p className="text-green-800 text-sm font-medium text-center">
-                        🎉 This ticket is valid for Synergy SEA Summit 2025
-                      </p>
-                    </div>
-                  </div>
-                ) : (
-                  <div>
-                    {/* Invalid Ticket */}
-                    <div className="text-red-600 font-bold text-xl mb-4">
-                      ❌ Ticket Invalid
-                    </div>
-                    
-                    {validationResult.error && (
-                      <div className="bg-red-50 border border-red-200 rounded-lg p-3">
-                        <p className="text-red-800 text-sm">
-                          {validationResult.error}
-                        </p>
-                      </div>
-                    )}
-                  </div>
-                )}
-              </div>
-            )}
-
-            {/* No Ticket ID */}
-            {!ticketId && !loading && (
-              <div className="text-center py-8">
-                <div className="text-red-600 font-bold text-lg mb-2">
-                  ❌ No Ticket ID
-                </div>
-                <p className="text-red-500 text-sm">
-                  Please provide a valid ticket ID in the URL.
-                </p>
-              </div>
-            )}
-
-            {/* Retry Button */}
-            {(error || (validationResult && !validationResult.valid)) && ticketId && (
-              <div className="mt-6 text-center">
                 <button
                   onClick={() => validateTicket(ticketId)}
                   className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors"
                   disabled={loading}
                 >
-                  {loading ? 'Checking...' : 'Try Again'}
+                  Try Again
                 </button>
+              </div>
+            )}
+
+            {/* Valid Ticket Display */}
+            {validationResult && validationResult.valid && !loading && !error && (
+              <div className="text-center py-4">
+                {/* Valid Ticket */}
+                <div className="text-green-600 font-bold text-xl mb-4">
+                  ✅ Ticket Valid
+                </div>
+                
+                {/* Ticket Details */}
+                <div className="space-y-3 text-left">
+                  {validationResult.participantName && (
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-600 font-medium">Name:</span>
+                      <span className="text-gray-800 font-semibold">
+                        {validationResult.participantName}
+                      </span>
+                    </div>
+                  )}
+                  
+                  {validationResult.participantEmail && (
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-600 font-medium">Email:</span>
+                      <span className="text-gray-800">
+                        {validationResult.participantEmail}
+                      </span>
+                    </div>
+                  )}
+                </div>
+
+                {/* Success Badge */}
+                <div className="mt-6 bg-green-50 border border-green-200 rounded-lg p-3">
+                  <p className="text-green-800 text-sm font-medium text-center">
+                    🎉 This ticket is valid for Synergy SEA Summit 2025
+                  </p>
+                </div>
               </div>
             )}
           </div>
