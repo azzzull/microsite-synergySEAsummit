@@ -151,7 +151,7 @@ export default function ValidateTicketPage() {
                 
                 <div className="bg-orange-50 border border-orange-200 rounded-lg p-4 mb-6">
                   <p className="text-orange-800 text-sm mb-3">
-                    Ticket ini sudah pernah divalidasi sebelumnya.
+                    Ticket ini sudah pernah digunakan sebelumnya.
                   </p>
                   <p className="text-orange-600 text-xs">
                     Setiap ticket hanya dapat digunakan sekali untuk mencegah penyalahgunaan.
