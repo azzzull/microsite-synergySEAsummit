@@ -4,9 +4,12 @@ import { Footer } from "@/components/Footer";
 import { RegisterFloatingButton } from "@/components/RegisterFloatingButton";
 import { Button } from "@/components/Button";
 import { Card } from "@/components/Card";
+import { Carousel } from "@/components/Carousel";
 import { speakers, agenda } from "@/data/eventData";
+import { getAllMerchandiseImages } from "@/data/merchandiseData";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
+import Link from "next/link";
 
 export default function HomePage() {
   const [scrollY, setScrollY] = useState(0);
@@ -238,6 +241,56 @@ export default function HomePage() {
                     </div>
                   </Card>
                 ))}
+            </div>
+          </section>
+
+          {/* Merchandise Section */}
+          <section className="py-8 md:py-24 relative z-10">
+            <div className="container mx-auto px-4">
+              <motion.div 
+                className="text-center mb-6"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6 }}
+              >
+                <h2 className="text-4xl md:text-5xl font-bold mb-4" style={{ color: "var(--color-lightgrey)" }}>
+                  Official Merchandise
+                </h2>
+                <p className="text-lg md:text-xl" style={{ color: "var(--color-gold)" }}>
+                  Get your exclusive Synergy SEA Summit merch!
+                </p>
+              </motion.div>
+
+              {/* Merchandise Carousel */}
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+                className="max-w-4xl mx-auto mb-8"
+              >
+                <Carousel 
+                  items={getAllMerchandiseImages()}
+                  autoPlayInterval={3000}
+                  showDots={true}
+                />
+              </motion.div>
+
+              {/* View All Button */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.4 }}
+                className="text-center"
+              >
+                <Link href="/merchandise">
+                  <button className="px-8 py-3 rounded-lg font-semibold transition-all duration-300 hover:scale-105" style={{ backgroundColor: "var(--color-gold)", color: "var(--color-navy)" }}>
+                    View All Merchandise
+                  </button>
+                </Link>
+              </motion.div>
             </div>
           </section>
         </div>
