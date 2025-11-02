@@ -118,7 +118,7 @@ export default function ValidateTicketPage() {
   return (
     <>
       <Navbar />
-      <div className="min-h-screen bg-[var(--color-navy)] flex items-center justify-center px-4">
+      <div className="min-h-screen bg-[var(--color-navy)] flex items-center justify-center px-4 pt-24 pb-8 md:pt-8">
         <div className="max-w-md w-full">
           {/* Header */}
           <div className="text-center mb-8">
@@ -183,15 +183,6 @@ export default function ValidateTicketPage() {
                       <span className="text-gray-600 font-medium">Digunakan:</span>
                       <span className="text-gray-800 text-sm">
                         {new Date(validationResult.validatedAt).toLocaleString('id-ID')}
-                      </span>
-                    </div>
-                  )}
-
-                  {validationResult.usedCount && (
-                    <div className="flex justify-between items-center">
-                      <span className="text-gray-600 font-medium">Jumlah Scan:</span>
-                      <span className="text-gray-800">
-                        {validationResult.usedCount}x
                       </span>
                     </div>
                   )}
