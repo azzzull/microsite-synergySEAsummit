@@ -10,6 +10,9 @@ interface TicketValidationResponse {
   participantEmail?: string;
   type?: string;
   error?: string;
+  validatedAt?: string | null;
+  usedCount?: number;
+  status?: 'used' | 'unused';
 }
 
 export default function ValidateTicketPage() {
@@ -79,26 +82,35 @@ export default function ValidateTicketPage() {
       const data: TicketValidationResponse = await response.json();
       console.log('✅ Validation result:', data);
       
-      // If ticket is invalid, mark as invalid
+      // Always set validation result first
+      setValidationResult(data);
+      
+      // Check if ticket is already used - this takes priority
+      if (data.status === 'used') {
+        // Ticket is already used, display will show "used" message
+        setLoading(false);
+        return;
+      }
+      
+      // If ticket is not valid and not used, mark as invalid
       if (!data.valid) {
         setIsInvalidTicket(true);
         setLoading(false);
         return;
       }
       
-      setValidationResult(data);
+      // Ticket is valid and unused - display will show "valid" message
+      setLoading(false);
     } catch (err: any) {
       console.error('❌ Validation error:', err);
       
       // For network errors or other issues, show error message
-      // For invalid tickets, we mark as invalid above
       const errorMessage = err.message || 'Failed to validate ticket';
       setError(errorMessage);
       setValidationResult({ 
         valid: false, 
         error: errorMessage
       });
-    } finally {
       setLoading(false);
     }
   };
@@ -129,6 +141,70 @@ export default function ValidateTicketPage() {
                 {ticketId || 'No ticket ID provided'}
               </div>
             </div>
+
+            {/* Ticket Already Used Display */}
+            {validationResult && validationResult.status === 'used' && !loading && !error && (
+              <div className="text-center py-8">
+                <div className="text-orange-600 font-bold text-xl mb-4">
+                  ⚠️ Ticket Sudah Digunakan
+                </div>
+                
+                <div className="bg-orange-50 border border-orange-200 rounded-lg p-4 mb-6">
+                  <p className="text-orange-800 text-sm mb-3">
+                    Ticket ini sudah pernah divalidasi sebelumnya.
+                  </p>
+                  <p className="text-orange-600 text-xs">
+                    Setiap ticket hanya dapat digunakan sekali untuk mencegah penyalahgunaan.
+                  </p>
+                </div>
+
+                {/* Ticket Details for Used Ticket */}
+                <div className="space-y-3 text-left mb-6">
+                  {validationResult.participantName && (
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-600 font-medium">Name:</span>
+                      <span className="text-gray-800 font-semibold">
+                        {validationResult.participantName}
+                      </span>
+                    </div>
+                  )}
+                  
+                  {validationResult.participantEmail && (
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-600 font-medium">Email:</span>
+                      <span className="text-gray-800">
+                        {validationResult.participantEmail}
+                      </span>
+                    </div>
+                  )}
+
+                  {validationResult.validatedAt && (
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-600 font-medium">Digunakan:</span>
+                      <span className="text-gray-800 text-sm">
+                        {new Date(validationResult.validatedAt).toLocaleString('id-ID')}
+                      </span>
+                    </div>
+                  )}
+
+                  {validationResult.usedCount && (
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-600 font-medium">Jumlah Scan:</span>
+                      <span className="text-gray-800">
+                        {validationResult.usedCount}x
+                      </span>
+                    </div>
+                  )}
+                </div>
+
+                {/* Warning Badge */}
+                <div className="bg-red-50 border border-red-200 rounded-lg p-3">
+                  <p className="text-red-800 text-sm font-medium text-center">
+                    🚫 Ticket tidak dapat digunakan lagi
+                  </p>
+                </div>
+              </div>
+            )}
 
             {/* Invalid Ticket Display */}
             {isInvalidTicket && !loading && (
@@ -189,8 +265,8 @@ export default function ValidateTicketPage() {
               </div>
             )}
 
-            {/* Valid Ticket Display */}
-            {validationResult && validationResult.valid && !loading && !error && (
+            {/* Valid Ticket Display - Only show for unused tickets */}
+            {validationResult && validationResult.valid && validationResult.status === 'unused' && !loading && !error && (
               <div className="text-center py-4">
                 {/* Valid Ticket */}
                 <div className="text-green-600 font-bold text-xl mb-4">

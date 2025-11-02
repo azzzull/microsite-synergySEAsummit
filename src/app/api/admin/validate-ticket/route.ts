@@ -23,6 +23,9 @@ export async function POST(request: NextRequest) {
         t.participant_email,
         t.ticket_type,
         t.is_complimentary,
+        t.validated_at,
+        t.used_count,
+        t.validation_status,
         p.status as payment_status
       FROM tickets t
       LEFT JOIN payments p ON t.order_id = p.order_id
@@ -43,13 +46,49 @@ export async function POST(request: NextRequest) {
     const ticketData = result.rows[0];
     const isValidStatus = ['active', 'email_sent', 'pending'].includes(ticketData.status);
     const isValidPayment = ['paid', 'completed', 'success'].includes(ticketData.payment_status) || ticketData.is_complimentary;
+    
+    // Check if ticket is already used
+    if (ticketData.validation_status === 'used') {
+      return NextResponse.json({
+        valid: false,
+        error: 'Ticket sudah digunakan',
+        participantName: ticketData.participant_name || 'Unknown',
+        participantEmail: ticketData.participant_email || 'Unknown',
+        type: ticketData.is_complimentary ? 'complimentary' : 'standard',
+        validatedAt: ticketData.validated_at,
+        usedCount: ticketData.used_count || 0,
+        status: 'used'
+      });
+    }
+    
     const isValid = isValidStatus && isValidPayment;
+
+    // If ticket is valid, mark it as used
+    if (isValid) {
+      try {
+        await postgresDb.executeQuery(`
+          UPDATE tickets 
+          SET validation_status = 'used',
+              validated_at = CURRENT_TIMESTAMP,
+              used_count = COALESCE(used_count, 0) + 1
+          WHERE ticket_code = $1
+        `, [ticketData.ticket_code]);
+        
+        console.log(`✅ Ticket ${ticketData.ticket_code} marked as used`);
+      } catch (updateError) {
+        console.error('❌ Error updating ticket status:', updateError);
+        // Continue with validation even if update fails
+      }
+    }
 
     return NextResponse.json({
       valid: isValid,
       participantName: ticketData.participant_name || 'Unknown',
       participantEmail: ticketData.participant_email || 'Unknown',
-      type: ticketData.is_complimentary ? 'complimentary' : 'standard'
+      type: ticketData.is_complimentary ? 'complimentary' : 'standard',
+      validatedAt: isValid ? new Date().toISOString() : null,
+      usedCount: (ticketData.used_count || 0) + (isValid ? 1 : 0),
+      status: isValid ? 'used' : 'unused'
     });
 
   } catch (error) {
