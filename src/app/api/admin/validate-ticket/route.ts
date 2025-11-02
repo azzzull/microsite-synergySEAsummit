@@ -47,8 +47,10 @@ export async function POST(request: NextRequest) {
     const isValidStatus = ['active', 'email_sent', 'pending'].includes(ticketData.status);
     const isValidPayment = ['paid', 'completed', 'success'].includes(ticketData.payment_status) || ticketData.is_complimentary;
     
-    // Check if ticket is already used
-    if (ticketData.validation_status === 'used') {
+    // Check if ticket is already used BEFORE
+    const wasAlreadyUsed = ticketData.validation_status === 'used';
+    
+    if (wasAlreadyUsed) {
       return NextResponse.json({
         valid: false,
         error: 'Ticket sudah digunakan',
@@ -56,14 +58,14 @@ export async function POST(request: NextRequest) {
         participantEmail: ticketData.participant_email || 'Unknown',
         type: ticketData.is_complimentary ? 'complimentary' : 'standard',
         validatedAt: ticketData.validated_at,
-        usedCount: ticketData.used_count || 0,
+        usedCount: ticketData.used_count || 1,
         status: 'used'
       });
     }
     
     const isValid = isValidStatus && isValidPayment;
 
-    // If ticket is valid, mark it as used
+    // If ticket is valid and this is FIRST use, mark it as used
     if (isValid) {
       try {
         await postgresDb.executeQuery(`
@@ -74,21 +76,22 @@ export async function POST(request: NextRequest) {
           WHERE ticket_code = $1
         `, [ticketData.ticket_code]);
         
-        console.log(`✅ Ticket ${ticketData.ticket_code} marked as used`);
+        console.log(`✅ Ticket ${ticketData.ticket_code} marked as used (first time)`);
       } catch (updateError) {
         console.error('❌ Error updating ticket status:', updateError);
         // Continue with validation even if update fails
       }
     }
 
+    // Return valid status for FIRST use (before update)
     return NextResponse.json({
       valid: isValid,
       participantName: ticketData.participant_name || 'Unknown',
       participantEmail: ticketData.participant_email || 'Unknown',
       type: ticketData.is_complimentary ? 'complimentary' : 'standard',
       validatedAt: isValid ? new Date().toISOString() : null,
-      usedCount: (ticketData.used_count || 0) + (isValid ? 1 : 0),
-      status: isValid ? 'used' : 'unused'
+      usedCount: 1, // First use
+      status: 'unused' // Status BEFORE update (first scan shows as valid/unused)
     });
 
   } catch (error) {
