@@ -10,6 +10,7 @@ export function middleware(req: NextRequest) {
     '/api/admin/vouchers',
     '/api/admin/registrations',
     '/api/admin/validate-ticket',
+    '/api/admin/apply-validation-schema',
     '/api/payment/callback',
   ];
   
