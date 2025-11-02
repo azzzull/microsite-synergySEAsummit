@@ -30,7 +30,8 @@ export default function MerchandisePage() {
             {merchandiseItems.map((item) => (
               <div 
                 key={item.id}
-                className="bg-[var(--color-lightgrey)] rounded-xl overflow-hidden shadow-xl hover:shadow-2xl transition-shadow"
+                className="rounded-xl overflow-hidden shadow-xl hover:shadow-2xl transition-shadow"
+                style={{ backgroundColor: 'rgba(18, 32, 47, 0.3)' }}
               >
                 {/* Image Carousel for this item */}
                 <div className="relative">
@@ -43,12 +44,12 @@ export default function MerchandisePage() {
 
                 {/* Item Details */}
                 <div className="p-6">
-                  <h3 className="text-2xl font-bold text-gray-800 mb-2">
+                  <h3 className="text-2xl font-bold mb-2" style={{ color: 'var(--color-lightgrey)' }}>
                     {item.name}
                   </h3>
                   
                   {item.description && (
-                    <p className="text-gray-600 mb-4">
+                    <p className="text-gray-300 mb-4">
                       {item.description}
                     </p>
                   )}
@@ -60,7 +61,7 @@ export default function MerchandisePage() {
                   )}
 
                   {/* Coming Soon Badge */}
-                  <div className="inline-block bg-blue-100 text-blue-800 px-4 py-2 rounded-lg text-sm font-medium">
+                  <div className="inline-block bg-blue-900/50 text-blue-200 px-4 py-2 rounded-lg text-sm font-medium">
                     Available at Event
                   </div>
                 </div>
