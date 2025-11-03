@@ -37,7 +37,7 @@ export const Carousel: React.FC<CarouselProps> = ({
   return (
     <div className="relative w-full">
       {/* Carousel Container - No background */}
-      <div className="relative overflow-hidden" style={{ aspectRatio: '16/9' }}>
+      <div className="relative overflow-hidden" style={{ aspectRatio: '4/3' }}>
         {/* Slides */}
         <div 
           className="flex transition-transform duration-500 ease-out h-full"
@@ -46,7 +46,7 @@ export const Carousel: React.FC<CarouselProps> = ({
           {items.map((item, index) => (
             <div 
               key={index} 
-              className="min-w-full h-full flex items-center justify-center p-8"
+              className="min-w-full h-full flex items-center justify-center p-2 md:p-8"
             >
               <img
                 src={item.image}
