@@ -49,11 +49,11 @@ export default function MerchandisePage() {
               </div>
 
               {/* Always visible subtle overlay - Mobile only */}
-              <div className="md:hidden absolute bottom-0 left-0 right-0 bg-black/40 backdrop-blur-[2px] p-3 rounded-b-lg">
+              {/* <div className="md:hidden absolute bottom-0 left-0 right-0 bg-black/40 backdrop-blur-[2px] p-3 rounded-b-lg">
                 <p className="text-white text-xs font-medium line-clamp-1">
                   {item.name}
                 </p>
-              </div>
+              </div> */}
             </div>
           ))}
         </div>
