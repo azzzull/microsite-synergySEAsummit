@@ -60,6 +60,8 @@ export default function AdminDashboardPage() {
 	const [loading, setLoading] = useState(true);
 	
 	// Search state
+	const [registrationSearchQuery, setRegistrationSearchQuery] = useState('');
+	const [paymentSearchQuery, setPaymentSearchQuery] = useState('');
 	const [ticketSearchQuery, setTicketSearchQuery] = useState('');
 	const [scannedTicketSearchQuery, setScannedTicketSearchQuery] = useState('');
 	
@@ -377,6 +379,38 @@ export default function AdminDashboardPage() {
 		return ticketId.includes(query) || participantName.includes(query);
 	});
 
+	// Filter registrations based on search query
+	const filteredRegistrations = registrations.filter(registration => {
+		if (!registrationSearchQuery) return true;
+		
+		const query = registrationSearchQuery.toLowerCase();
+		const orderId = (registration.orderId || '').toLowerCase();
+		const fullName = (registration.fullName || '').toLowerCase();
+		const email = (registration.email || '').toLowerCase();
+		const phone = (registration.phone || '').toLowerCase();
+		const memberId = (registration.memberId || '').toLowerCase();
+		
+		return orderId.includes(query) || 
+		       fullName.includes(query) || 
+		       email.includes(query) || 
+		       phone.includes(query) || 
+		       memberId.includes(query);
+	});
+
+	// Filter payments based on search query
+	const filteredPayments = payments.filter(payment => {
+		if (!paymentSearchQuery) return true;
+		
+		const query = paymentSearchQuery.toLowerCase();
+		const orderId = (payment.orderId || '').toLowerCase();
+		const transactionId = (payment.transactionId || '').toLowerCase();
+		const paymentMethod = (payment.paymentMethod || '').toLowerCase();
+		
+		return orderId.includes(query) || 
+		       transactionId.includes(query) || 
+		       paymentMethod.includes(query);
+	});
+
 	if (loading) {
 		return (
 			<div className="flex items-center justify-center py-20">
@@ -391,9 +425,47 @@ export default function AdminDashboardPage() {
 
 			{/* Registrations Table */}
 			<div className="mb-8">
-				<h3 className="text-xl font-semibold mb-4" style={{color: "var(--color-lightgrey)"}}>
-					Registrations ({registrations.length} total)
-				</h3>
+				<div className="flex justify-between items-center mb-4">
+					<h3 className="text-xl font-semibold" style={{color: "var(--color-lightgrey)"}}>
+						Registrations ({filteredRegistrations.length} {registrationSearchQuery ? 'found' : 'total'})
+					</h3>
+					
+					{/* Search Box */}
+					<div className="relative w-96">
+						<input
+							type="text"
+							placeholder="Search by Order ID, Name, Email, Phone, or Member ID..."
+							value={registrationSearchQuery}
+							onChange={(e) => {
+								setRegistrationSearchQuery(e.target.value);
+								setRegistrationPage(1); // Reset to first page on search
+							}}
+							className="w-full px-4 py-2 pl-10 bg-white/10 border border-gray-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-gold)] focus:border-transparent transition-all"
+							style={{color: "var(--color-lightgrey)"}}
+						/>
+						<svg 
+							className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400"
+							fill="none" 
+							stroke="currentColor" 
+							viewBox="0 0 24 24"
+						>
+							<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+						</svg>
+						{registrationSearchQuery && (
+							<button
+								onClick={() => {
+									setRegistrationSearchQuery('');
+									setRegistrationPage(1);
+								}}
+								className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-200"
+							>
+								<svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+									<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+								</svg>
+							</button>
+						)}
+					</div>
+				</div>
 				<div className="bg-white/5 rounded-lg backdrop-blur-sm overflow-hidden">
 					<div className="overflow-x-auto">
 						<table className="w-full">
@@ -414,7 +486,7 @@ export default function AdminDashboardPage() {
 								</tr>
 							</thead>
 							<tbody className="divide-y divide-gray-700">
-								{paginate(registrations, registrationPage).map((reg, index) => (
+								{paginate(filteredRegistrations, registrationPage).map((reg, index) => (
 									<tr key={`registration-${reg.orderId}-${index}`} className="hover:bg-white/5">
 										<td className="px-6 py-4 font-mono text-sm font-medium" style={{color: "var(--color-gold)"}}>{reg.orderId}</td>
 										<td className="px-6 py-4 text-sm">{reg.fullName}</td>
@@ -468,7 +540,7 @@ export default function AdminDashboardPage() {
 					</div>
 					<PaginationControls
 						currentPage={registrationPage}
-						totalPages={getTotalPages(registrations.length)}
+						totalPages={getTotalPages(filteredRegistrations.length)}
 						onPageChange={setRegistrationPage}
 						label="Registrations"
 					/>
@@ -494,9 +566,47 @@ export default function AdminDashboardPage() {
 
 			{/* Payments Table */}
 			<div className="mb-8">
-				<h3 className="text-xl font-semibold mb-4" style={{color: "var(--color-lightgrey)"}}>
-					Payments ({payments.length} total)
-				</h3>
+				<div className="flex justify-between items-center mb-4">
+					<h3 className="text-xl font-semibold" style={{color: "var(--color-lightgrey)"}}>
+						Payments ({filteredPayments.length} {paymentSearchQuery ? 'found' : 'total'})
+					</h3>
+					
+					{/* Search Box */}
+					<div className="relative w-96">
+						<input
+							type="text"
+							placeholder="Search by Order ID, Transaction ID, or Method..."
+							value={paymentSearchQuery}
+							onChange={(e) => {
+								setPaymentSearchQuery(e.target.value);
+								setPaymentPage(1); // Reset to first page on search
+							}}
+							className="w-full px-4 py-2 pl-10 bg-white/10 border border-gray-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-gold)] focus:border-transparent transition-all"
+							style={{color: "var(--color-lightgrey)"}}
+						/>
+						<svg 
+							className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400"
+							fill="none" 
+							stroke="currentColor" 
+							viewBox="0 0 24 24"
+						>
+							<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+						</svg>
+						{paymentSearchQuery && (
+							<button
+								onClick={() => {
+									setPaymentSearchQuery('');
+									setPaymentPage(1);
+								}}
+								className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-200"
+							>
+								<svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+									<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+								</svg>
+							</button>
+						)}
+					</div>
+				</div>
 				<div className="bg-white/5 rounded-lg backdrop-blur-sm overflow-hidden">
 					<div className="overflow-x-auto">
 						<table className="w-full">
@@ -511,7 +621,7 @@ export default function AdminDashboardPage() {
 								</tr>
 							</thead>
 							<tbody className="divide-y divide-gray-700">
-								{paginate(payments, paymentPage).map((payment, index) => (
+								{paginate(filteredPayments, paymentPage).map((payment, index) => (
 									<tr key={`payment-${payment.orderId}-${index}`} className="hover:bg-white/5">
 										<td className="px-6 py-4 font-mono text-sm font-medium" style={{color: "var(--color-gold)"}}>{payment.orderId}</td>
 										<td className="px-6 py-4 text-sm">Rp {payment.amount.toLocaleString()}</td>
@@ -534,7 +644,7 @@ export default function AdminDashboardPage() {
 					</div>
 					<PaginationControls
 						currentPage={paymentPage}
-						totalPages={getTotalPages(payments.length)}
+						totalPages={getTotalPages(filteredPayments.length)}
 						onPageChange={setPaymentPage}
 						label="Payments"
 					/>
