@@ -26,17 +26,17 @@ export default function ValidateTicketPage() {
 
   // Helper function to determine ticket type based on ticket code
   const getTicketType = (ticketCode: string): { type: string; badge: string; color: string } => {
-    if (ticketCode.startsWith('COMP')) {
+    if (ticketCode.startsWith('COMP') || ticketCode.startsWith('VIP')) {
       return {
         type: 'Complimentary',
         badge: 'Complimentary',
-        color: 'bg-gold-100 text-gold-800 border-gold-300'
+        color: 'bg-yellow-100 text-yellow-800 border-yellow-300'
       };
     } else if (ticketCode.startsWith('TICKET')) {
       return {
         type: 'Regular',
         badge: 'Regular',
-        color: 'bg-blue-100 text-blue-800 border-blue-300'
+        color: 'bg-gray-100 text-gray-800 border-gray-300'
       };
     } else {
       return {
