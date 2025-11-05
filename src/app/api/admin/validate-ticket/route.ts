@@ -71,7 +71,7 @@ export async function POST(request: NextRequest) {
         await postgresDb.executeQuery(`
           UPDATE tickets 
           SET validation_status = 'used',
-              validated_at = CURRENT_TIMESTAMP,
+              validated_at = timezone('Asia/Jakarta', CURRENT_TIMESTAMP),
               used_count = COALESCE(used_count, 0) + 1
           WHERE ticket_code = $1
         `, [ticketData.ticket_code]);

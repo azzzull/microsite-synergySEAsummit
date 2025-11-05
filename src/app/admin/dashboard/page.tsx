@@ -627,7 +627,16 @@ export default function AdminDashboardPage() {
 											</td>
 											<td className="px-6 py-4 text-sm">{ticket.participantName || ticket.fullName || 'N/A'}</td>
 											<td className="px-6 py-4 text-sm text-gray-400">
-												{ticket.validatedAt ? convertToJakartaTime(ticket.validatedAt) : 'N/A'}
+												{ticket.validatedAt ? new Date(ticket.validatedAt).toLocaleString('id-ID', { 
+													timeZone: 'Asia/Jakarta',
+													year: 'numeric',
+													month: '2-digit',
+													day: '2-digit',
+													hour: '2-digit',
+													minute: '2-digit',
+													second: '2-digit',
+													hour12: false
+												}) : 'N/A'}
 											</td>
 											<td className="px-6 py-4 text-sm">
 												<span className="px-2 py-1 rounded text-xs bg-orange-900 text-orange-300">

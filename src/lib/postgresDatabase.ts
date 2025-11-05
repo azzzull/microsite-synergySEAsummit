@@ -546,7 +546,6 @@ class PostgresDatabase {
           t.used_count,
           (t.issued_at AT TIME ZONE 'UTC' AT TIME ZONE 'Asia/Jakarta') as jakarta_issued_at,
           (t.updated_at AT TIME ZONE 'UTC' AT TIME ZONE 'Asia/Jakarta') as jakarta_updated_at,
-          (t.validated_at AT TIME ZONE 'UTC' AT TIME ZONE 'Asia/Jakarta') as jakarta_validated_at,
           -- Fallback to registration data if ticket data is null (backward compatibility)
           COALESCE(t.participant_name, r.full_name) as full_name,
           COALESCE(t.participant_email, r.email) as email,
@@ -578,7 +577,7 @@ class PostgresDatabase {
         emailSentAt: row.email_sent_at || (row.status === 'email_sent' ? row.updated_at : null),
         status: row.status,
         validationStatus: row.validation_status,
-        validatedAt: row.jakarta_validated_at || row.validated_at,
+        validatedAt: row.validated_at, // Already in Jakarta timezone from database
         usedCount: row.used_count || 0,
         // Use Jakarta timezone from database (same as registrations)
         issuedAt: row.jakarta_issued_at || row.issued_at,
