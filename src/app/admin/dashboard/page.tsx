@@ -27,6 +27,8 @@ interface Payment {
 	paymentMethod?: string;
 	paidAt?: string;
 	createdAt: string;
+	fullName?: string; // Added for displaying participant name
+	email?: string; // Added for search and display
 }
 
 interface Ticket {
@@ -331,13 +333,30 @@ export default function AdminDashboardPage() {
 				fetch('/api/admin/payments'),
 				fetch('/api/admin/tickets')
 			]);
+			
+			let registrationData: Registration[] = [];
+			let paymentData: Payment[] = [];
+			
 			if (regRes.ok) {
 				const regData = await regRes.json();
-				setRegistrations(regData.registrations || []);
+				registrationData = regData.registrations || [];
+				setRegistrations(registrationData);
 			}
 			if (payRes.ok) {
 				const payData = await payRes.json();
-				setPayments(payData.payments || []);
+				paymentData = payData.payments || [];
+				
+				// Enrich payment data with participant names from registrations
+				const enrichedPayments = paymentData.map(payment => {
+					const registration = registrationData.find(reg => reg.orderId === payment.orderId);
+					return {
+						...payment,
+						fullName: registration?.fullName,
+						email: registration?.email
+					};
+				});
+				
+				setPayments(enrichedPayments);
 			}
 			if (ticketRes.ok) {
 				const ticketData = await ticketRes.json();
@@ -405,10 +424,14 @@ export default function AdminDashboardPage() {
 		const orderId = (payment.orderId || '').toLowerCase();
 		const transactionId = (payment.transactionId || '').toLowerCase();
 		const paymentMethod = (payment.paymentMethod || '').toLowerCase();
+		const fullName = (payment.fullName || '').toLowerCase();
+		const email = (payment.email || '').toLowerCase();
 		
 		return orderId.includes(query) || 
 		       transactionId.includes(query) || 
-		       paymentMethod.includes(query);
+		       paymentMethod.includes(query) ||
+		       fullName.includes(query) ||
+		       email.includes(query);
 	});
 
 	if (loading) {
@@ -575,7 +598,7 @@ export default function AdminDashboardPage() {
 					<div className="relative w-96">
 						<input
 							type="text"
-							placeholder="Search by Order ID, Transaction ID, or Method..."
+							placeholder="Search by Order ID, Name, Transaction ID, or Method..."
 							value={paymentSearchQuery}
 							onChange={(e) => {
 								setPaymentSearchQuery(e.target.value);
@@ -613,6 +636,7 @@ export default function AdminDashboardPage() {
 							<thead className="bg-white/10">
 								<tr>
 									<th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Order ID</th>
+									<th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Name</th>
 									<th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Amount</th>
 									<th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Status</th>
 									<th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Transaction ID</th>
@@ -624,6 +648,7 @@ export default function AdminDashboardPage() {
 								{paginate(filteredPayments, paymentPage).map((payment, index) => (
 									<tr key={`payment-${payment.orderId}-${index}`} className="hover:bg-white/5">
 										<td className="px-6 py-4 font-mono text-sm font-medium" style={{color: "var(--color-gold)"}}>{payment.orderId}</td>
+										<td className="px-6 py-4 text-sm">{payment.fullName || '-'}</td>
 										<td className="px-6 py-4 text-sm">Rp {payment.amount.toLocaleString()}</td>
 										<td className="px-6 py-4 text-sm">
 											<span className={`px-2 py-1 rounded text-xs ${
