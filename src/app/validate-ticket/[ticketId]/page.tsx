@@ -24,6 +24,29 @@ export default function ValidateTicketPage() {
   const [error, setError] = useState<string | null>(null);
   const [isInvalidTicket, setIsInvalidTicket] = useState(false);
 
+  // Helper function to determine ticket type based on ticket code
+  const getTicketType = (ticketCode: string): { type: string; badge: string; color: string } => {
+    if (ticketCode.startsWith('COMP')) {
+      return {
+        type: 'Complimentary',
+        badge: 'Complimentary',
+        color: 'bg-purple-100 text-purple-800 border-purple-300'
+      };
+    } else if (ticketCode.startsWith('TICKET')) {
+      return {
+        type: 'Regular',
+        badge: 'Regular',
+        color: 'bg-blue-100 text-blue-800 border-blue-300'
+      };
+    } else {
+      return {
+        type: 'Standard',
+        badge: 'Standard',
+        color: 'bg-gray-100 text-gray-800 border-gray-300'
+      };
+    }
+  };
+
   useEffect(() => {
     if (ticketId) {
       // Clean and validate ticketId format
@@ -160,6 +183,14 @@ export default function ValidateTicketPage() {
 
                 {/* Ticket Details for Used Ticket */}
                 <div className="space-y-3 text-left mb-6">
+                  {/* Ticket Type Badge */}
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-600 font-medium">Type:</span>
+                    <span className={`px-3 py-1 rounded-lg text-xs font-semibold border ${getTicketType(ticketId).color}`}>
+                      {getTicketType(ticketId).badge}
+                    </span>
+                  </div>
+
                   {validationResult.participantName && (
                     <div className="flex justify-between items-center">
                       <span className="text-gray-600 font-medium">Name:</span>
@@ -266,6 +297,14 @@ export default function ValidateTicketPage() {
                 
                 {/* Ticket Details */}
                 <div className="space-y-3 text-left">
+                  {/* Ticket Type Badge */}
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-600 font-medium">Type:</span>
+                    <span className={`px-3 py-1 rounded-lg text-xs font-semibold border ${getTicketType(ticketId).color}`}>
+                      {getTicketType(ticketId).badge}
+                    </span>
+                  </div>
+
                   {validationResult.participantName && (
                     <div className="flex justify-between items-center">
                       <span className="text-gray-600 font-medium">Name:</span>
