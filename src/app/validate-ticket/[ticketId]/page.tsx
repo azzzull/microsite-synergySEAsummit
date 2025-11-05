@@ -30,7 +30,7 @@ export default function ValidateTicketPage() {
       return {
         type: 'Complimentary',
         badge: 'Complimentary',
-        color: 'bg-purple-100 text-purple-800 border-purple-300'
+        color: 'bg-gold-100 text-gold-800 border-gold-300'
       };
     } else if (ticketCode.startsWith('TICKET')) {
       return {
