@@ -48,6 +48,9 @@ interface Ticket {
 	status?: string;
 	fullName?: string;
 	email?: string;
+	validationStatus?: 'used' | 'unused';
+	validatedAt?: string;
+	usedCount?: number;
 }
 
 export default function AdminDashboardPage() {
@@ -58,11 +61,13 @@ export default function AdminDashboardPage() {
 	
 	// Search state
 	const [ticketSearchQuery, setTicketSearchQuery] = useState('');
+	const [scannedTicketSearchQuery, setScannedTicketSearchQuery] = useState('');
 	
 	// Pagination states
 	const [registrationPage, setRegistrationPage] = useState(1);
 	const [paymentPage, setPaymentPage] = useState(1);
 	const [ticketPage, setTicketPage] = useState(1);
+	const [scannedTicketPage, setScannedTicketPage] = useState(1);
 	const itemsPerPage = 5;
 	
 	const router = useRouter();
@@ -359,6 +364,19 @@ export default function AdminDashboardPage() {
 		       participantEmail.includes(query);
 	});
 
+	// Filter scanned tickets (status='used')
+	const scannedTickets = tickets.filter(ticket => ticket.validationStatus === 'used');
+	
+	const filteredScannedTickets = scannedTickets.filter(ticket => {
+		if (!scannedTicketSearchQuery) return true;
+		
+		const query = scannedTicketSearchQuery.toLowerCase();
+		const ticketId = (ticket.ticketId || ticket.ticketCode || '').toLowerCase();
+		const participantName = (ticket.participantName || ticket.fullName || '').toLowerCase();
+		
+		return ticketId.includes(query) || participantName.includes(query);
+	});
+
 	if (loading) {
 		return (
 			<div className="flex items-center justify-center py-20">
@@ -537,6 +555,99 @@ export default function AdminDashboardPage() {
 							Export to CSV ({payments.length} records)
 						</button>
 					</div>
+				</div>
+			</div>
+
+			{/* Scanned Tickets Table */}
+			<div className="mb-8">
+				<div className="flex justify-between items-center mb-4">
+					<h3 className="text-xl font-semibold" style={{color: "var(--color-lightgrey)"}}>
+						Scanned Tickets ({filteredScannedTickets.length} {scannedTicketSearchQuery ? 'found' : 'total'})
+					</h3>
+					
+					{/* Search Box */}
+					<div className="relative w-96">
+						<input
+							type="text"
+							placeholder="Search by Ticket ID or Name..."
+							value={scannedTicketSearchQuery}
+							onChange={(e) => {
+								setScannedTicketSearchQuery(e.target.value);
+								setScannedTicketPage(1); // Reset to first page on search
+							}}
+							className="w-full px-4 py-2 pl-10 bg-white/10 border border-gray-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-gold)] focus:border-transparent transition-all"
+							style={{color: "var(--color-lightgrey)"}}
+						/>
+						<svg 
+							className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400"
+							fill="none" 
+							stroke="currentColor" 
+							viewBox="0 0 24 24"
+						>
+							<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+						</svg>
+						{scannedTicketSearchQuery && (
+							<button
+								onClick={() => {
+									setScannedTicketSearchQuery('');
+									setScannedTicketPage(1);
+								}}
+								className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-200"
+							>
+								<svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+									<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+								</svg>
+							</button>
+						)}
+					</div>
+				</div>
+				<div className="bg-white/5 rounded-lg backdrop-blur-sm overflow-hidden">
+					<div className="overflow-x-auto">
+						<table className="w-full">
+							<thead className="bg-white/10">
+								<tr>
+									<th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Ticket Code</th>
+									<th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Participant Name</th>
+									<th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Scanned At</th>
+									<th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Status</th>
+								</tr>
+							</thead>
+							<tbody className="divide-y divide-gray-700">
+								{filteredScannedTickets.length === 0 ? (
+									<tr>
+										<td colSpan={4} className="px-6 py-8 text-center text-gray-400">
+											{scannedTicketSearchQuery ? 'No scanned tickets found matching your search' : 'No tickets have been scanned yet'}
+										</td>
+									</tr>
+								) : (
+									paginate(filteredScannedTickets, scannedTicketPage).map((ticket, index) => (
+										<tr key={`scanned-${ticket.ticketId || ticket.id || index}`} className="hover:bg-white/5">
+											<td className="px-6 py-4 font-mono text-sm font-medium" style={{color: "var(--color-gold)"}}>
+												{ticket.ticketId || ticket.ticketCode || 'N/A'}
+											</td>
+											<td className="px-6 py-4 text-sm">{ticket.participantName || ticket.fullName || 'N/A'}</td>
+											<td className="px-6 py-4 text-sm text-gray-400">
+												{ticket.validatedAt ? convertToJakartaTime(ticket.validatedAt) : 'N/A'}
+											</td>
+											<td className="px-6 py-4 text-sm">
+												<span className="px-2 py-1 rounded text-xs bg-orange-900 text-orange-300">
+													Used
+												</span>
+											</td>
+										</tr>
+									))
+								)}
+							</tbody>
+						</table>
+					</div>
+					{filteredScannedTickets.length > 0 && (
+						<PaginationControls
+							currentPage={scannedTicketPage}
+							totalPages={getTotalPages(filteredScannedTickets.length)}
+							onPageChange={setScannedTicketPage}
+							label="Scanned Tickets"
+						/>
+					)}
 				</div>
 			</div>
 
