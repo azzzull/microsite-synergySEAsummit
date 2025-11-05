@@ -86,28 +86,29 @@ export default function AdminDashboardPage() {
 		// Get headers from first object
 		const headers = Object.keys(data[0]);
 		
-		// Create CSV with semicolon separator for better Excel compatibility
+		// Create CSV with comma separator and quoted values for proper Excel compatibility
 		const csvRows = [];
 		
-		// Header row
-		csvRows.push(headers.join(';'));
+		// Header row - wrap each header in quotes
+		csvRows.push(headers.map(h => `"${h}"`).join(','));
 		
-		// Data rows
+		// Data rows - wrap each value in quotes
 		data.forEach(row => {
 			const values = headers.map(header => {
 				let value = row[header];
 				if (value === null || value === undefined) {
-					return '';
+					return '""';
 				}
-				// Clean the value and remove any problematic characters
-				return String(value).replace(/;/g, ',').replace(/\r?\n/g, ' ');
+				// Convert to string, escape quotes, and wrap in quotes
+				const stringValue = String(value).replace(/"/g, '""').replace(/\r?\n/g, ' ');
+				return `"${stringValue}"`;
 			});
-			csvRows.push(values.join(';'));
+			csvRows.push(values.join(','));
 		});
 
 		const csvContent = csvRows.join('\n');
 
-		// Create and download file with proper encoding
+		// Create and download file with proper encoding (UTF-8 BOM for Excel)
 		const blob = new Blob(['\ufeff' + csvContent], { 
 			type: 'text/csv;charset=utf-8;' 
 		});
