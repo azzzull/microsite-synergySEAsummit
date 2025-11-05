@@ -193,6 +193,33 @@ export default function AdminDashboardPage() {
 		exportToCSV(csvData, 'synergy_tickets');
 	};
 
+	const formatScannedTicketDataForCSV = (scannedTickets: Ticket[]) => {
+		return scannedTickets.map((ticket, index) => ({
+			'No': index + 1,
+			'Ticket Code': ticket.ticketId || ticket.ticketCode || '',
+			'Participant Name': ticket.participantName || ticket.fullName || '',
+			'Participant Email': ticket.participantEmail || ticket.email || '',
+			'Scanned At Jakarta Time': ticket.validatedAt ? new Date(ticket.validatedAt).toLocaleString('id-ID', { 
+				timeZone: 'Asia/Jakarta',
+				year: 'numeric',
+				month: '2-digit',
+				day: '2-digit',
+				hour: '2-digit',
+				minute: '2-digit',
+				second: '2-digit',
+				hour12: false
+			}) : 'N/A',
+			'Status': 'Used',
+			'Used Count': ticket.usedCount || 1
+		}));
+	};
+
+	const handleExportScannedTickets = () => {
+		const scannedTickets = tickets.filter(ticket => ticket.validationStatus === 'used');
+		const csvData = formatScannedTicketDataForCSV(scannedTickets);
+		exportToCSV(csvData, 'synergy_scanned_tickets');
+	};
+
 	useEffect(() => {
 		// Check authentication first
 		if (!isAdminAuthenticated()) {
@@ -792,6 +819,23 @@ export default function AdminDashboardPage() {
 							label="Scanned Tickets"
 						/>
 					)}
+					{/* Export CSV Button */}
+					<div className="flex justify-end px-6 py-3 border-t border-gray-600">
+						<button
+							onClick={handleExportScannedTickets}
+							className="px-4 py-2 cursor-pointer rounded-md text-sm font-medium transition-all duration-200 flex items-center gap-2 hover:opacity-90"
+							style={{
+								backgroundColor: "var(--color-gold)",
+								color: "var(--color-navy)"
+							}}
+							disabled={scannedTickets.length === 0}
+						>
+							<svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+								<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+							</svg>
+							Export to CSV ({scannedTickets.length} records)
+						</button>
+					</div>
 				</div>
 			</div>
 
