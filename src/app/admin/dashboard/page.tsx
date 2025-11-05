@@ -56,6 +56,9 @@ export default function AdminDashboardPage() {
 	const [tickets, setTickets] = useState<Ticket[]>([]);
 	const [loading, setLoading] = useState(true);
 	
+	// Search state
+	const [ticketSearchQuery, setTicketSearchQuery] = useState('');
+	
 	// Pagination states
 	const [registrationPage, setRegistrationPage] = useState(1);
 	const [paymentPage, setPaymentPage] = useState(1);
@@ -340,6 +343,22 @@ export default function AdminDashboardPage() {
 		}
 	}
 
+	// Filter tickets based on search query
+	const filteredTickets = tickets.filter(ticket => {
+		if (!ticketSearchQuery) return true;
+		
+		const query = ticketSearchQuery.toLowerCase();
+		const ticketId = (ticket.ticketId || ticket.ticketCode || '').toLowerCase();
+		const orderId = (ticket.orderId || '').toLowerCase();
+		const participantName = (ticket.participantName || ticket.fullName || '').toLowerCase();
+		const participantEmail = (ticket.participantEmail || ticket.email || '').toLowerCase();
+		
+		return ticketId.includes(query) || 
+		       orderId.includes(query) || 
+		       participantName.includes(query) || 
+		       participantEmail.includes(query);
+	});
+
 	if (loading) {
 		return (
 			<div className="flex items-center justify-center py-20">
@@ -523,9 +542,47 @@ export default function AdminDashboardPage() {
 
 			{/* Tickets Table */}
 			<div className="mb-8">
-				<h3 className="text-xl font-semibold mb-4" style={{color: "var(--color-lightgrey)"}}>
-					E-Tickets ({tickets.length} total)
-				</h3>
+				<div className="flex justify-between items-center mb-4">
+					<h3 className="text-xl font-semibold" style={{color: "var(--color-lightgrey)"}}>
+						E-Tickets ({filteredTickets.length} {ticketSearchQuery ? 'found' : 'total'})
+					</h3>
+					
+					{/* Search Box */}
+					<div className="relative w-96">
+						<input
+							type="text"
+							placeholder="Search by Ticket ID, Order ID, Name, or Email..."
+							value={ticketSearchQuery}
+							onChange={(e) => {
+								setTicketSearchQuery(e.target.value);
+								setTicketPage(1); // Reset to first page on search
+							}}
+							className="w-full px-4 py-2 pl-10 bg-white/10 border border-gray-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-gold)] focus:border-transparent transition-all"
+							style={{color: "var(--color-lightgrey)"}}
+						/>
+						<svg 
+							className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400"
+							fill="none" 
+							stroke="currentColor" 
+							viewBox="0 0 24 24"
+						>
+							<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+						</svg>
+						{ticketSearchQuery && (
+							<button
+								onClick={() => {
+									setTicketSearchQuery('');
+									setTicketPage(1);
+								}}
+								className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-200"
+							>
+								<svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+									<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+								</svg>
+							</button>
+						)}
+					</div>
+				</div>
 				<div className="bg-white/5 rounded-lg backdrop-blur-sm overflow-hidden">
 					<div className="overflow-x-auto">
 						<table className="w-full">
@@ -540,7 +597,7 @@ export default function AdminDashboardPage() {
 								</tr>
 							</thead>
 							<tbody className="divide-y divide-gray-700">
-								{paginate(tickets, ticketPage).map((ticket, index) => (
+								{paginate(filteredTickets, ticketPage).map((ticket, index) => (
 									<tr key={`ticket-${ticket.ticketId || ticket.id || index}`} className="hover:bg-white/5">
 										<td className="px-6 py-4 font-mono text-sm font-medium" style={{color: "var(--color-gold)"}}>
 											{ticket.ticketId || ticket.ticketCode || 'N/A'}
@@ -567,7 +624,7 @@ export default function AdminDashboardPage() {
 					</div>
 					<PaginationControls
 						currentPage={ticketPage}
-						totalPages={getTotalPages(tickets.length)}
+						totalPages={getTotalPages(filteredTickets.length)}
 						onPageChange={setTicketPage}
 						label="E-Tickets"
 					/>
